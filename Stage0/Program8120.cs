@@ -14,7 +14,7 @@ namespace Stage0
         private static void WellCome8120()
         {
             Console.WriteLine("Enter Your Name: ");
-            string name = System.Console.ReadLine();
+            string? name = System.Console.ReadLine();
             Console.WriteLine("{0}, wellcome to my first console application", name);
         }
         static partial void WellCome8674();
