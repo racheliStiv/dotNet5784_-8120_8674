@@ -4,9 +4,11 @@ namespace DO;
 public record Dependency
 (
     int Id,
-    int DependentDateTask,
+    int DependentTask,
     int DependensOnTask
 )
 {
     public Dependency() : this(0, 0, 0) { }
+
+   
 }

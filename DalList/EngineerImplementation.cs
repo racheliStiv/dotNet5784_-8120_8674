@@ -14,7 +14,9 @@ public class EngineerImplementation : IEngineer
 
     public void Delete(int id)
     {
-        throw new Exception("This object cannot be deleted");
+        if (!DataSource.Engineers.Exists(x => x.Id == id) || DataSource.Tasks.Exists(x => x.EngineerId == id))
+            throw new Exception("This object cannot be deleted");
+        DataSource.Engineers.Remove(DataSource.Engineers.Find(x => x.Id == id)!);
     }
 
     public Engineer? Read(int id)
@@ -31,7 +33,7 @@ public class EngineerImplementation : IEngineer
     public void Update(Engineer item)
     {
         if (Read(item.Id) == null)
-            throw new Exception($"Engineer with ID={item.Id} already exists");
+            throw new Exception($"Engineer with ID={item.Id} not exists");
         Delete(item.Id);
         Create(item);
     }

@@ -14,7 +14,9 @@ public class TaskImplementation : ITask
 
     public void Delete(int id)
     {
-        throw new Exception("This object cannot be deleted");
+        if (!DataSource.Tasks.Exists(x => x.Id == id) || DataSource.Dependencies.Exists(x => x.DependensOnTask == id))
+            throw new Exception("This object cannot be deleted");
+        DataSource.Tasks.Remove(DataSource.Tasks.Find(x => x.Id == id)!);  
     }
 
     public Task? Read(int id)
@@ -31,7 +33,7 @@ public class TaskImplementation : ITask
     public void Update(Task item)
     {
         if (Read(item.Id) == null)
-            throw new Exception($"Task with ID={item.Id} already exists");
+            throw new Exception($"Task with ID={item.Id} not exists");
         Delete(item.Id);
         Create(item);
     }
