@@ -1,6 +1,9 @@
 ﻿using Dal;
 using DalApi;
+using DO;
+using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace DalTest
 {
@@ -10,20 +13,43 @@ namespace DalTest
         private static ITask? s_dalTask = new TaskImplementation();
         private static IDependency? s_dalDependency = new DependencyImplementation();
 
-        public static void Main_menu()
+
+
+
+    
+        public static void Delete(string entity)
         {
-            Console.WriteLine("choose an entity u wana chack");
-            switch ()
+            int id;
+            switch (entity)
             {
-                default:
+                case "task":
+                    {
+                        Console.WriteLine("insert id of task");
+                        id = int.Parse(Console.ReadLine() ?? "");
+                        s_dalTask?.Delete(id);
+                    }
+                    break;
+                case "dependency":
+                    {
+                        Console.WriteLine("insert id of dependency");
+                        id = int.Parse(Console.ReadLine() ?? "");
+                        s_dalDependency?.Delete(id);
+                    }
+                    break;
+                case "engineer":
+                    {
+                        Console.WriteLine("insert id of engineer");
+                        id = int.Parse(Console.ReadLine() ?? "");
+                        s_dalEngineer?.Delete(id);
+                    }
                     break;
             }
         }
+        
 
-        public static void Sub_menu()
-        {
+       
 
-        }
+
         public static void Main()
         {
             try
@@ -37,9 +63,6 @@ namespace DalTest
                 Console.WriteLine(ex);
             }
         }
-
-
-
     }
 
 
