@@ -1,13 +1,6 @@
 ﻿using Dal;
 using DalApi;
 using DO;
-using System;
-using System.Diagnostics;
-using System;
-using DO;
-using System.Runtime.InteropServices;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Reflection.Emit;
 
 namespace DalTest
 {
