@@ -19,6 +19,7 @@ internal static class DataSource
         internal static int NextDependencyId { get => nextDependencyId++; }
 
     }
+    //entity lists definitions
     internal static List<Task> Tasks { get; } = new();
     internal static List<Engineer> Engineers { get; } = new();
     internal static List<Dependency> Dependencies { get; } = new();
