@@ -2,7 +2,7 @@
 using DalApi;
 using DO;
 
-public class EngineerImplementation : IEngineer
+internal class EngineerImplementation : IEngineer
 {
 
     //CRUD of Engineer

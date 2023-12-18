@@ -2,7 +2,7 @@
 using DalApi;
 using DO;
 
-public class DependencyImplementation : IDependency
+internal class DependencyImplementation : IDependency
 {
 
     //CRUD of Dependency

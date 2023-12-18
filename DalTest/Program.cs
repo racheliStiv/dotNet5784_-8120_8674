@@ -6,10 +6,7 @@ namespace DalTest
 {
     internal class Program
     {
-        //Creating the collections that will contain all the objects from the different entity types
-        private static IEngineer? s_dalEngineer = new EngineerImplementation();
-        private static ITask? s_dalTask = new TaskImplementation();
-        private static IDependency? s_dalDependency = new DependencyImplementation();
+        static readonly IDal s_dal = new DalList();
 
         //The main loop that invokes the selection of the desired entity
         public static void Main_menu()
@@ -33,7 +30,6 @@ namespace DalTest
             }
 
         }
-
 
         //A secondary loop that invokes the selection of the desired action for the selected entity
         public static void Sub_menu(string entity)
@@ -87,7 +83,7 @@ namespace DalTest
                         string? remarks = Console.ReadLine();
                         int engineer_id = int.Parse(Console.ReadLine() ?? "");
                         DO.Task t = new(0, alias, description, DateTime.Now, new TimeSpan(int.Parse(d_h_m[0]), int.Parse(d_h_m[1]), int.Parse(d_h_m[2]), 0), (milestone == "t"), (EngineerExperience)complexity, DateTime.ParseExact(start_date!, format, null), DateTime.ParseExact(scheduled_date!, format, null), DateTime.ParseExact(deadline_date!, format, null), DateTime.ParseExact(complete_date!, format, null), deliveryables, remarks, engineer_id);
-                        s_dalTask?.Create(t);
+                        s_dal!.Task?.Create(t);
                     }
                     break;
                 case "engineer":
@@ -99,7 +95,7 @@ namespace DalTest
                         int level = int.Parse(Console.ReadLine() ?? "");
                         double cost = double.Parse(Console.ReadLine() ?? "");
                         Engineer newEng = new(id, name, email, (EngineerExperience)level, cost);
-                        s_dalEngineer?.Create(newEng);
+                        s_dal!.Engineer?.Create(newEng);
 
                     }
                     break;
@@ -110,7 +106,7 @@ namespace DalTest
                         int dependentTask = int.Parse(Console.ReadLine() ?? "");
                         int DependensOnTask = int.Parse(Console.ReadLine() ?? "");
                         Dependency newDep = new(0, dependentTask, DependensOnTask);
-                        s_dalDependency?.Create(newDep);
+                        s_dal!.Dependency?.Create(newDep);
                     }
                     break;
             }
@@ -126,21 +122,21 @@ namespace DalTest
                     {
                         Console.WriteLine("insert id of task");
                         id = int.Parse(Console.ReadLine() ?? "");
-                        s_dalTask?.Delete(id);
+                        s_dal!.Task?.Delete(id);
                     }
                     break;
                 case "dependency":
                     {
                         Console.WriteLine("insert id of dependency");
                         id = int.Parse(Console.ReadLine() ?? "");
-                        s_dalDependency?.Delete(id);
+                        s_dal!.Dependency?.Delete(id);
                     }
                     break;
                 case "engineer":
                     {
                         Console.WriteLine("insert id of engineer");
                         id = int.Parse(Console.ReadLine() ?? "");
-                        s_dalEngineer?.Delete(id);
+                        s_dal!.Engineer?.Delete(id);
                     }
                     break;
             }
@@ -154,13 +150,13 @@ namespace DalTest
             switch (entity)
             {
                 case "task":
-                    Console.WriteLine(s_dalTask!.Read(id));
+                    Console.WriteLine(s_dal!.Task!.Read(id));
                     break;
                 case "dependency":
-                    Console.WriteLine(s_dalDependency!.Read(id));
+                    Console.WriteLine(s_dal!.Dependency!.Read(id));
                     break;
                 case "engineer":
-                    Console.WriteLine(s_dalEngineer!.Read(id));
+                    Console.WriteLine(s_dal!.Engineer!.Read(id));
                     break;
             }
             Sub_menu(entity);
@@ -171,16 +167,16 @@ namespace DalTest
             switch (entity)
             {
                 case "task":
-                    foreach (var item in s_dalTask!.ReadAll())
+                    foreach (var item in s_dal!.Task!.ReadAll())
                         Console.WriteLine(item);
 
                     break;
                 case "dependency":
-                    foreach (var item in s_dalDependency!.ReadAll())
+                    foreach (var item in s_dal!.Dependency!.ReadAll())
                         Console.WriteLine(item);
                     break;
                 case "engineer":
-                    foreach (var item in s_dalEngineer!.ReadAll())
+                    foreach (var item in s_dal!.Engineer!.ReadAll())
                         Console.WriteLine(item);
                     break;
             }
@@ -213,9 +209,9 @@ namespace DalTest
                         int? engineer_id = int.TryParse(Console.ReadLine(), out var result) ? result : null;
                         TimeSpan? newTS;
                         if (requierd_effort_time == "//" || requierd_effort_time == "")
-                            newTS = s_dalTask!.Read(id)!.RequiredEffortTime;
+                            newTS = s_dal!.Task!.Read(id)!.RequiredEffortTime;
                         else newTS = new TimeSpan(int.Parse(d_h_m[0]), int.Parse(d_h_m[1]), int.Parse(d_h_m[2], 0));
-                        DO.Task original_t = s_dalTask!.Read(id)!;
+                        DO.Task original_t = s_dal!.Task!.Read(id)!;
                         DO.Task t = new(id, (alias == "") ? original_t.Alias : alias, (description == "") ? original_t.Description : description,
                             original_t.CreatedAtDate, newTS, (milestone != "") ? (milestone == "t") : original_t.IsMilestone,
                             complexity != null ? (EngineerExperience)complexity! : original_t.Complexity,
@@ -226,33 +222,33 @@ namespace DalTest
                             (deliveryables == "") ? original_t.Deliverables : deliveryables,
                             (remarks == "") ? original_t.Remarks : remarks,
                             engineer_id ?? original_t.EngineerId);
-                        s_dalTask?.Update(t);
+                        s_dal!.Task?.Update(t);
                     }
                     break;
                 case "dependency":
                     {
                         Console.WriteLine("insert id of dependency to update");
                         id = int.Parse(Console.ReadLine() ?? "");
-                        Dependency original_d = s_dalDependency!.Read(id)!;
+                        Dependency original_d = s_dal!.Dependency!.Read(id)!;
                         Console.WriteLine("insert: \n dependent task \ndependens on task");
                         int? dependentTask = int.TryParse(Console.ReadLine(), out var res1) ? res1 : null;
                         int? dependensOnTask = int.TryParse(Console.ReadLine(), out var res2) ? res2 : null;
                         Dependency newDep = new(id, dependentTask ?? original_d.DependentTask, dependensOnTask ?? original_d.DependensOnTask);
-                        s_dalDependency?.Update(newDep);
+                        s_dal!.Dependency?.Update(newDep);
                     }
                     break;
                 case "engineer":
                     {
                         Console.WriteLine("insert id of engineer to update");
                         id = int.Parse(Console.ReadLine() ?? "");
-                        Engineer original_e = s_dalEngineer!.Read(id)!;
+                        Engineer original_e = s_dal!.Engineer!.Read(id)!;
                         Console.WriteLine("insert: \n  name \n email \n level(0-4)\ncost");
                         string? name = Console.ReadLine();
                         string? email = Console.ReadLine();
                         int? level = int.TryParse(Console.ReadLine(), out var res1) ? res1 : null;
                         double? cost = double.TryParse(Console.ReadLine(), out var res2) ? res2 : null;
                         Engineer newEng = new(id, name == "" ? original_e.Name : name, email == "" ? original_e.Email : email, level != null ? (EngineerExperience)level! : original_e.Level, cost ?? original_e.Cost);
-                        s_dalEngineer?.Update(newEng);
+                        s_dal!.Engineer?.Update(newEng);
 
                     }
                     break;
@@ -264,7 +260,7 @@ namespace DalTest
         {
             try
             {
-                Initialization.DO(s_dalDependency, s_dalTask, s_dalEngineer);
+                Initialization.DO(s_dal);
                 Main_menu();
             }
             catch (Exception ex)

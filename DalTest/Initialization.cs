@@ -5,11 +5,7 @@ using System.Xml.Linq;
 
 public static class Initialization
 {
-    //Creating a link object between layers, for each entity
-    private static ITask? s_dalTask;
-    private static IDependency? s_dalDependency;
-    private static IEngineer? s_dalEngineer;
-
+    private static IDal? s_dal;
     private static readonly Random s_rand = new();
 
     //An operation that creates 5 engineers and initializes data in them using a random method
@@ -26,7 +22,7 @@ public static class Initialization
             int id;
             //Id initialization
             do id = s_rand.Next(MIN_ID, MAX_ID);
-            while (s_dalEngineer != null && s_dalEngineer.Read(id) != null);
+            while (s_dal!.Engineer != null && s_dal!.Engineer.Read(id) != null);
             //Email initialization
             string email = name.Substring(0, name.IndexOf(' ')) + s_rand.Next(111, 999) + "@gmail.com";
             //Level initialization
@@ -35,7 +31,7 @@ public static class Initialization
             double cost = 50 + (int)ex * 80;
             Engineer newEng = new(id, name, email, ex, cost);
             //Adding to data list
-            s_dalEngineer?.Create(newEng);
+            s_dal!.Engineer?.Create(newEng);
         }
 
     }
@@ -45,7 +41,7 @@ public static class Initialization
         Engineer en;
         List<Engineer> allEngineers;
         //In case there isn't engineers, impossible create task
-        if (s_dalEngineer == null)
+        if (s_dal!.Engineer == null)
             throw new Exception("There isn't any engineer in your data");
         //Loop that initialize the task's detail
         for (int i = 1; i <= 20; i++)
@@ -66,7 +62,7 @@ public static class Initialization
             DateTime? completedDate = (i % 2 == 0) ? null : deadLine;
             string deliveryable = description + description;
             string remark = description.Substring(1, 2);
-            allEngineers = s_dalEngineer.ReadAll();
+            allEngineers = s_dal!.Engineer.ReadAll();
             //Choosing an engineer to handle the task
             do
             {
@@ -74,7 +70,7 @@ public static class Initialization
             } while (en.Level < complexity);
             //Creating a task and adding it to the task collection
             Task newTask = new(0, alias, description, DateTime.Now, requiredEffortTime, isMilestone, complexity, scheduleDate, scheduleDate, deadLine, completedDate, deliveryable, remark, en.Id);
-            s_dalTask?.Create(newTask);
+            s_dal!.Task?.Create(newTask);
         }
 
     }
@@ -82,28 +78,26 @@ public static class Initialization
     private static void CreateDependencies()
     {
         //In case there isn't tasks, immposible creat a dependency
-        if (s_dalTask == null)
+        if (s_dal!.Task == null)
             throw new Exception("There isn't any task in your data");
         //Creat 36 dependencies. Each of the last two tasks creates a dependency on all the tasks that are defined before it
         for (int i = 0; i < 2; i++)
         {
             for (int j = 0; j < 18; j++)
             {
-                s_dalDependency?.Create(new(0, s_dalTask!.Read(s_dalTask.ReadAll().Count - i)!.Id, s_dalTask!.ReadAll()[j].Id));
+                s_dal!.Dependency?.Create(new(0, s_dal!.Task!.Read(s_dal!.Task.ReadAll().Count - i)!.Id, s_dal!.Task!.ReadAll()[j].Id));
             }
         }
         //4 last dependencies not created in the previous loop
         for (int i = 0; i < 4; i++)
         {
-            s_dalDependency?.Create(new(0, s_dalTask!.Read(s_dalTask.ReadAll().Count - 2)!.Id, s_dalTask!.ReadAll()[i].Id));
+            s_dal!.Dependency?.Create(new(0, s_dal!.Task!.Read(s_dal!.Task.ReadAll().Count - 2)!.Id, s_dal!.Task!.ReadAll()[i].Id));
         }
     }
     //A function that triggers all creation and initialization of the entities
-    public static void DO(IDependency? dalDependency, ITask? dalTask, IEngineer? dalEngineer)
+    public static void DO(IDal dal)
     {
-        s_dalDependency = dalDependency ?? throw new NullReferenceException("DAL can not be null!");
-        s_dalEngineer = dalEngineer ?? throw new NullReferenceException("DAL can not be null!");
-        s_dalTask = dalTask ?? throw new NullReferenceException("DAL can not be null!");
+        s_dal = dal ?? throw new NullReferenceException("DAL can not be null!");
         CreateEngineers();
         CreateTasks();
         CreateDependencies();
