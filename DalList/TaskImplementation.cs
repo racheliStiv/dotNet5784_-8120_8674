@@ -11,7 +11,7 @@ internal class TaskImplementation : ITask
         //get the next running key
         int newId = DataSource.Config.NextTaskId;
 
-        //create a new task & add its to tasks list
+        //create a new task & add its to tasks collection
         Task t = new(newId, item.Alias, item.Description, item.CreatedAtDate, item.RequiredEffortTime, item.IsMilestone, item.Complexity, item.StartDate, item.ScheduledDate, item.DeadlineDate, item.CompleteDate, item.Deliverables, item.Remarks, item.EngineerId);
         DataSource.Tasks.Add(t);
         return newId;
@@ -19,25 +19,36 @@ internal class TaskImplementation : ITask
 
     public void Delete(int id)
     {
-        //check if the ID number received does exist & does not appear in another list, throw ex in case not
-        if (!DataSource.Tasks.Exists(x => x.Id == id) || DataSource.Dependencies.Exists(x => x.DependensOnTask == id))
-            throw new Exception("This object cannot be deleted");
+        //check if the ID number received does exist & does not appear in another collection, throw ex in case not
+        DO.Task? task_to_del = Read(id);
+        if (task_to_del == null) throw new DalDoesNotExistException($"Task with ID={id} not exists");
+        Dependency? dep = DataSource.Dependencies.FirstOrDefault(x => x.DependensOnTask == id);
+        if (dep != null) throw new DalDeletionImpossibleException("This object cannot be deleted");
 
-        //remove the task from tasks list
-        DataSource.Tasks.Remove(DataSource.Tasks.Find(x => x.Id == id)!);
+        //remove the task from tasks collection
+        DataSource.Tasks.Remove(task_to_del);
     }
 
     public Task? Read(int id)
     {
         //return the task of received id, return null in case id doesnt exsist
-        Task? t = DataSource.Tasks.Find(x => x.Id == id);
-        return t;
+        return DataSource.Tasks.FirstOrDefault(x => x.Id == id);
     }
 
-    public List<Task> ReadAll()
+    public Task? Read(Func<Task, bool> filter) //stage 2
     {
-        //return all tasks list
-        return new List<Task>(DataSource.Tasks);
+        //return the first task that meet the condition
+        return DataSource.Tasks.FirstOrDefault(filter);
+    }
+
+    public IEnumerable<Task?> ReadAll(Func<Task, bool>? filter = null)
+    {
+        //return all tasks in case there is no filter
+        if (filter == null)
+            return DataSource.Tasks.Select(x => x);
+
+        //return the tasks that meet the condition 
+        return DataSource.Tasks.Where(filter);
     }
 
     public void Update(Task item)
@@ -45,10 +56,10 @@ internal class TaskImplementation : ITask
 
         //check if item exsist
         if (Read(item.Id) == null)
-            throw new Exception($"Task with ID={item.Id} not exists");
+            throw new DalDoesNotExistException($"Task with ID={item.Id} not exists");
 
         //delete the original task
-        DataSource.Tasks.Remove(DataSource.Tasks.Find(x => x.Id == item.Id)!);
+        DataSource.Tasks.Remove(DataSource.Tasks.FirstOrDefault(x => x.Id == item.Id)!);
 
         //create the updated task
         DataSource.Tasks.Add(item);
