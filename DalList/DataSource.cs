@@ -18,9 +18,15 @@ internal static class DataSource
         private static int nextDependencyId = startDependencyId;
         internal static int NextDependencyId { get => nextDependencyId++; }
 
+        //initialize the dates of begin & finish to be null
+        internal static DateTime? beginDate { get; } = null;
+        internal static DateTime? finishDate { get; } = null;
+
     }
     //entity lists definitions
     internal static List<Task> Tasks { get; } = new();
     internal static List<Engineer> Engineers { get; } = new();
     internal static List<Dependency> Dependencies { get; } = new();
+    
+
 }       
