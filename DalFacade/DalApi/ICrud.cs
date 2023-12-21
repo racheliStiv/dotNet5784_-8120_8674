@@ -21,5 +21,9 @@ namespace DalApi
         void Update(T item);
 
         void Delete(int id);
+
+        //reset for each entity collection
+        void Reset();
+
     }
 }

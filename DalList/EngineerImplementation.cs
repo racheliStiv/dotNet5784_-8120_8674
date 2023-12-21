@@ -61,4 +61,9 @@ internal class EngineerImplementation : IEngineer
         //create the updated engineer
         DataSource.Engineers.Add(item);
     }
+
+    public void Reset()
+    {
+        DataSource.Engineers.Clear();
+    }
 }

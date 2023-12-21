@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,9 +16,12 @@ namespace Dal
         public IEngineer Engineer => new EngineerImplementation();
 
         public IDependency Dependency => new DependencyImplementation();
-           
-        public DateTime? beginDate => null;
-        public DateTime? finishDate => null;
+
+        //return & update the project dates
+        public DateTime? beginDate { get; set; }
+        public DateTime? finishDate { get; set; }
+
+
         //clear all data
         public void Reset()
         {

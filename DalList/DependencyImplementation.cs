@@ -50,4 +50,10 @@ internal class DependencyImplementation : IDependency
         //create with original id
         DataSource.Dependencies.Add(item);
     }
+
+    public void Reset()
+    {
+        DataSource.Dependencies.Clear();
+    }
+
 }

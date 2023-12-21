@@ -94,6 +94,7 @@ public static class Initialization
         {
             s_dal!.Dependency?.Create(new(0, s_dal!.Task!.Read(s_dal!.Task.ReadAll().ToList().Count - 2)!.Id, s_dal!.Task!.ReadAll().ToList()[i]!.Id));
         }
+
     }
     //A function that triggers all creation and initialization of the entities
     public static void DO(IDal dal)
@@ -104,5 +105,6 @@ public static class Initialization
         CreateEngineers();
         CreateTasks();
         CreateDependencies();
+        Console.WriteLine(s_dal!.Task.ReadAll().Count());
     }
 }
