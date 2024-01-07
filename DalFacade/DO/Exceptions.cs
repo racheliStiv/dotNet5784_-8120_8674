@@ -30,3 +30,8 @@ public class DalCanNotBeNullException : Exception
 {
     public DalCanNotBeNullException(string? message) : base(message) { }
 }
+//exeption for workin with XML 
+public class DalXMLFileLoadCreateException : Exception
+{
+    public DalXMLFileLoadCreateException(string? message) : base(message) { }
+}
