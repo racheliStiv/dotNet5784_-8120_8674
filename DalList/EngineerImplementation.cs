@@ -20,8 +20,11 @@ internal class EngineerImplementation : IEngineer
     public void Delete(int id)
     {
         //check if the ID number received does exist & does not appear in another collection, throw ex in case not
-        if (DataSource.Engineers.FirstOrDefault(x => x.Id == id) == null || DataSource.Tasks.FirstOrDefault(x => x.EngineerId == id) != null)
-            throw new DalDeletionImpossibleException("This object cannot be deleted");
+        if (Read(id) == null)
+            throw new DalDoesNotExistException($"Engineer with ID={id} doesn't exists");
+
+        if (DataSource.Tasks.FirstOrDefault(x => x.EngineerId == id) != null)
+            throw new DalDeletionImpossibleException("This object cann't be deleted");
 
         //remove the engineer from engineers collection
         DataSource.Engineers.Remove(DataSource.Engineers.FirstOrDefault(x => x.Id == id)!);
@@ -52,7 +55,7 @@ internal class EngineerImplementation : IEngineer
     public void Update(Engineer item)
     {
         //check if item exsist
-        Engineer ?src_eng = Read(item.Id);
+        Engineer? src_eng = Read(item.Id);
         if (src_eng == null)
             throw new DalDoesNotExistException($"Engineer with ID={item.Id} not exists");
         //delete the original engineer
