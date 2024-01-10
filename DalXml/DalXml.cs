@@ -1,9 +1,9 @@
 ﻿using DalApi;
-
+using System.Xml.Linq;
 
 namespace Dal
 {
-    sealed public class DalList : IDal
+    sealed public class DalXml : IDal
     {
         public ITask Task => new TaskImplementation();
 
@@ -19,9 +19,9 @@ namespace Dal
         //clear all data
         public void Reset()
         {
-            DataSource.Dependencies.Clear();
-            DataSource.Tasks.Clear();
-            DataSource.Engineers.Clear();
+            Dependency.Reset();
+            Task.Reset();
+            Engineer.Reset();
         }
     }
 }

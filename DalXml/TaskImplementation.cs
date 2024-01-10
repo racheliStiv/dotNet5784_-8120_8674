@@ -12,7 +12,7 @@ internal class TaskImplementation : ITask
         //extract the data from xml to list
         List<Task> tasksFromXml = XMLTools.LoadListFromXMLSerializer<Task>("Task");
 
-        //get the next key from config page
+        //get the next key from config file
         int newId = XMLTools.GetAndIncreaseNextId("Config", "task");
 
         //create new task
@@ -36,7 +36,7 @@ internal class TaskImplementation : ITask
         Dependency? dep = dependencyFromXml.Find(x => x.DependensOnTask == id);
         if (dep != null) throw new DalDeletionImpossibleException("This object cannot be deleted");
 
-        //remove the task from tasks collection & save changes in xml page
+        //remove the task from tasks collection & save changes in xml file
         tasksFromXml.Remove(task_to_del);
         XMLTools.SaveListToXMLSerializer<Task>(tasksFromXml, "Task");
     }
@@ -89,10 +89,18 @@ internal class TaskImplementation : ITask
         XMLTools.SaveListToXMLSerializer<Task>(tasksFromXml, "Task");
     }
 
+    // public void Reset()
+    // {
+    //clear the engineers list in xml file
+    //     XMLTools.SaveListToXMLSerializer<Task>(null!, "Task");
+    // }
     public void Reset()
     {
-        //clear the engineers list in xml page
-        XMLTools.SaveListToXMLSerializer<Task>(null!, "Task");
+        //extract the data from xml to list
+        List<Task> tasksFromXml = XMLTools.LoadListFromXMLSerializer<Task>("Task");
+        
+        //reset the list & save changes ix xml file
+        tasksFromXml.Clear();
+        XMLTools.SaveListToXMLSerializer<Task>(tasksFromXml, "Task");
     }
-
 }

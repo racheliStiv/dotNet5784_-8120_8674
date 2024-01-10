@@ -17,7 +17,7 @@ internal class EngineerImplementation : IEngineer
         if (engineersFromXml.FirstOrDefault(item => item.Id == newE.Id) != null)
             throw new DalAlreadyExistsException($"Engineer with ID={newE.Id} already exists");
 
-        //add the new engineer to engineers collection & update the xml page
+        //add the new engineer to engineers collection & update the xml file
         engineersFromXml.Add(newE);
         XMLTools.SaveListToXMLSerializer<Engineer>(engineersFromXml, "Engineer");
         return newE.Id;
@@ -36,7 +36,7 @@ internal class EngineerImplementation : IEngineer
         if (tasksFromXml.FirstOrDefault(x => x.EngineerId == id) != null)
             throw new DalDeletionImpossibleException("This object cann't be deleted");
 
-        //delete the engineer from engineers collection & update the xml page
+        //delete the engineer from engineers collection & update the xml file
         engineersFromXml.Remove(engineersFromXml.Find(x => x.Id == id)!);
         XMLTools.SaveListToXMLSerializer<Engineer>(engineersFromXml, "Engineer");
     }
@@ -82,16 +82,25 @@ internal class EngineerImplementation : IEngineer
         //delete the original engineer
         engineersFromXml.Remove(engineersFromXml.Find(x => x.Id == newE.Id)!);
 
-        //add the updated engineer to engineers list & update the xml page
+        //add the updated engineer to engineers list & update the xml file
         engineersFromXml.Add(newE);
         XMLTools.SaveListToXMLSerializer<Engineer>(engineersFromXml, "Engineer");
 
     }
 
+    // public void Reset()
+    // {
+    //clear the engineers list in xml file
+    //    XMLTools.SaveListToXMLSerializer<Engineer>(null!, "Engineer");
+    //  }
     public void Reset()
     {
-        //clear the engineers list in xml page
-        XMLTools.SaveListToXMLSerializer<Engineer>(null!, "Engineer");
+        //extract the data from xml to list
+        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("Engineer");
+
+        //reset the list & save changes ix xml file
+        engineersFromXml.Clear();
+        XMLTools.SaveListToXMLSerializer<Engineer>(engineersFromXml, "Engineer");
     }
 
 }
