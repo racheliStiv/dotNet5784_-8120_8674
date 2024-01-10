@@ -275,7 +275,7 @@ namespace DalTest
                     choose = Char.TryParse(Console.ReadLine(), out ch);
                     if (ch == 'y')
                     {
-                       // s_dal.Reset();
+                        s_dal.Reset();
                         Initialization.DO(s_dal);
                     }
                 }

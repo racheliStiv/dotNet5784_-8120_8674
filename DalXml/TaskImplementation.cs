@@ -13,7 +13,7 @@ internal class TaskImplementation : ITask
         List<Task> tasksFromXml = XMLTools.LoadListFromXMLSerializer<Task>("Task");
 
         //get the next key from config file
-        int newId = XMLTools.GetAndIncreaseNextId("Config", "task");
+        int newId = Config.NextTaskId;
 
         //create new task
         Task t = new(newId, item.Alias, item.Description, item.CreatedAtDate, item.RequiredEffortTime, item.IsMilestone, item.Complexity, item.StartDate, item.ScheduledDate, item.DeadlineDate, item.CompleteDate, item.Deliverables, item.Remarks, item.EngineerId);

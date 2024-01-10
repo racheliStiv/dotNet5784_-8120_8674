@@ -34,7 +34,7 @@ internal class DependencyImplementation : IDependency
         XElement? dependencyRootElem = XMLTools.LoadListFromXMLElement(s_dependency);
 
         //create XElement dependency 
-        int newId = XMLTools.GetAndIncreaseNextId("Config", "dependency");
+        int newId = Config.NextDependencyId;
         XElement dependencyElem = new XElement(s_dependency,
             new XElement("Id", newId),
             new XElement("DependentTask", item.DependentTask),
@@ -113,8 +113,9 @@ internal class DependencyImplementation : IDependency
         XElement? dependencyRootElem = XMLTools.LoadListFromXMLElement(s_dependency);
 
         //delete & update xml file
-        dependencyRootElem.Remove();
+        dependencyRootElem.RemoveAll();
         XMLTools.SaveListToXMLElement(dependencyRootElem, s_dependency);
+
     }
 
 
