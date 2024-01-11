@@ -265,6 +265,7 @@ namespace DalTest
         {
             try
             {
+                //reset suggest
                 Console.WriteLine("do you want to initialize the data? (y / n)");
                 char ch;
                 bool choose;
@@ -275,15 +276,15 @@ namespace DalTest
                     choose = Char.TryParse(Console.ReadLine(), out ch);
                     if (ch == 'y')
                     {
-                       // s_dal.Reset();
+                        s_dal.Reset();
                         Initialization.DO(s_dal);
                     }
                 }
+
                 Main_menu();
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine(ex);
             }
         }
