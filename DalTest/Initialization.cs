@@ -34,7 +34,6 @@ public static class Initialization
             //Adding to data list
             s_dal!.Engineer?.Create(newEng);
         }
-
     }
     //An operation that creates 20 tasks and initializes data in them using a random method
     private static void CreateTasks()

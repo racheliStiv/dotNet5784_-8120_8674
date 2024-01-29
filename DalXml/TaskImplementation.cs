@@ -91,11 +91,6 @@ internal class TaskImplementation : ITask
         XMLTools.SaveListToXMLSerializer<Task>(tasksFromXml, "tasks");
     }
 
-    // public void Reset()
-    // {
-    //clear the engineers list in xml file
-    //     XMLTools.SaveListToXMLSerializer<Task>(null!, "Task");
-    // }
     public void Reset()
     {
         //extract the data from xml to list
