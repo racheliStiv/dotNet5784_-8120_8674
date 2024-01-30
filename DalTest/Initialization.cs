@@ -80,12 +80,14 @@ public static class Initialization
         //In case there isn't tasks, immposible creat a dependency
         if (s_dal!.Task == null)
             throw new DalCanNotBeNullException("There isn't any task in your data");
-        //Creat 36 dependencies. Each of the last two tasks creates a dependency on all the tasks that are defined before it
+        //Create 36 dependencies. Each of the last two tasks creates a dependency on all the tasks that are defined before it
         for (int i = 0; i < 2; i++)
         {
             for (int j = 0; j < 18; j++)
             {
                 s_dal!.Dependency?.Create(new(0, s_dal!.Task!.Read(s_dal!.Task.ReadAll().ToList().Count - i)!.Id, s_dal!.Task!.ReadAll().ToList()[j]!.Id));
+
+              //  s_dal!.Dependency?.Create(new(0, s_dal!.Task!.Read(s_dal!.Task.ReadAll().ToList().Count - i)!.Id, s_dal!.Task!.ReadAll().ToList()[j]!.Id));
             }
         }
         //4 last dependencies not created in the previous loop
@@ -96,14 +98,13 @@ public static class Initialization
 
     }
     //A function that triggers all creation and initialization of the entities
-    public static void DO(IDal dal)
+    public static void DO()
     {
-        s_dal = dal ?? throw new DalCanNotBeNullException("DAL can not be null!");
+        s_dal = Factory.Get; //stage 4
 
         //call to initialization methods
         CreateEngineers();
         CreateTasks();
         CreateDependencies();
-        Console.WriteLine(s_dal!.Task.ReadAll().Count());
     }
 }

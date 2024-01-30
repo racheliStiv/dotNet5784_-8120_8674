@@ -11,7 +11,7 @@ internal class EngineerImplementation : IEngineer
     public int Create(Engineer newE)
     {
         //extract the data from xml to list
-        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("Engineer");
+        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("engineers");
 
         //check if the received ID doesn't exsist, throe ex in case not
         if (engineersFromXml.FirstOrDefault(item => item.Id == newE.Id) != null)
@@ -19,15 +19,15 @@ internal class EngineerImplementation : IEngineer
 
         //add the new engineer to engineers collection & update the xml file
         engineersFromXml.Add(newE);
-        XMLTools.SaveListToXMLSerializer<Engineer>(engineersFromXml, "Engineer");
+        XMLTools.SaveListToXMLSerializer<Engineer>(engineersFromXml, "engineers");
         return newE.Id;
     }
 
     public void Delete(int id)
     {
         //extract the data from xml to list
-        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("Engineer");
-        List<Task> tasksFromXml = XMLTools.LoadListFromXMLSerializer<Task>("Task");
+        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("engineers");
+        List<Task> tasksFromXml = XMLTools.LoadListFromXMLSerializer<Task>("tasks");
 
         //check if the ID number received does exist & does not appear in another collection, throw ex in case not
         if (Read(id) == null)
@@ -38,13 +38,14 @@ internal class EngineerImplementation : IEngineer
 
         //delete the engineer from engineers collection & update the xml file
         engineersFromXml.Remove(engineersFromXml.Find(x => x.Id == id)!);
-        XMLTools.SaveListToXMLSerializer<Engineer>(engineersFromXml, "Engineer");
+        XMLTools.SaveListToXMLSerializer<Engineer>(engineersFromXml, "engineers");
     }
 
     public Engineer? Read(int id)
     {
         //extract the data from xml to list
-        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("Engineer");
+        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("engineers");
+
         //return the engineer of received id, return null in case ID doesn't exsist
         return engineersFromXml.FirstOrDefault(x => x.Id == id);
     }
@@ -52,7 +53,7 @@ internal class EngineerImplementation : IEngineer
     public Engineer? Read(Func<Engineer, bool> filter)
     {
         //extract the data from xml to list
-        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("Engineer");
+        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("engineers");
         //return the first engineer that meet the condition
         return engineersFromXml.FirstOrDefault(filter);
     }
@@ -60,7 +61,7 @@ internal class EngineerImplementation : IEngineer
     public IEnumerable<Engineer?> ReadAll(Func<Engineer, bool>? filter = null)
     {
         //extract the data from xml to list
-        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("Engineer");
+        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("engineers");
 
         //return all engineers collection in case there is no filter
         if (filter == null)
@@ -73,7 +74,7 @@ internal class EngineerImplementation : IEngineer
     public void Update(Engineer newE)
     {
         //extract the data from xml to list
-        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("Engineer");
+        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("engineers");
 
         //check if item exsist
         if (Read(newE.Id) == null)
@@ -84,23 +85,18 @@ internal class EngineerImplementation : IEngineer
 
         //add the updated engineer to engineers list & update the xml file
         engineersFromXml.Add(newE);
-        XMLTools.SaveListToXMLSerializer<Engineer>(engineersFromXml, "Engineer");
+        XMLTools.SaveListToXMLSerializer<Engineer>(engineersFromXml, "engineers");
 
     }
 
-    // public void Reset()
-    // {
-    //clear the engineers list in xml file
-    //    XMLTools.SaveListToXMLSerializer<Engineer>(null!, "Engineer");
-    //  }
     public void Reset()
     {
         //extract the data from xml to list
-        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("Engineer");
+        List<Engineer> engineersFromXml = XMLTools.LoadListFromXMLSerializer<Engineer>("engineers");
 
         //reset the list & save changes ix xml file
         engineersFromXml.Clear();
-        XMLTools.SaveListToXMLSerializer<Engineer>(engineersFromXml, "Engineer");
+        XMLTools.SaveListToXMLSerializer<Engineer>(engineersFromXml, "engineers");
     }
 
 }

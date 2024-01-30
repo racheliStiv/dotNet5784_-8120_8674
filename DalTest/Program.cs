@@ -6,11 +6,13 @@ namespace DalTest
 {
     internal class Program
     {
-        //stage 2
-      //  static readonly IDal s_dal = new DalList();
+        // stage 2
+        // static readonly IDal s_dal = new DalList();
+        // stage 3
+        // static readonly IDal s_dal = new Dal.DalXml();
+        // stage 4
+        static readonly IDal s_dal = Factory.Get; //stage 4
 
-        //stage 3
-        static readonly IDal s_dal = new Dal.DalXml();
 
         //The main loop that invokes the selection of the desired entity
         public static void Main_menu()
@@ -265,6 +267,7 @@ namespace DalTest
         {
             try
             {
+                //reset suggest
                 Console.WriteLine("do you want to initialize the data? (y / n)");
                 char ch;
                 bool choose;
@@ -276,14 +279,13 @@ namespace DalTest
                     if (ch == 'y')
                     {
                         s_dal.Reset();
-                        Initialization.DO(s_dal);
+                        Initialization.DO(); //stage 4
                     }
                 }
                 Main_menu();
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine(ex);
             }
         }

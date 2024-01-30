@@ -396,3 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/DalTest/Initialization.cs
+/xml/Engineer.xml
+/xml/Task.xml
+/.gitignore
+/.gitignore

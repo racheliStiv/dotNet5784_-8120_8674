@@ -5,11 +5,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Intrinsics.Arm;
+using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 internal class DependencyImplementation : IDependency
 {
-    const string s_dependency = "Dependency";
+    const string s_dependency = "dependencies";
 
     //auxiliary method to extract dependency from XElement
     static Dependency? getDependencyFromXElement(XElement? d)
@@ -116,8 +118,18 @@ internal class DependencyImplementation : IDependency
         dependencyRootElem.RemoveAll();
         XMLTools.SaveListToXMLElement(dependencyRootElem, s_dependency);
 
-    }
+        string filePath = $"{@"..\xml\" + "data-config"}.xml";
+        XmlDocument xmlDoc = new XmlDocument();
+        xmlDoc.Load(filePath);
 
+        //reset the dapendancy running ID to 1
+        XmlNode? nextTaskIdNode = xmlDoc.SelectSingleNode("/config/NextDependencyId");
+        if (nextTaskIdNode != null)
+        {
+            nextTaskIdNode.InnerText = "1"; 
+        }
+        xmlDoc.Save(filePath);
+    }
 
     public void Update(Dependency item)
     {
