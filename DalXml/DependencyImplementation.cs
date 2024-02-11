@@ -1,5 +1,4 @@
-﻿namespace Dal;
-using DalApi;
+﻿using DalApi;
 using DO;
 using System;
 using System.Collections;
@@ -8,6 +7,7 @@ using System.Runtime.Intrinsics.Arm;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+namespace Dal;
 
 internal class DependencyImplementation : IDependency
 {

@@ -18,7 +18,7 @@ internal class TaskImplementation : ITask
         int newId = Config.NextTaskId;
 
         //create new task
-        Task t = new(newId, item.Alias, item.Description, item.CreatedAtDate, item.RequiredEffortTime, item.IsMilestone, item.Complexity, item.StartDate, item.ScheduledDate, item.DeadlineDate, item.CompleteDate, item.Deliverables, item.Remarks, item.EngineerId);
+        Task t = new(newId, item.Alias, item.Description, item.CreatedAtDate, item.StartDate, item.ScheduledDate, item.Duration, item.DeadlineDate, item.CompleteDate, item.Product, item.Remarks, item.EngineerId, item.Complexity);
 
         //saving the list with new task into xml
         tasksFromXml.Add(t);

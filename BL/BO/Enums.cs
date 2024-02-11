@@ -6,5 +6,5 @@ public enum EngineerExperience
 
 public enum Status
 {
-
+    UNSCHEDULED, SCHEDULED, STARTED, INJEOPARDY, DONE
 }

@@ -51,7 +51,6 @@ public static class Initialization
             description += (char)s_rand.Next(97, 122) + (char)s_rand.Next(97, 122) + (char)s_rand.Next(97, 122) + (char)s_rand.Next(97, 122);
             //Length of time to perform a task
             TimeSpan requiredEffortTime =new TimeSpan(s_rand.Next(364), s_rand.Next(23), s_rand.Next(59), s_rand.Next(59));
-            bool isMilestone = description.Contains('i') ? true : false;
             //What level of engineer is required
             DO.EngineerExperience complexity = (EngineerExperience)s_rand.Next(3);
             //Planned date for the start of work
@@ -60,7 +59,7 @@ public static class Initialization
             DateTime deadLine = (scheduleDate + requiredEffortTime).AddDays(i);
             //Final end date
             DateTime? completedDate = (i % 2 == 0) ? null : deadLine;
-            string deliveryable = description + description;
+            string product = description + description;
             string remark = description.Substring(1, 2);
             allEngineers = s_dal!.Engineer.ReadAll().ToList();
             //Choosing an engineer to handle the task
@@ -69,7 +68,7 @@ public static class Initialization
                 en = allEngineers[s_rand.Next(allEngineers.Count)];
             } while (en!.Level < complexity);
             //Creating a task and adding it to the task collection
-            Task newTask = new(0, alias, description, DateTime.Now, requiredEffortTime, isMilestone, complexity, scheduleDate, scheduleDate, deadLine, completedDate, deliveryable, remark, en.Id);
+            Task newTask = new(0, alias, description, DateTime.Now, scheduleDate, scheduleDate, requiredEffortTime, deadLine,  completedDate, product,  remark,  en.Id, complexity );
             s_dal!.Task?.Create(newTask);
         }
 

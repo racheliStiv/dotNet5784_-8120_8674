@@ -6,36 +6,36 @@
 /// <param name="Alias"></param>
 /// <param name="Description"></param>
 /// <param name="CreatedAtDate"></param>
-/// <param name="RequiredEffortTime"></param>
-/// <param name="IsMilestone"></param>
-/// <param name="Complexity"></param>
 /// <param name="StartDate"></param>
 /// <param name="ScheduledDate"></param>
+/// <param name="Duration"></param>
 /// <param name="DeadlineDate"></param>
 /// <param name="CompleteDate"></param>
-/// <param name="Deliverables"></param>
+/// <param name="Product"></param>
 /// <param name="Remarks"></param>
 /// <param name="EngineerId"></param>
+/// <param name="Complexity"></param>
+
+
 public record Task
 (
         int Id,
         string? Alias = null,
         string? Description = null,
         DateTime? CreatedAtDate = null,
-        TimeSpan? RequiredEffortTime = null,
-        bool IsMilestone = false,
-        DO.EngineerExperience? Complexity = null,
         DateTime? StartDate = null,
         DateTime? ScheduledDate = null,
+        TimeSpan? Duration = null,
         DateTime? DeadlineDate = null,
         DateTime? CompleteDate = null,
-        string? Deliverables = null,
+        string? Product = null,
         string? Remarks = null,
-        int? EngineerId = null  )
+        int? EngineerId = null,
+        DO.EngineerExperience? Complexity = null
+    )
 
 {
     public Task() : this(0) { }    //empty ctr
-
 }
 
 

@@ -74,21 +74,21 @@ namespace DalTest
             {
                 case "task":
                     {
-                        Console.WriteLine($"insert:\n alias \n description \n requierd effort time \n is milestone \n complexity(0-4) \n start date \n scheduled date \n deadline date \n complete date \n deliveryables \n remarks \n engineer id \n\n in a data date insert the date by the format:{format}");
+                        Console.WriteLine($"insert:\n alias \n description \n start date \n scheduled date \n duration \n deadline date \n  complete date \n  product \n remarks \n engineer id \n complexity(0-4)  \n\n in a data date insert the date by the format:{format}");
                         string? alias = Console.ReadLine();
                         string? description = Console.ReadLine();
-                        string? requierd_effort_time = Console.ReadLine();
-                        string[] d_h_m = requierd_effort_time!.Split('/');
-                        string? milestone = Console.ReadLine();
-                        int complexity = int.Parse(Console.ReadLine() ?? "");
                         string? start_date = Console.ReadLine();
                         string? scheduled_date = Console.ReadLine();
+                        string? duration = Console.ReadLine();
                         string? deadline_date = Console.ReadLine();
                         string? complete_date = Console.ReadLine();
-                        string? deliveryables = Console.ReadLine();
+                        string? product = Console.ReadLine();
                         string? remarks = Console.ReadLine();
                         int engineer_id = int.Parse(Console.ReadLine() ?? "");
-                        DO.Task t = new(0, alias, description, DateTime.Now, new TimeSpan(int.Parse(d_h_m[0]), int.Parse(d_h_m[1]), int.Parse(d_h_m[2]), 0), (milestone == "t"), (EngineerExperience)complexity, DateTime.ParseExact(start_date!, format, null), DateTime.ParseExact(scheduled_date!, format, null), DateTime.ParseExact(deadline_date!, format, null), DateTime.ParseExact(complete_date!, format, null), deliveryables, remarks, engineer_id);
+                        int complexity = int.Parse(Console.ReadLine() ?? "");
+                        string[] d_h_m = duration!.Split(':');
+                        TimeSpan newTS = new TimeSpan(int.Parse(d_h_m[0]), int.Parse(d_h_m[1]), int.Parse(d_h_m[2], 0));
+                        DO.Task t = new(0, alias, description, DateTime.Now, DateTime.ParseExact(start_date!, format, null), DateTime.ParseExact(scheduled_date!, format, null), newTS, DateTime.ParseExact(deadline_date!, format, null), DateTime.ParseExact(complete_date!, format, null), product, remarks, engineer_id, (EngineerExperience)complexity);
                         s_dal!.Task?.Create(t);
                     }
                     break;
@@ -199,35 +199,35 @@ namespace DalTest
                     {
                         Console.WriteLine("insert id of task to update");
                         id = int.Parse(Console.ReadLine() ?? "");
-                        Console.WriteLine($"insert:\n alias \n description \n requierd effort time \n is milestone \n complexity(0-4) \n start date \n scheduled date \n deadline date \n complete date \n deliveryables \n remarks \n engineer id \n\n in a data date insert the date by the format:{format}");
+                        Console.WriteLine($"insert:\n alias \n description \n start date \n scheduled date \n duration \n deadline date \n  complete date \n  product \n remarks \n engineer id \n complexity(0-4)  \n\n in a data date insert the date by the format:{format}");
                         string? alias = Console.ReadLine();
                         string? description = Console.ReadLine();
-                        string? requierd_effort_time = Console.ReadLine();
-                        string[] d_h_m = requierd_effort_time!.Split('/');
-                        string? milestone = Console.ReadLine();
-                        int? complexity = int.TryParse(Console.ReadLine(), out var res1) ? res1 : null;
                         string? start_date = Console.ReadLine();
                         string? scheduled_date = Console.ReadLine();
+                        string? duration = Console.ReadLine();
+                        string[] d_h_m = duration!.Split(':');
                         string? deadline_date = Console.ReadLine();
                         string? complete_date = Console.ReadLine();
-                        string? deliveryables = Console.ReadLine();
+                        string? product = Console.ReadLine();
                         string? remarks = Console.ReadLine();
                         int? engineer_id = int.TryParse(Console.ReadLine(), out var result) ? result : null;
+                        int? complexity = int.TryParse(Console.ReadLine(), out var res1) ? res1 : null;
                         TimeSpan? newTS;
-                        if (requierd_effort_time == "//" || requierd_effort_time == "")
-                            newTS = s_dal!.Task!.Read(id)!.RequiredEffortTime;
+                        if (duration == "//" || duration == "")
+                            newTS = s_dal!.Task!.Read(id)!.Duration;
                         else newTS = new TimeSpan(int.Parse(d_h_m[0]), int.Parse(d_h_m[1]), int.Parse(d_h_m[2], 0));
                         DO.Task original_t = s_dal!.Task!.Read(id)!;
                         DO.Task t = new(id, (alias == "") ? original_t.Alias : alias, (description == "") ? original_t.Description : description,
-                            original_t.CreatedAtDate, newTS, (milestone != "") ? (milestone == "t") : original_t.IsMilestone,
-                            complexity != null ? (EngineerExperience)complexity! : original_t.Complexity,
-                            (start_date == "//" || start_date == "") ? original_t.StartDate : DateTime.ParseExact(start_date!, format, null),
+                            original_t.CreatedAtDate,                           
+                            (start_date == "//" || start_date == "") ? original_t.StartDate : DateTime.ParseExact(start_date!, format, null), 
                             (scheduled_date == "//" || scheduled_date == "") ? original_t.ScheduledDate : DateTime.ParseExact(scheduled_date!, format, null),
+                            newTS,
                             (deadline_date == "//" || deadline_date == "") ? original_t.DeadlineDate : DateTime.ParseExact(deadline_date!, format, null),
                             (complete_date == "//" || complete_date == "") ? original_t.CompleteDate : DateTime.ParseExact(complete_date!, format, null),
-                            (deliveryables == "") ? original_t.Deliverables : deliveryables,
+                            (product == "") ? original_t.Product : product,
                             (remarks == "") ? original_t.Remarks : remarks,
-                            engineer_id ?? original_t.EngineerId);
+                            engineer_id ?? original_t.EngineerId,
+                            complexity != null ? (EngineerExperience)complexity! : original_t.Complexity);
                         s_dal!.Task?.Update(t);
                     }
                     break;

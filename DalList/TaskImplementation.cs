@@ -12,7 +12,7 @@ internal class TaskImplementation : ITask
         int newId = DataSource.Config.NextTaskId;
 
         //create a new task & add its to tasks collection
-        Task t = new(newId, item.Alias, item.Description, item.CreatedAtDate, item.RequiredEffortTime, item.IsMilestone, item.Complexity, item.StartDate, item.ScheduledDate, item.DeadlineDate, item.CompleteDate, item.Deliverables, item.Remarks, item.EngineerId);
+        Task t = new(newId, item.Alias, item.Description, item.CreatedAtDate, item.StartDate, item.ScheduledDate, item.Duration, item.DeadlineDate, item.CompleteDate, item.Product, item.Remarks, item.EngineerId, item.Complexity);
         DataSource.Tasks.Add(t);
         return newId;
     }
