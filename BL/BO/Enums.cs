@@ -6,5 +6,10 @@ public enum EngineerExperience
 
 public enum Status
 {
-    UNSCHEDULED, SCHEDULED, STARTED, INJEOPARDY, DONE
+    UNSCHEDULED, SCHEDULED, STARTED, DONE
+}
+
+public enum ProjectStatus
+{
+    A,B,C
 }

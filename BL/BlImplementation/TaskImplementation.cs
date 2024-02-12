@@ -1,4 +1,5 @@
 ﻿using DO;
+using System.Text.RegularExpressions;
 
 namespace BlImplementation;
 internal class TaskImplementation : BlApi.ITask
@@ -8,9 +9,7 @@ internal class TaskImplementation : BlApi.ITask
     //get BO task and create new DO task
     public int Create(Task boTask)
     {
-        DO.Task doTask = BO_to_DO(boTask);
-        int idTask = _dal.Task.Create(doTask);
-        return idTask;
+        return _dal.Task.Create(BO_to_DO(boTask));
     }
 
     //get task id & delete its from DO lay
@@ -72,12 +71,23 @@ internal class TaskImplementation : BlApi.ITask
     //change from DO task to BO task
     private Task DO_to_BO(DO.Task doTask)
     {
-
-        IEnumerable<DO.Dependency> allDependencies = _dal!.Dependency.ReadAll();
-        allDependencies = allDependencies.Where(t => t.DependensOnTask == doTask.Id);
+        IEnumerable<DO.Dependency?> allDependencies = _dal!.Dependency.ReadAll(t => t!.DependensOnTask == doTask.Id);
         //BO.Status status= UNSCHEDULED;
         Task boTask = new(doTask.Id, doTask.Description, doTask.Alias, status, doTask.CreatedAtDate, allDependencies, doTask.ScheduledDate, doTask.StartDate, doTask.DeadlineDate, doTask.CompleteDate, doTask.Product, doTask.Duration, doTask.Remarks, doTask.EngineerId, doTask.Complexity);
         return boTask;
+    }
+    
+    //function to check engineer validation
+    private static void ValidBOEngineer(Engineer? e)
+    {
+        if (e == null)
+            throw new BO.BOCanNotBeNullException("missing engineer");
+        if (e?.Id == null || e.Name == null || e.Email == null || e?.Level == null || e?.Cost == null)
+            throw new BO.BOCanNotBeNullException("missing details for engineer");
+        if (
+        e.Name == "" ||
+        e.Cost < 0)
+            throw new BO.BOInvalidDetailsException("invalid details for engineer");
     }
 }
 

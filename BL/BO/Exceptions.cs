@@ -16,6 +16,13 @@ public class BOAlreadyExistsException : Exception
 }
 
 [Serializable]
+//exeption to invalid details
+public class BOInvalidDetailsException : Exception
+{
+    public BOInvalidDetailsException(string? message) : base(message) { }
+}
+
+[Serializable]
 
 //exeption to deleting of shared obj
 public class BODeletionImpossibleException : Exception
