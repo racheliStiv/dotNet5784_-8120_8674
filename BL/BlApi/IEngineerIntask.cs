@@ -1,5 +1,5 @@
 ﻿namespace BlApi;
 
-public interface IEngineerIntask
+public interface IEngineerInTask 
 {
 }
