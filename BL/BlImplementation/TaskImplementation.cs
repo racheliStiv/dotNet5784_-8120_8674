@@ -9,7 +9,15 @@ internal class TaskImplementation : ITask
     //get BO task and create new DO task
     public int Create(Task boTask)
     {
-        return _dal.Task.Create(BO_to_DO(boTask));
+        try
+        {
+            return _dal.Task.Create(BO_to_DO(boTask));
+        }
+        catch (DO.DalDoesNotExistException ex)
+        {
+            throw new BO.BODoesNotExistException(ex.Message);
+        }
+        //קטצ?
     }
 
     //get task id & delete its from DO lay
@@ -23,6 +31,10 @@ internal class TaskImplementation : ITask
         {
             throw new BO.BODoesNotExistException(ex.Message);
         }
+        catch (DO.DalDeletionImpossibleException ex)
+        {
+            throw new BO.BODeletionImpossibleException(ex.Message);
+        }
     }
 
     //get all tasks from DO lay
@@ -30,10 +42,8 @@ internal class TaskImplementation : ITask
     {
         //get all Tasks from DO
         IEnumerable<DO.Task?> do_tasks = _dal.Task.ReadAll();
-
         //change each Task to BO
         IEnumerable<Task?> bo_tasks = do_tasks.Where(t => t != null).Select(t => DO_to_BO(t!));
-
         //checks which tasks meet the filter
         if (filter != null)
         {
@@ -56,7 +66,7 @@ internal class TaskImplementation : ITask
     }
 
     //get BO task and update the DO task
-    public void Update(Task boTask)
+    private void Update(Task boTask)
     {
         try
         {
@@ -71,17 +81,24 @@ internal class TaskImplementation : ITask
     //change from BO task to DO task
     private DO.Task BO_to_DO(Task boTask)
     {
-        DO.Task doTask = new DO.Task(boTask.Id, boTask.Alias, boTask.Description, boTask.CreatedAtDate, boTask.StartDate, boTask.PlannedStartDate, boTask.Duration, boTask.PlannedFinishDate, boTask.ComletedDate, boTask.Product, boTask.Remarks, boTask.Engineer?.Id, (DO.EngineerExperience)boTask.ComplexityLevel);
-        return doTask;
+        try
+        {
+            Valid(boTask.Alias, b);
+            DO.Task doTask = new DO.Task(boTask.Id, boTask.Alias, boTask.Description, boTask.CreatedAtDate, boTask.StartDate, boTask.PlannedStartDate, boTask.Duration, boTask.PlannedFinishDate, boTask.CompletedDate, boTask.Product, boTask.Remarks, boTask.Engineer?.Id, (DO.EngineerExperience?)boTask.ComplexityLevel);
+            return doTask;
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
     }
 
     //change from DO task to BO task
     private Task? DO_to_BO(DO.Task? doTask)
     {
         if (doTask == null) return null;
-
         IEnumerable<DO.Dependency> dependencies = _dal!.Dependency.ReadAll(t => t!.DependentTask == doTask.Id)!;
-
         List<TaskInList> allDependencies = dependencies
      .Where(t => t.DependensOnTask.HasValue)
      .Select(t => _dal!.Task.Read(t.DependensOnTask!.Value))
@@ -90,28 +107,32 @@ internal class TaskImplementation : ITask
          Id = task!.Id,
          Description = task.Description,
          Alias = task.Alias,
-         Status = CalcStatus(task.Id) // אם המשתנה קיים מחוץ לפונקציה ומופעל
-                                      // Status = task.Status // אם הסטטוס קשור למשימה עצמה
+         Status = CalcStatus(task.Id)
+
      })
      .ToList();
+        EngineerInTask? eit = null;
+        if (doTask.EngineerId != null)
+        {
+            eit = new EngineerInTask();
+            eit.Id = doTask.Id;
+            eit.Name = _dal.Engineer.Read(doTask.EngineerId.Value).Name;
+        }
+        Task boTask = new() { Id = doTask.Id, Description = doTask.Description, Alias = doTask.Alias, Status = CalcStatus(doTask.Id), CreatedAtDate = doTask.CreatedAtDate, AllDependencies = allDependencies, PlannedStartDate = doTask.ScheduledDate, StartDate = doTask.StartDate, PlannedFinishDate = doTask.DeadlineDate, CompletedDate = doTask.CompleteDate, Product = doTask.Product, Duration = doTask.Duration, Remarks = doTask.Remarks, Engineer = eit, ComplexityLevel = (EngineerExperience?)doTask.Complexity };
 
-        Task boTask = new() { Id = doTask.Id, Description = doTask.Description, Alias = doTask.Alias, Status = CalcStatus(doTask.Id), CreatedAtDate = doTask.CreatedAtDate, AllDependencies = allDependencies, PlannedStartDate = doTask.ScheduledDate, StartDate = doTask.StartDate, PlannedFinishDate = doTask.DeadlineDate, ComletedDate = doTask.CompleteDate, Product = doTask.Product, Duration = doTask.Duration, Remarks = doTask.Remarks, 
-            Engineer = _dal.Engineer.Read(doTask.EngineerId), ComplexityLevel = (BO.EngineerExperience?)doTask.Complexity };
-    
         return boTask;
     }
 
     //function to check engineer validation
-    private static void Valid(Engineer? e)
+    private void Valid(Task? t)
     {
-        if (e == null)
-            throw new BO.BOCanNotBeNullException("missing engineer");
-        if (e?.Id == null || e.Name == null || e.Email == null || e?.Level == null || e?.Cost == null)
-            throw new BO.BOCanNotBeNullException("missing details for engineer");
+        if (t == null)
+            throw new BO.BOCanNotBeNullException("missing task");
+        if (t.Alias == null || t.PlannedStartDate == null || t.Duration == null)
+            throw new BO.BOCanNotBeNullException("missing details for task");
         if (
-        e.Name == "" ||
-        e.Cost < 0)
-            throw new BO.BOInvalidDetailsException("invalid details for engineer");
+        t.Duration.Value <= TimeSpan.Zero)
+            throw new BO.BOInvalidDetailsException("invalid details for task");
     }
 
     //return the status of task
@@ -128,25 +149,18 @@ internal class TaskImplementation : ITask
                 return Status.SCHEDULED;
         return Status.UNSCHEDULED;
     }
-    public void updateStartDate(int id, DateTime? startDate)
+    public void updateStartDate(int id)
     {
         Task t = GetTaskDetails(id);
-        if (t.AllDependencies.Count == 0)
+        if (t.AllDependencies != null && t.AllDependencies.Count > 0)
+        {
+            
+        }
+        else
+        {
+            t.StartDate = DateTime.Now;
+            Update(t);
+        }
     }
-
-    //private void regularUpdate(string? desc, string? alias, string? product, string? remarks, EngineerExperience? exp)
-    //{
-    //    try
-    //    {
-    //        if ((int?)exp > 4 || exp < 0)
-    //            throw new BO.BOInvalidDetailsException("experience out of range");   
-    //        Task newT = new(this.)
-    //    }
-    //    catch (Exception)
-    //    {
-
-    //        throw;
-    //    }
-    //}
 }
 

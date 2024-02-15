@@ -11,22 +11,13 @@ internal class EngineerImplementation : IEngineer
     {
         try
         {
-            ValidBOEngineer(boEngineer);
-        }
-        catch (BO.BOCanNotBeNullException ex)
-        {
-            throw new BO.BOCanNotBeNullException(ex.Message);
-        }
-
-        try
-        {
-            return _dal.Engineer.Create(BO_to_DO(boEngineer!));
+            return _dal.Engineer.Create(BO_to_DO(boEngineer));
         }
         catch (DO.DalAlreadyExistsException ex)
         {
             throw new BO.BOAlreadyExistsException(ex.Message);
         }
-
+       //לברר האם צריך להוסיף עוד קטצ
     }
 
     //get engineer id & delete its from DO lay
@@ -81,32 +72,40 @@ internal class EngineerImplementation : IEngineer
     {
         try
         {
-            ValidBOEngineer(bo_engineer);
             _dal.Engineer.Update(BO_to_DO(bo_engineer!));
         }
         catch (BO.BODoesNotExistException ex)
         {
             throw new BO.BODoesNotExistException(ex.Message);
         }
+        //קטצ?
     }
 
     //change from BO engineer to DO engineer
-    private DO.Engineer BO_to_DO(Engineer boEngineer)
+    private DO.Engineer BO_to_DO(Engineer? boEngineer)
     {
-        DO.Engineer doEngineer = new DO.Engineer(boEngineer.Id, boEngineer.Name, boEngineer.Email, (DO.EngineerExperience?)boEngineer.Level, boEngineer.Cost);
-        return doEngineer;
+        try
+        {
+            ValidBOEngineer(boEngineer);
+            DO.Engineer doEngineer = new DO.Engineer(boEngineer!.Id, boEngineer.Name, boEngineer.Email, (DO.EngineerExperience?)boEngineer.Level, boEngineer.Cost);
+            return doEngineer;
+        }
+        catch (BO.BOInvalidDetailsException ex)
+        {
+            throw new BO.BOInvalidDetailsException(ex.Message);
+        }
     }
 
     //change from DO engineer to BO engineer
-    private Engineer? DO_to_BO(DO.Engineer? doEngineer)
+    internal Engineer? DO_to_BO(DO.Engineer? doEngineer)
     {
-        if(doEngineer == null)  return null;                
-        TaskInEngineer task;
+        if (doEngineer == null) return null;
+        TaskInEngineer? task;
         DO.Task? t = _dal.Task.Read(e => doEngineer.Id == e.Id);
         if (t != null)
             task = new TaskInEngineer() { Id = t!.Id, Alias = t?.Alias };
         else
-            task = new TaskInEngineer();
+            task = null;
         Engineer boEngineer = new Engineer() { Id = doEngineer.Id, Name = doEngineer.Name, Email = doEngineer.Email, Level = (BO.EngineerExperience?)doEngineer.Level, Cost = doEngineer.Cost, Task = task };
         return boEngineer;
     }
@@ -160,7 +159,7 @@ internal class EngineerImplementation : IEngineer
     {
         if (e == null)
             throw new BO.BOCanNotBeNullException("missing engineer");
-        if (e?.Id == null || e.Name == null || e.Email == null || e?.Level == null || e?.Cost == null)
+        if (e.Name == null || e.Email == null || e?.Level == null || e?.Cost == null)
             throw new BO.BOCanNotBeNullException("missing details for engineer");
         if (
         !ValidId(e.Id) ||
