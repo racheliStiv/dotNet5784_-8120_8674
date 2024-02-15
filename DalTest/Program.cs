@@ -245,6 +245,9 @@ namespace DalTest
                     break;
                 case "engineer":
                     {
+                        
+                        
+
                         Console.WriteLine("insert id of engineer to update");
                         id = int.Parse(Console.ReadLine() ?? "");
                         Engineer original_e = s_dal!.Engineer!.Read(id)!;

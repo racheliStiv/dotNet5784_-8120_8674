@@ -38,7 +38,7 @@ internal class TaskImplementation : ITask
     }
 
     //get all tasks from DO lay
-    public IEnumerable<Task?> GetAllTasks(Func<Task, bool>? filter)
+    public IEnumerable<Task?> GetAllTasks(Func<Task, bool>? filter = null)
     {
         //get all Tasks from DO
         IEnumerable<DO.Task?> do_tasks = _dal.Task.ReadAll();
@@ -154,7 +154,7 @@ internal class TaskImplementation : ITask
         Task t = GetTaskDetails(id);
         if (t.AllDependencies != null && t.AllDependencies.Count > 0)
         {
-            
+
         }
         else
         {
