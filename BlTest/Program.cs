@@ -1,26 +1,39 @@
-﻿using DalApi;
-using DO;
+﻿using BlApi;
+using BO;
 
 namespace BlTest
 {
+
     internal class Program
     {
+
         static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
         public static void Main_menu()
         {
             //main menu input
             Console.WriteLine("choose an entity u wana check \n 1 to Task\n 2 to Engineer \n 0 to exit \n");
-            int choose = int.Parse(Console.ReadLine() ?? "");
-            switch (choose)
+            bool flag = true;
+            while (flag)
             {
-                case 0: return;
-                case 1:
-                    Sub_menu("task");
-                    break;
-                case 2:
-                    Sub_menu("engineer");
-                    break;
+                flag = false;
+                int choose = int.Parse(Console.ReadLine() ?? "");
+                switch (choose)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        Sub_menu("task");
+                        break;
+                    case 2:
+                        Sub_menu("engineer");
+                        break;
+                    default:
+                        Console.WriteLine("wrong input");
+                        flag = true;
+                        break;
+                }
             }
+
         }
         public static void Sub_menu(string entity)
         {
@@ -55,43 +68,197 @@ namespace BlTest
             {
                 case "task":
                     {
-                        Console.WriteLine($"insert:\n alias \n description \n start date \n scheduled date \n duration \n deadline date \n  complete date \n  product \n remarks \n engineer id \n complexity(0-4)  \n\n in a data date insert the date by the format:{format}");
+                        Console.WriteLine($"insert:\n alias \n description \n planned start date \n duration \n  product \n remarks \n complexity(0-4)  \n\n in a date data insert the date by the format:{format}");
                         string? alias = Console.ReadLine();
                         string? description = Console.ReadLine();
-                        BO.Status status;
-                        List<TaskInList> allDep;
-                        DateTime createdAtDate = DateTime.Now;
-                        string? PlannedStartDate = Console.ReadLine();
-                        string? StartDate = Console.ReadLine();
-                        string? PlannedFinishDate = Console.ReadLine();
-                        string? CompletedDate = Console.ReadLine();
-                        string? Product = Console.ReadLine();
+                        string? plannedStartDate = Console.ReadLine();
                         string? duration = Console.ReadLine();
-                        string? Remarks = Console.ReadLine();
-                        Engineer eng;
-                        int ComplexityLevel = int.Parse(Console.ReadLine() ?? "");
+                        string? product = Console.ReadLine();
+                        string? remarks = Console.ReadLine();
+                        int complexityLevel = int.Parse(Console.ReadLine() ?? "");
                         string[] d_h_m = duration!.Split(':');
                         TimeSpan newTS = new TimeSpan(int.Parse(d_h_m[0]), int.Parse(d_h_m[1]), int.Parse(d_h_m[2], 0));
-                        DO.Task t = new(0, alias, description, DateTime.Now, DateTime.ParseExact(start_date!, format, null), DateTime.ParseExact(scheduled_date!, format, null), newTS, DateTime.ParseExact(deadline_date!, format, null), DateTime.ParseExact(complete_date!, format, null), product, remarks, engineer_id, (EngineerExperience)complexity);
-                        s_bl!.Task?.Create(t);
+                        DateTime? readyPlannedStartDate = null;
+                        if (plannedStartDate != null && plannedStartDate != "")
+                        {
+                            readyPlannedStartDate = DateTime.ParseExact(plannedStartDate!, format, null);
+                        }
+
+                        Task t = new()
+                        {
+                            Id = 0,
+                            Description = description,
+                            Alias = alias,
+                            Status = BO.Status.UNSCHEDULED,
+                            CreatedAtDate = DateTime.Now,
+                            AllDependencies = null,
+                            PlannedStartDate = readyPlannedStartDate,
+                            StartDate = null,
+                            PlannedFinishDate = null,
+                            Remarks = remarks,
+                            Product = product,
+                            Duration = newTS,
+                            Engineer = null,
+                            ComplexityLevel = (BO.EngineerExperience)complexityLevel
+                        };
+                        s_bl.Task.Create(t);
                     }
                     break;
                 case "engineer":
                     {
-                        Console.WriteLine("insert: \n id \n name \n email \n level(0-4)\ncost");
-                        int id = int.Parse(Console.ReadLine() ?? "");
+                        Console.WriteLine("insert: \n id \n name \n email \n level(0-4)\n cost \n\n");
+                        int? id = int.TryParse(Console.ReadLine(), out int res1) ? res1 : null;
+                        while (id == null)
+                        {
+                            Console.WriteLine("must have ID for engineer");
+                            id = int.TryParse(Console.ReadLine(), out int res2) ? res2 : null;
+                        }
                         string? name = Console.ReadLine();
                         string? email = Console.ReadLine();
-                        int level = int.Parse(Console.ReadLine() ?? "");
+                        int? level = int.TryParse(Console.ReadLine(), out int res3) ? res3 : null;
+                        EngineerExperience? engExp = (BO.EngineerExperience?)level ?? null;
                         double cost = double.Parse(Console.ReadLine() ?? "");
-                        Engineer newEng = new(id, name, email, (EngineerExperience)level, cost);
-                        s_dal!.Engineer?.Create(newEng);
-
+                        Engineer newEng = new()
+                        {
+                            Id = id.Value,
+                            Name = name,
+                            Email = email,
+                            Level = engExp,
+                            Cost = cost
+                        };
+                        try { s_bl.Engineer.Create(newEng); }
+                        catch (BO.BOAlreadyExistsException ex)
+                        { throw new BO.BOAlreadyExistsException(ex.Message); }
                     }
                     break;
             }
             Sub_menu(entity);
         }
+        public static void Delete(string entity)
+        {
+            int? id;
+            Console.WriteLine($"insert id of {entity} to delete");
+            id = int.Parse(Console.ReadLine() ?? "");
+            while (id == null)
+            {
+                Console.WriteLine("must receive ID");
+                id = int.Parse(Console.ReadLine() ?? "");
+            }
+            switch (entity)
+            {
+                case "task":
+                    {
+                        try
+                        {
+                            s_bl.Task.Delete(id.Value);
+                        }
+                        catch (BO.BODeletionImpossibleException ex)
+                        {
+                            throw new BO.BODeletionImpossibleException(ex.Message);
+                        }
+                        catch (BO.BODoesNotExistException ex)
+                        {
+                            throw new BO.BODoesNotExistException(ex.Message);
+                        }
+                    }
+                    break;
+                case "engineer":
+                    {
+                        try
+                        {
+                            s_bl.Engineer.Delete(id.Value);
+                        }
+                        catch (BO.BODeletionImpossibleException ex)
+                        {
+                            throw new BO.BODeletionImpossibleException(ex.Message);
+                        }
+                        catch (BO.BODoesNotExistException ex)
+                        {
+                            throw new BO.BODoesNotExistException(ex.Message);
+                        }
+                    }
+                    break;
+            }
+        }
+        public static void Update(string entity)
+        {
+            int? id;
+            Console.WriteLine($"insert id of {entity} to update");
+            id = int.Parse(Console.ReadLine() ?? "");
+            while (id == null)
+            {
+                Console.WriteLine("must receive ID");
+                id = int.Parse(Console.ReadLine() ?? "");
+            }
+            string format = "dd/hh/mm";
+            switch (entity)
+            {
+                case "task":
+                    {
+                        //if(ProjectStatus.status==A)
+                        //{ }
+                        Console.WriteLine($"insert:\n alias \n description \n planned start date \n duration \n  product \n remarks \n complexity(0-4)  \n\n in a date data insert the date by the format:{format}");
+                        string? alias = Console.ReadLine();
+                        string? description = Console.ReadLine();
+                        string? plannedStartDate = Console.ReadLine();
+                        string? duration = Console.ReadLine();
+                        string? product = Console.ReadLine();
+                        string? remarks = Console.ReadLine();
+                        int complexityLevel = int.Parse(Console.ReadLine() ?? "");
+                        string[] d_h_m = duration!.Split(':');
+                        TimeSpan newTS = new TimeSpan(int.Parse(d_h_m[0]), int.Parse(d_h_m[1]), int.Parse(d_h_m[2], 0));
+                        DateTime? readyPlannedStartDate = null;
+                        if (plannedStartDate != null && plannedStartDate != "")
+                        {
+                            readyPlannedStartDate = DateTime.ParseExact(plannedStartDate!, format, null);
+                        }
+
+                        Task t = new()
+                        {
+                            Id = id.Value,
+                            Description = description,
+                            Alias = alias,
+                            Status = BO.Status.UNSCHEDULED,
+                            CreatedAtDate = DateTime.Now,
+                            AllDependencies = null,
+                            PlannedStartDate = readyPlannedStartDate,
+                            StartDate = null,
+                            PlannedFinishDate = null,
+                            Remarks = remarks,
+                            Product = product,
+                            Duration = newTS,
+                            Engineer = null,
+                            ComplexityLevel = (BO.EngineerExperience)complexityLevel
+                        };
+                        s_bl.Task.Create(t);
+                    }
+                    break;
+                case "engineer":
+                    {
+                        Console.WriteLine("insert: \n name \n email \n level(0-4)\n cost \n\n");
+                        string? name = Console.ReadLine();
+                        string? email = Console.ReadLine();
+                        int? level = int.TryParse(Console.ReadLine(), out int res3) ? res3 : null;
+                        EngineerExperience? engExp = (BO.EngineerExperience?)level ?? null;
+                        double cost = double.Parse(Console.ReadLine() ?? "");
+                        Engineer newEng = new()
+                        {
+                            Id = id.Value,
+                            Name = name,
+                            Email = email,
+                            Level = engExp,
+                            Cost = cost
+                        };
+                        try { s_bl.Engineer.Create(newEng); }
+                        catch (BO.BOAlreadyExistsException ex)
+                        { throw new BO.BOAlreadyExistsException(ex.Message); }
+                    }
+                    break;
+            }
+            Sub_menu(entity);
+        }
+        public static void Read(string entity) { }
+        public static void ReadAll(string entity) { }
         static void Main()
         {
             Console.Write("Would you like to create Initial data? (Y/N)");

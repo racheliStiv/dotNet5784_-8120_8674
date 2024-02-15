@@ -7,5 +7,4 @@ public class Engineer
     public BO.EngineerExperience? Level { get; set; }
     public double? Cost { get; set; }
     public TaskInEngineer? Task { get; set; }
-
 }

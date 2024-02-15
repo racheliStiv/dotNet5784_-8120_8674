@@ -38,7 +38,7 @@ internal class EngineerImplementation : IEngineer
     }
 
     //get all engineers from DO lay
-    public IEnumerable<Engineer?> GetAllEngineers(Func<Engineer, bool>? filter)
+    public IEnumerable<Engineer?> GetAllEngineers(Func<Engineer, bool>? filter=null)
     {
         //get all Engineers from DO
         IEnumerable<DO.Engineer?> do_engineer = _dal.Engineer.ReadAll();
