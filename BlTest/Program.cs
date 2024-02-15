@@ -257,7 +257,35 @@ namespace BlTest
             }
             Sub_menu(entity);
         }
-        public static void Read(string entity) { }
+        public static void Read(string entity)
+        {
+            Console.WriteLine($"insert id of {entity} to print \n");
+            int id = int.Parse(Console.ReadLine() ?? "");
+            switch (entity)
+            {
+                case "task":
+                    try
+                    {
+                        Console.WriteLine(s_bl!.Task!.GetTaskDetails(id));
+                    }
+                    catch (BO.BODoesNotExistException ex)
+                    {
+                        throw new BO.BODoesNotExistException(ex.Message);
+                    }
+                    break;
+                case "engineer":
+                    try
+                    {
+                        Console.WriteLine(s_bl!.Engineer!.GetEngineerDetails(id));
+                    }
+                    catch (BO.BODoesNotExistException ex)
+                    {
+                        throw new BO.BODoesNotExistException(ex.Message);
+                    }
+                    break;
+            }
+            Sub_menu(entity);
+        }
         public static void ReadAll(string entity) { }
         static void Main()
         {
