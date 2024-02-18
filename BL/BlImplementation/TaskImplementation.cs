@@ -1,5 +1,6 @@
 ﻿using BlApi;
 using BO;
+using BL;
 
 namespace BlImplementation;
 internal class TaskImplementation : ITask
@@ -38,7 +39,7 @@ internal class TaskImplementation : ITask
     }
 
     //get all tasks from DO lay
-    public IEnumerable<Task?> GetAllTasks(Func<Task, bool>? filter=null)
+    public IEnumerable<Task?> GetAllTasks(Func<Task, bool>? filter = null)
     {
         //get all Tasks from DO
         IEnumerable<DO.Task?> do_tasks = _dal.Task.ReadAll();
@@ -66,16 +67,59 @@ internal class TaskImplementation : ITask
     }
 
     //get BO task and update the DO task
-    private void Update(Task boTask)
+    public void Update(Task boTask)
     {
         try
         {
+            {
+                //תלויות?
+                if (IBl.Status == ProjectStatus.AFTER)
+                {
+                    DO.Task? origin_task = _dal.Task.Read(boTask.Id);
+                    if (origin_task == null) { throw new BODoesNotExistException("Task undefined"); }
+                    //initialize only one time!
+                    if (((origin_task.StartDate != null) && (origin_task.StartDate != boTask.StartDate))
+                       || ((origin_task.CompleteDate != null) && (origin_task.CompleteDate != boTask.CompletedDate))
+                       || (origin_task.StartDate == null && boTask.CompletedDate != null)
+                       || (boTask.StartDate != null && boTask.CompletedDate != null && boTask.CompletedDate <= origin_task.StartDate)
+                       || boTask.StartDate < IBl.StartDate
+                       || boTask.Duration != origin_task.Duration)
+                        //רמה מותר לשנות??
+                        throw new BOInvalidUpdateException("invalid task update on AFTER");
+                }
+                if (IBl.Status == ProjectStatus.BEFORE)
+                {
+                    if (boTask.PlannedFinishDate != null
+                        || boTask.PlannedStartDate != null
+                        || boTask.StartDate != null
+                        || boTask.CompletedDate != null
+                        || boTask.Engineer != null)
+                        throw new BOInvalidUpdateException("can't update on BEFORE create luz");
+                }
+                if (IBl.Status == ProjectStatus.IN)
+                {
+                    if (boTask.PlannedStartDate < IBl.StartDate
+                        || boTask.Engineer != null
+                        || boTask.StartDate != null
+                        || boTask.CompletedDate != null)
+                        throw new BOInvalidUpdateException("can't update on IN create luz");
+
+                }
+            }
+            //update the task in dal 
             _dal.Task.Update(BO_to_DO(boTask));
         }
         catch (DO.DalDoesNotExistException ex)
         {
             throw new BO.BODoesNotExistException(ex.Message);
         }
+        catch (Exception ex)
+        {
+            throw new BO.BOInvalidUpdateException(ex.Message);
+        }
+
+        //update the task status
+        boTask.Status = CalcStatus(boTask.Id);
     }
 
     //change from BO task to DO task
@@ -90,9 +134,9 @@ internal class TaskImplementation : ITask
             if (boTask.PlannedStartDate != null && boTask.PlannedFinishDate == null)
             {
                 DateTime planS = boTask?.PlannedStartDate ?? DateTime.MinValue;
-                boTask!.PlannedFinishDate = planS.Add(boTask.Duration?? TimeSpan.MinValue);
+                boTask!.PlannedFinishDate = planS.Add(boTask.Duration ?? TimeSpan.MinValue);
             }
-       
+
             //create dal Task
             DO.Task doTask = new DO.Task(boTask.Id, boTask.Alias, boTask.Description, boTask.CreatedAtDate, boTask.StartDate, boTask.PlannedStartDate, boTask.Duration, boTask.PlannedFinishDate, boTask.CompletedDate, boTask.Product, boTask.Remarks, boTask.Engineer?.Id, (DO.EngineerExperience?)boTask.ComplexityLevel);
             return doTask;
@@ -145,25 +189,25 @@ internal class TaskImplementation : ITask
     }
 
     //return the status of task
-    private Status CalcStatus(int id)
+    private BO.TaskStatus CalcStatus(int id)
     {
         DO.Task myTask = _dal.Task.Read(id)!;
         if (myTask.ScheduledDate != null)
             if (myTask.StartDate != null)
                 if (myTask.CompleteDate != null)
-                    return Status.DONE;
+                    return BO.TaskStatus.DONE;
                 else
-                    return Status.STARTED;
+                    return BO.TaskStatus.STARTED;
             else
-                return Status.SCHEDULED;
-        return Status.UNSCHEDULED;
+                return BO.TaskStatus.SCHEDULED;
+        return BO.TaskStatus.UNSCHEDULED;
     }
     public void updateStartDate(int id)
     {
         Task t = GetTaskDetails(id);
         if (t.AllDependencies != null && t.AllDependencies.Count > 0)
         {
-            
+
         }
         else
         {

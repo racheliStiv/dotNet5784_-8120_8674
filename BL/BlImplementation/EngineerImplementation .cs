@@ -1,5 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using BlApi;
+using BO;
+
 namespace BlImplementation;
 
 internal class EngineerImplementation : IEngineer
@@ -17,7 +19,7 @@ internal class EngineerImplementation : IEngineer
         {
             throw new BO.BOAlreadyExistsException(ex.Message);
         }
-       //לברר האם צריך להוסיף עוד קטצ
+        //לברר האם צריך להוסיף עוד קטצ
     }
 
     //get engineer id & delete its from DO lay
@@ -38,7 +40,7 @@ internal class EngineerImplementation : IEngineer
     }
 
     //get all engineers from DO lay
-    public IEnumerable<Engineer?> GetAllEngineers(Func<Engineer, bool>? filter=null)
+    public IEnumerable<Engineer?> GetAllEngineers(Func<Engineer, bool>? filter = null)
     {
         //get all Engineers from DO
         IEnumerable<DO.Engineer?> do_engineer = _dal.Engineer.ReadAll();
@@ -72,13 +74,40 @@ internal class EngineerImplementation : IEngineer
     {
         try
         {
+            if (bo_engineer == null)
+                throw new BONullObj("didn't get an engineer to update");
+
+            if (bo_engineer.Task != null)
+            {
+                if (IBl.Status != ProjectStatus.AFTER)
+                    throw new BOInvalidUpdateException("invalid engineer update before AFTER");
+
+                else
+                {
+                    DO.Engineer? origin_en = _dal.Engineer.Read(bo_engineer.Id);
+                    if (origin_en == null)
+                        throw new BODoesNotExistException("Engineer undefined in dal");
+                    if()
+                 
+                        if (לא היו עוד משימות)
+                        {
+
+                        }
+
+                        if (זה עדכון משימה) { }          
+             
+                }
+            }
             _dal.Engineer.Update(BO_to_DO(bo_engineer!));
         }
         catch (BO.BODoesNotExistException ex)
         {
             throw new BO.BODoesNotExistException(ex.Message);
         }
-        //קטצ?
+        catch (Exception ex)
+        {
+            throw new BO.BOInvalidUpdateException(ex.Message);
+        }
     }
 
     //change from BO engineer to DO engineer
