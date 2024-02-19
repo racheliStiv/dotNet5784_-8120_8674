@@ -17,7 +17,7 @@ internal class EngineerImplementation : IEngineer
         {
             throw new BO.BOAlreadyExistsException(ex.Message);
         }
-       //לברר האם צריך להוסיף עוד קטצ
+        //לברר האם צריך להוסיף עוד קטצ
     }
 
     //get engineer id & delete its from DO lay
@@ -38,7 +38,7 @@ internal class EngineerImplementation : IEngineer
     }
 
     //get all engineers from DO lay
-    public IEnumerable<Engineer?> GetAllEngineers(Func<Engineer, bool>? filter=null)
+    public IEnumerable<Engineer?> GetAllEngineers(Func<Engineer, bool>? filter = null)
     {
         //get all Engineers from DO
         IEnumerable<DO.Engineer?> do_engineer = _dal.Engineer.ReadAll();
@@ -70,6 +70,7 @@ internal class EngineerImplementation : IEngineer
     //get BO engineer and update the DO engineer
     public void Update(Engineer? bo_engineer)
     {
+        //להוסיף תקינות למשימה
         try
         {
             _dal.Engineer.Update(BO_to_DO(bo_engineer!));

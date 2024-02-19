@@ -83,13 +83,22 @@ internal class TaskImplementation : ITask
     {
         try
         {
-            Valid(boTask.Alias, b);
+            //valid check
+            Valid(boTask);
+
+            //calculate field
+            if (boTask.PlannedStartDate != null && boTask.PlannedFinishDate == null)
+            {
+                DateTime planS = boTask?.PlannedStartDate ?? DateTime.MinValue;
+                boTask!.PlannedFinishDate = planS.Add(boTask.Duration ?? TimeSpan.MinValue);
+            }
+
+            //create dal Task
             DO.Task doTask = new DO.Task(boTask.Id, boTask.Alias, boTask.Description, boTask.CreatedAtDate, boTask.StartDate, boTask.PlannedStartDate, boTask.Duration, boTask.PlannedFinishDate, boTask.CompletedDate, boTask.Product, boTask.Remarks, boTask.Engineer?.Id, (DO.EngineerExperience?)boTask.ComplexityLevel);
             return doTask;
         }
         catch (Exception)
         {
-
             throw;
         }
     }
@@ -163,4 +172,3 @@ internal class TaskImplementation : ITask
         }
     }
 }
-
