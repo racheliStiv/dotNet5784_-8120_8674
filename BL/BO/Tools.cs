@@ -1,5 +1,6 @@
-﻿namespace BO;
+﻿
+namespace BO;
 internal static class Tools
 {
-    //public override string ToString() => this.ToStringProperty();
+    public override string ToString() => this.ToStringProperty();
 }

@@ -41,3 +41,15 @@ public class BOXMLFileLoadCreateException : Exception
 {
     public BOXMLFileLoadCreateException(string? message) : base(message) { }
 }
+
+//exeption for invalid update
+public class BOInvalidUpdateException : Exception
+{
+    public BOInvalidUpdateException(string? message) : base(message) { }
+}
+
+//exeption for null obj in update function
+public class BONullObj : Exception
+{
+    public BONullObj(string? message) : base(message) { }
+}

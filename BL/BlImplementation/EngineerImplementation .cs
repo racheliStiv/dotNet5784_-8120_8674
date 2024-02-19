@@ -1,5 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using BlApi;
+using BO;
+
 namespace BlImplementation;
 
 internal class EngineerImplementation : IEngineer
@@ -73,13 +75,40 @@ internal class EngineerImplementation : IEngineer
         //להוסיף תקינות למשימה
         try
         {
+            if (bo_engineer == null)
+                throw new BONullObj("didn't get an engineer to update");
+
+            if (bo_engineer.Task != null)
+            {
+                if (IBl.Status != ProjectStatus.AFTER)
+                    throw new BOInvalidUpdateException("invalid engineer update before AFTER");
+
+                else
+                {
+                    DO.Engineer? origin_en = _dal.Engineer.Read(bo_engineer.Id);
+                    if (origin_en == null)
+                        throw new BODoesNotExistException("Engineer undefined in dal");
+                    if()
+                 
+                        if (לא היו עוד משימות)
+                        {
+
+                        }
+
+                        if (זה עדכון משימה) { }          
+             
+                }
+            }
             _dal.Engineer.Update(BO_to_DO(bo_engineer!));
         }
         catch (BO.BODoesNotExistException ex)
         {
             throw new BO.BODoesNotExistException(ex.Message);
         }
-        //קטצ?
+        catch (Exception ex)
+        {
+            throw new BO.BOInvalidUpdateException(ex.Message);
+        }
     }
 
     //change from BO engineer to DO engineer

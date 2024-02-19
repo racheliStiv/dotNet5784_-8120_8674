@@ -4,12 +4,12 @@ public enum EngineerExperience
     BEGGINER, ADVANCED_BEGGINER, INTERMEDIATE, ADVANCED, EXPERT
 }
 
-public enum Status
+public enum TaskStatus
 {
     UNSCHEDULED, SCHEDULED, STARTED, DONE
 }
 
 public enum ProjectStatus
 {
-    A,B,C
+    BEFORE ,IN, AFTER
 }
