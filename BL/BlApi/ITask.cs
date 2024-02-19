@@ -6,5 +6,5 @@ public interface ITask
     public Task GetTaskDetails(int id);
     public int Create(Task boTask);
     public void Delete(int id);
-    //public void Update(Task boTask);
+    public void Update(Task boTask);
 }

@@ -16,17 +16,17 @@ namespace BlImplementation
 
         public ITaskInList TaskInList =>  new TaskInListImplementation();
 
-        public ProjectStatus Status = ProjectStatus.A;
+        public ProjectStatus Status = ProjectStatus.BEFORE;
 
         private DateTime startDate;
-        public DateTime StartDate
+        public  DateTime StartDate
         {
             get { return startDate; }
-            set { startDate = value; Status = ProjectStatus.B; }
+            set { startDate = value; Status = ProjectStatus.IN; }
         }
 
         //זה עם עושים מה
-        ProjectStatus IBl.Status => throw new NotImplementedException();
+        //ProjectStatus  IBl.Status => throw new NotImplementedException();
 
         public void CreateSchedule()
         {
