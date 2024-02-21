@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using BlApi;
 using BO;
-
 namespace BlImplementation;
 
 internal class EngineerImplementation : IEngineer
@@ -27,20 +26,22 @@ internal class EngineerImplementation : IEngineer
     {
         try
         {
+            if ((_dal.Task.Read(t => t.EngineerId == id && t.CompleteDate != null)) != null)
+                throw new BODeletionImpossibleException("delete is immpossible");
             _dal.Engineer.Delete(id);
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new BO.BODoesNotExistException(ex.Message);
+            throw new BODoesNotExistException(ex.Message);
         }
-        catch (DO.DalDeletionImpossibleException ex)
+        catch (BODeletionImpossibleException ex)
         {
-            throw new BO.BODeletionImpossibleException(ex.Message);
+            throw new BODeletionImpossibleException(ex.Message);
         }
     }
 
     //get all engineers from DO lay
-    public IEnumerable<Engineer?> GetAllEngineers(Func<Engineer, bool>? filter = null)
+    public IEnumerable<Engineer?> GetAllEngineers(Func<Engineer, bool>? filter)
     {
         //get all Engineers from DO
         IEnumerable<DO.Engineer?> do_engineer = _dal.Engineer.ReadAll();
@@ -72,43 +73,65 @@ internal class EngineerImplementation : IEngineer
     //get BO engineer and update the DO engineer
     public void Update(Engineer? bo_engineer)
     {
-        //להוסיף תקינות למשימה
         try
         {
             if (bo_engineer == null)
                 throw new BONullObj("didn't get an engineer to update");
-
+            DO.Engineer origin_en = _dal.Engineer.Read(bo_engineer.Id) ?? throw new BODoesNotExistException("Engineer undefined in dal");
+            if ((DO.EngineerExperience)bo_engineer.Level! < origin_en.Level)
+                throw new BOInvalidUpdateException("can't update level to lower");
             if (bo_engineer.Task != null)
             {
+                if (bo_engineer.Task.Id != GetTaskOfEng(origin_en.Id) && _dal.Task.Read(bo_engineer.Task.Id) == null)
+                    throw new BOInvalidUpdateException("this task is not exist");
+                if ((_dal.Task.Read(bo_engineer.Task.Id)!.CompleteDate != null))
+                    throw new BOTaskIsDone("the task is done");
                 if (IBl.Status != ProjectStatus.AFTER)
                     throw new BOInvalidUpdateException("invalid engineer update before AFTER");
+                if (GetEngOfTask(bo_engineer.Task!.Id) != 0)
+                    throw new BOTaskAlreadyOccupied("this task already caught");
+                IEnumerable<DO.Dependency> dependencies = _dal!.Dependency.ReadAll(t => t!.DependentTask == bo_engineer.Task.Id)!;
+                if (!IsDepDone(dependencies) || (EngineerExperience)_dal.Task.Read(bo_engineer.Task.Id)!.Complexity! <= bo_engineer.Level)
+                    throw new BOTaskAlreadyOccupied("unable to update task in engineer");
+                if (GetTaskOfEng(bo_engineer.Id) != 0)
+                    throw new BOInvalidUpdateException("unable to update in middle other task");
 
-                else
-                {
-                    DO.Engineer? origin_en = _dal.Engineer.Read(bo_engineer.Id);
-                    if (origin_en == null)
-                        throw new BODoesNotExistException("Engineer undefined in dal");
-                    if()
-                 
-                        if (לא היו עוד משימות)
-                        {
-
-                        }
-
-                        if (זה עדכון משימה) { }          
-             
-                }
             }
             _dal.Engineer.Update(BO_to_DO(bo_engineer!));
         }
-        catch (BO.BODoesNotExistException ex)
+        catch (BODoesNotExistException ex)
         {
-            throw new BO.BODoesNotExistException(ex.Message);
+            throw new BODoesNotExistException(ex.Message);
         }
-        catch (Exception ex)
+        catch (BOInvalidUpdateException ex)
         {
-            throw new BO.BOInvalidUpdateException(ex.Message);
+            throw new BOInvalidUpdateException(ex.Message);
         }
+    }
+
+    //function to check if all dependencies of task were done
+    private bool IsDepDone(IEnumerable<DO.Dependency> allD)
+    {
+        try
+        {
+            return allD.All(t => _dal.Task.Read(t.DependensOnTask!.Value)!.CompleteDate != null);
+        }
+        catch (BOCanNotBeNullException ex)
+        {
+            throw new BOCanNotBeNullException(ex.Message + "not found task of dependency");
+        }
+    }
+   
+    //function that return engineer in task
+    private int GetEngOfTask(int task_id)
+    {
+        return _dal.Task.Read(task_id)?.EngineerId ?? 0;
+    }
+
+    //function that return task in engineer
+    private int GetTaskOfEng(int eng_id)
+    {
+        return _dal.Task.Read(t => t.EngineerId == eng_id && t.CompleteDate != null)?.Id ?? 0;
     }
 
     //change from BO engineer to DO engineer
@@ -136,7 +159,7 @@ internal class EngineerImplementation : IEngineer
             task = new TaskInEngineer() { Id = t!.Id, Alias = t?.Alias };
         else
             task = null;
-        Engineer boEngineer = new Engineer() { Id = doEngineer.Id, Name = doEngineer.Name, Email = doEngineer.Email, Level = (BO.EngineerExperience?)doEngineer.Level, Cost = doEngineer.Cost, Task = task };
+        Engineer boEngineer = new Engineer() { Id = doEngineer.Id, Name = doEngineer.Name, Email = doEngineer.Email, Level = (EngineerExperience?)doEngineer.Level, Cost = doEngineer.Cost, Task = task };
         return boEngineer;
     }
 
@@ -188,7 +211,7 @@ internal class EngineerImplementation : IEngineer
     private static void ValidBOEngineer(Engineer? e)
     {
         if (e == null)
-            throw new BO.BOCanNotBeNullException("missing engineer");
+            throw new BOCanNotBeNullException("missing engineer");
         if (e.Name == null || e.Email == null || e?.Level == null || e?.Cost == null)
             throw new BO.BOCanNotBeNullException("missing details for engineer");
         if (
@@ -196,6 +219,6 @@ internal class EngineerImplementation : IEngineer
         !ValidEmail(e.Email) ||
         e.Name == "" ||
         e.Cost < 0)
-            throw new BO.BOInvalidDetailsException("invalid details for engineer");
+            throw new BOInvalidDetailsException("invalid details for engineer");
     }
 }

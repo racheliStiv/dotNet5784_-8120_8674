@@ -37,19 +37,38 @@ public class BOCanNotBeNullException : Exception
     public BOCanNotBeNullException(string? message) : base(message) { }
 }
 //exeption for workin with XML 
+[Serializable]
 public class BOXMLFileLoadCreateException : Exception
 {
     public BOXMLFileLoadCreateException(string? message) : base(message) { }
 }
 
 //exeption for invalid update
+[Serializable]
 public class BOInvalidUpdateException : Exception
 {
     public BOInvalidUpdateException(string? message) : base(message) { }
 }
+[Serializable]
 
 //exeption for null obj in update function
 public class BONullObj : Exception
 {
     public BONullObj(string? message) : base(message) { }
+}
+
+[Serializable]
+public class BOTaskAlreadyOccupied : Exception
+{
+    public BOTaskAlreadyOccupied(string? message) : base(message) { }
+}
+[Serializable]
+public class BOTaskIsDone : Exception
+{
+    public BOTaskIsDone(string? message) : base(message) { }
+}
+[Serializable]
+public class BOCannotAddNewOne : Exception
+{
+    public BOCannotAddNewOne(string? message) : base(message) { }
 }

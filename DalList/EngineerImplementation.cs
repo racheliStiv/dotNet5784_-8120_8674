@@ -36,7 +36,7 @@ internal class EngineerImplementation : IEngineer
         return DataSource.Engineers.FirstOrDefault(item => item.Id == id);
     }
 
-    public Engineer? Read(Func<Engineer, bool>? filter=null) //stage 2
+    public Engineer? Read(Func<Engineer, bool> filter ) //stage 2
     {
         //return the first engineer that meet the condition
         return DataSource.Engineers.FirstOrDefault(filter);
@@ -60,7 +60,6 @@ internal class EngineerImplementation : IEngineer
             throw new DalDoesNotExistException($"Engineer with ID={item.Id} not exists");
         //delete the original engineer
         DataSource.Engineers.Remove(src_eng);
-
         //create the updated engineer
         DataSource.Engineers.Add(item);
     }

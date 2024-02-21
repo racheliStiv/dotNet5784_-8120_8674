@@ -9,6 +9,6 @@ public interface IBl
     public ITaskInEngineer TaskInEngineer { get; }
     public ITaskInList TaskInList { get; }
     public static DateTime StartDate { get; set; }
-    public void CreateSchedule(); 
+    public  void CreateSchedule(); 
     public static BO.ProjectStatus Status { get; }
 }
