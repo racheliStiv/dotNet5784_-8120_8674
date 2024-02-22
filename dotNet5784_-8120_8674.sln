@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stage0", "Stage0\Stage0.csproj", "{5CFA87BF-B420-4E1C-B2BB-7E578F00D76F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalFacade", "DalFacade\DalFacade.csproj", "{621D5B98-883E-4EDC-9298-56D31A28870C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalList", "DalList\DalList.csproj", "{DBC5CF61-D8C0-45F5-B462-5AE74ED922A1}"
@@ -16,15 +14,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xml", "xml", "{3EEF8D7C-B64C-405C-932E-03610DB674F2}"
 	ProjectSection(SolutionItems) = preProject
 		xml\dal-config.xml = xml\dal-config.xml
-		xml\dependencies.xml = xml\dependencies.xml
 		xml\data-config.xml = xml\data-config.xml
+		xml\dependencies.xml = xml\dependencies.xml
 		xml\engineers.xml = xml\engineers.xml
 		xml\tasks.xml = xml\tasks.xml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BL", "BL\BL.csproj", "{BAB25D60-1347-4B79-96C0-A12C8E092EAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BL", "BL\BL.csproj", "{BAB25D60-1347-4B79-96C0-A12C8E092EAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlTest", "BlTest\BlTest.csproj", "{A8AC0CD6-E9AF-4376-8946-4B127FD89B08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlTest", "BlTest\BlTest.csproj", "{A8AC0CD6-E9AF-4376-8946-4B127FD89B08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,10 +30,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5CFA87BF-B420-4E1C-B2BB-7E578F00D76F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5CFA87BF-B420-4E1C-B2BB-7E578F00D76F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5CFA87BF-B420-4E1C-B2BB-7E578F00D76F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5CFA87BF-B420-4E1C-B2BB-7E578F00D76F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{621D5B98-883E-4EDC-9298-56D31A28870C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{621D5B98-883E-4EDC-9298-56D31A28870C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{621D5B98-883E-4EDC-9298-56D31A28870C}.Release|Any CPU.ActiveCfg = Release|Any CPU
