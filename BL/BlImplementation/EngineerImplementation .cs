@@ -62,7 +62,7 @@ internal class EngineerImplementation : IEngineer
     {
         try
         {
-            return DO_to_BO(_dal.Engineer.Read(id)) ?? throw new BO.BODoesNotExistException($"can't get engineer details of: ${id}");
+            return DO_to_BO(_dal.Engineer.Read(id)) ?? throw new BO.BODoesNotExistException($"engineer with id = {id} is not exsist");
         }
         catch (Exception ex)
         {
@@ -79,22 +79,22 @@ internal class EngineerImplementation : IEngineer
                 throw new BONullObj("didn't get an engineer to update");
             DO.Engineer origin_en = _dal.Engineer.Read(bo_engineer.Id) ?? throw new BODoesNotExistException("Engineer undefined in dal");
             if ((DO.EngineerExperience)bo_engineer.Level! < origin_en.Level)
-                throw new BOInvalidUpdateException("can't update level to lower");
+                throw new BOInvalidUpdateException("can't update level of engineer to lower");
             if (bo_engineer.Task != null)
             {
                 if (bo_engineer.Task.Id != GetTaskOfEng(origin_en.Id) && _dal.Task.Read(bo_engineer.Task.Id) == null)
                     throw new BOInvalidUpdateException("this task is not exist");
                 if ((_dal.Task.Read(bo_engineer.Task.Id)!.CompleteDate != null))
-                    throw new BOTaskIsDone("the task is done");
+                    throw new BOTaskIsDone("this task is done");
                 if (IBl.Status != ProjectStatus.AFTER)
-                    throw new BOInvalidUpdateException("invalid engineer update before AFTER");
+                    throw new BOInvalidUpdateException("can't update before AFTER create luz");
                 if (GetEngOfTask(bo_engineer.Task!.Id) != 0)
                     throw new BOTaskAlreadyOccupied("this task already caught");
                 IEnumerable<DO.Dependency> dependencies = _dal!.Dependency.ReadAll(t => t!.DependentTask == bo_engineer.Task.Id)!;
                 if (!IsDepDone(dependencies) || (EngineerExperience)_dal.Task.Read(bo_engineer.Task.Id)!.Complexity! <= bo_engineer.Level)
                     throw new BOTaskAlreadyOccupied("unable to update task in engineer");
                 if (GetTaskOfEng(bo_engineer.Id) != 0)
-                    throw new BOInvalidUpdateException("unable to update in middle other task");
+                    throw new BOInvalidUpdateException("unable to update, in middle other task");
 
             }
             _dal.Engineer.Update(BO_to_DO(bo_engineer!));
@@ -212,13 +212,15 @@ internal class EngineerImplementation : IEngineer
     {
         if (e == null)
             throw new BOCanNotBeNullException("missing engineer");
-        if (e.Name == null || e.Email == null || e?.Level == null || e?.Cost == null)
+        if (e.Name == null || e.Email == null || e.Level == null || e?.Cost == null)
             throw new BO.BOCanNotBeNullException("missing details for engineer");
         if (
         !ValidId(e.Id) ||
         !ValidEmail(e.Email) ||
         e.Name == "" ||
-        e.Cost < 0)
+        e.Cost < 0|| 
+        (int)e.Level > 4 ||
+        e.Level < 0)
             throw new BOInvalidDetailsException("invalid details for engineer");
     }
 }
