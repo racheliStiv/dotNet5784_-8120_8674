@@ -1,5 +1,6 @@
 ﻿using BlApi;
 using BO;
+using DalApi;
 
 namespace BlTest
 {
@@ -265,7 +266,7 @@ namespace BlTest
                             DateTime? readyPlannedStartDate = null;
                             DateTime? readyStartDate = null;
                             DateTime? readyCompletedDate = null;
-                            DateTime? p_finish_date = null;
+                            DateTime? completed_date = null;
                             List<TaskInList>? alldep = null;
                             if (dep_id != null && dep_id.Length > 0)
                             {
@@ -280,7 +281,7 @@ namespace BlTest
                             {
                                 if (!IsDate(plannedStartDate)) throw new Exception("wrong date");
                                 readyPlannedStartDate = DateTime.ParseExact(plannedStartDate!, format, null);
-                                p_finish_date = readyPlannedStartDate.Value.Add(newTS ?? original_t.Duration!.Value);
+                                completed_date = readyPlannedStartDate.Value.Add(newTS ?? original_t.Duration!.Value);
                             }
                             if (startDate != null && startDate != "")
                             {
@@ -303,8 +304,9 @@ namespace BlTest
                                 CreatedAtDate = original_t.CreatedAtDate,
                                 AllDependencies = alldep ?? original_t.AllDependencies,
                                 PlannedStartDate = readyPlannedStartDate ?? original_t.PlannedStartDate,
+                                PlannedFinishDate = completed_date ?? original_t.PlannedFinishDate,
                                 StartDate = readyStartDate ?? original_t.StartDate,
-                                PlannedFinishDate = p_finish_date ?? original_t.PlannedFinishDate,
+                                CompletedDate = readyCompletedDate ?? original_t.CompletedDate,
                                 Remarks = (remarks == "") ? original_t.Remarks : remarks,
                                 Product = (product == "") ? original_t.Product : product,
                                 Duration = newTS ?? original_t.Duration,
@@ -324,7 +326,7 @@ namespace BlTest
                         }
                         catch (Exception ex)
                         {
-                            throw new Exception(ex.Message + "invalid input");
+                            throw new Exception(ex.Message);
                         }
                     }
                     break;
@@ -427,10 +429,24 @@ namespace BlTest
         static void Main()
         {
             Console.Write("Would you like to create Initial data? (Y/N)");
-            string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input");
+            string? ans = Console.ReadLine();
             if (ans == "Y")
                 DalTest.Initialization.DO();
-            Main_menu();
+            Console.Write("Would you like to reset your data? (Y/N)");
+            string? a = Console.ReadLine();
+            if (a == "Y")
+                Factory.Get.Reset();
+
+            try
+            {
+
+                Main_menu();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

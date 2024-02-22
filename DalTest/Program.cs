@@ -282,7 +282,7 @@ namespace DalTest
                     if (ch == 'y')
                     {
                         s_dal.Reset();
-                        Initialization.DO(); //stage 4
+                        Initialization.DO(); //stage 3
                     }
                 }
                 Main_menu();

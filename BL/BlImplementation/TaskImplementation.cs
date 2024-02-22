@@ -26,7 +26,11 @@ internal class TaskImplementation : ITask
         {
             throw new BOCannotAddNewOne(ex.Message);
         }
-        //קטצ?
+
+        catch(BOInvalidDetailsException ex)
+        {
+            throw new BOInvalidDetailsException(ex.Message);
+        }
     }
 
     //get task id & delete its from DO lay
@@ -67,7 +71,7 @@ internal class TaskImplementation : ITask
     {
         try
         {
-            return DO_to_BO(_dal.Task.Read(id)) ?? throw new BODoesNotExistException($"can't get task details of: ${id}");
+            return DO_to_BO(_dal.Task.Read(id)) ?? throw new BODoesNotExistException($"Task with ID = {id} is not exsist");
         }
         catch (BODoesNotExistException ex)
         {
@@ -94,7 +98,7 @@ internal class TaskImplementation : ITask
                    || boTask.AllDependencies != null && boTask.AllDependencies.Select(dep => dep.Id) != _dal.Dependency.ReadAll(dep => dep!.DependentTask == origin_task.Id).Select(dep => dep!.Id)
                    || boTask.Engineer != null && ((DO.EngineerExperience)boTask.ComplexityLevel! != origin_task.Complexity || _dal.Engineer.Read(boTask.Engineer.Id) == null)
                    || boTask.StartDate != null && boTask.Engineer != null && (boTask.Engineer.Id != origin_task.EngineerId) || (_dal.Engineer.Read(boTask.Engineer!.Id)!.Level) < (DO.EngineerExperience)boTask.ComplexityLevel!)
-                    throw new BOInvalidUpdateException("invalid task update on AFTER");
+                    throw new BOInvalidUpdateException("can't update on AFTER create luz");
             }
             if (IBl.Status == ProjectStatus.BEFORE)
             {
@@ -195,8 +199,7 @@ internal class TaskImplementation : ITask
             throw new BOCanNotBeNullException("missing task");
         if (t.Alias == null || t.Duration == null || t.ComplexityLevel == null)
             throw new BOCanNotBeNullException("missing details for task");
-        if (
-        t.Duration.Value <= TimeSpan.Zero)
+        if (t.Duration.Value <= TimeSpan.Zero || (int)t.ComplexityLevel > 4 || t.ComplexityLevel < 0)
             throw new BOInvalidDetailsException("invalid details for task");
         if (t.StartDate != null)
         {
