@@ -71,7 +71,8 @@ internal class TaskImplementation : ITask
     {
         try
         {
-            return DO_to_BO(_dal.Task.Read(id)) ?? throw new BODoesNotExistException($"Task with ID = {id} is not exsist");
+            return DO_to_BO(_dal.Task.Read(id)) ??
+                throw new BODoesNotExistException($"Task with ID : {id} is not exsist");
         }
         catch (BODoesNotExistException ex)
         {
