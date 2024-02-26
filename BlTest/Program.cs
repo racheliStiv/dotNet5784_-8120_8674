@@ -6,7 +6,9 @@ namespace BlTest
 {
     internal class Program
     {
+        
         static readonly IBl s_bl = BlApi.Factory.Get();
+        //static readonly IBl _dal = DalApi.Factory.Get;
         static bool IsDate(string date)
         {
             // בדיקה אם המחרוזת מכילה שני סלשים ותוכן של מספרים
@@ -38,10 +40,12 @@ namespace BlTest
             //main menu input
             Console.WriteLine("choose an entity u wana check \n 1 to Task\n 2 to Engineer \n 3 to update start date of groject \n 0 to exit \n");
             bool flag = true;
+            
             while (flag)
             {
                 flag = false;
                 int choose = int.Parse(Console.ReadLine() ?? "");
+                string format = "dd/hh/mm";
                 switch (choose)
                 {
                     case 0:
@@ -52,8 +56,21 @@ namespace BlTest
                     case 2:
                         Sub_menu("engineer");
                         break;
-                    //case 3:
-                    //    Factory.Get.c
+                    case 3:
+                        if (IBl.StartDate != null)
+                            Console.WriteLine("There is already a start date for the project");
+                        else
+                        {
+                            Console.WriteLine("insert start date of project");
+                            string? startDate = Console.ReadLine();
+                            DateTime? readyStartDate;
+                            if (startDate != null && IsDate(startDate))
+                            {
+                                readyStartDate = DateTime.ParseExact(startDate!, format, null);
+                                IBl.StartDate = readyStartDate;
+                            }
+                        }
+                        break;
                     default:
                         Console.WriteLine("wrong input");
                         flag = true;
@@ -89,12 +106,13 @@ namespace BlTest
         }
         public static void Create(string entity)
         {
-            string format = "dd/hh/mm";
+
             switch (entity)
             {
                 case "task":
                     try
                     {
+                        string format = "dd/hh/mm";
                         Console.WriteLine($"insert:\n alias \n description \n  duration \n  product \n remarks \n complexity(0-4)  \n\n in a date data insert the date by the format:{format}");
                         string? alias = Console.ReadLine();
                         string? description = Console.ReadLine();
@@ -240,18 +258,29 @@ namespace BlTest
                         {
 
                             Task original_t = s_bl.Task.GetTaskDetails(id.Value)!;
-                            Console.WriteLine($"insert:\n alias \n description \n planned start date \n start date \n duration \n completed date\n  product \n remarks \n complexity(0-4) \n engineer ID \n tasks I'm depenedes on them (ex: n1, n2, n3...) \n\n in a date data insert the date by the format:{format}");
+                            Console.WriteLine($"insert (in a date data insert the date by the format:{format}):\n alias");
                             string? alias = Console.ReadLine();
+                            Console.WriteLine("description");
                             string? description = Console.ReadLine();
+                            Console.WriteLine("planned start date");
                             string? plannedStartDate = Console.ReadLine();
+                            Console.WriteLine("start date");
                             string? startDate = Console.ReadLine();
+                            Console.WriteLine("duration");
                             string? duration = Console.ReadLine();
+                            Console.WriteLine("completed date");
                             string? completedDate = Console.ReadLine();
+                            Console.WriteLine("product");
                             string? product = Console.ReadLine();
+                            Console.WriteLine("remarks");
                             string? remarks = Console.ReadLine();
+                            Console.WriteLine("complexity(0-4)");
                             int? complexityLevel = int.TryParse(Console.ReadLine(), out int comp) ? comp : null;
+                            Console.WriteLine("engineer ID");
                             int? eng_id = int.TryParse(Console.ReadLine(), out int Id2) ? Id2 : null;
-                            int[]? dep_id = string.IsNullOrWhiteSpace(Console.ReadLine()) ? null : Console.ReadLine()!.Split(' ').Select(int.Parse).ToArray();
+                            Console.WriteLine("tasks I'm depenedes on them (ex: n1, n2, n3...)");
+                            string? input = Console.ReadLine();
+                            int[]? dep_id = input != null ? input.Split(',').Select(str => int.TryParse(str.Trim(), out int num) ? num : 0).Where(num => true).ToArray() : null;
                             string[] d_h_m;
                             TimeSpan? newTS = null;
                             if (duration != "")
@@ -259,7 +288,6 @@ namespace BlTest
                                 d_h_m = duration!.Split(':');
                                 newTS = new TimeSpan(int.Parse(d_h_m[0]), int.Parse(d_h_m[1]), int.Parse(d_h_m[2], 0));
                             }
-
                             EngineerInTask? eng = null;
                             if (eng_id != null)
                                 eng = new EngineerInTask() { Id = eng_id.Value, Name = null };
@@ -428,24 +456,22 @@ namespace BlTest
         }
         static void Main()
         {
-            Console.Write("Would you like to create Initial data? (Y/N)");
-            string? ans = Console.ReadLine();
-            if (ans == "Y")
-                DalTest.Initialization.DO();
-            Console.Write("Would you like to reset your data? (Y/N)");
-            string? a = Console.ReadLine();
-            if (a == "Y")
-                Factory.Get.Reset();
-
             try
             {
-
+                Console.Write("Would you like to create Initial data? (Y/N)");
+                string? ans = Console.ReadLine();
+                if (ans == "Y" || ans == "y")
+                    DalTest.Initialization.DO();
+                Console.Write("Would you like to reset your data? (Y/N)");
+                string? a = Console.ReadLine();
+                if (a == "Y" || a == "y")
+                    Factory.Get.Reset();
                 Main_menu();
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Main_menu();
             }
         }
     }

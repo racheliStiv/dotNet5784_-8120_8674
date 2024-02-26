@@ -27,7 +27,7 @@ internal class TaskImplementation : ITask
             throw new BOCannotAddNewOne(ex.Message);
         }
 
-        catch(BOInvalidDetailsException ex)
+        catch (BOInvalidDetailsException ex)
         {
             throw new BOInvalidDetailsException(ex.Message);
         }
@@ -78,7 +78,6 @@ internal class TaskImplementation : ITask
             throw new BODoesNotExistException(ex.Message);
         }
     }
-
     //get BO task and update the DO task
     public void Update(Task boTask)
     {
@@ -155,6 +154,20 @@ internal class TaskImplementation : ITask
             }
             //create dal Task
             DO.Task doTask = new DO.Task(boTask.Id, boTask.Alias, boTask.Description, boTask.CreatedAtDate, boTask.StartDate, boTask.PlannedStartDate, boTask.Duration, boTask.PlannedFinishDate, boTask.CompletedDate, boTask.Product, boTask.Remarks, boTask.Engineer?.Id, (DO.EngineerExperience?)boTask.ComplexityLevel);
+            IEnumerable<DO.Dependency?> origin_deps = _dal.Dependency.ReadAll(d => d.DependentTask == boTask.Id);
+            foreach (var dependency in origin_deps)
+            {
+                if (dependency != null) _dal.Dependency.Delete(dependency.Id);
+            }
+            if (boTask.AllDependencies != null)
+            {
+
+                foreach (var dep in boTask.AllDependencies)
+                {
+                    DO.Dependency doDep = new DO.Dependency(0, boTask.Id, dep.Id);
+                    _dal.Dependency.Create(doDep);
+                }
+            }
             return doTask;
         }
         catch (Exception)

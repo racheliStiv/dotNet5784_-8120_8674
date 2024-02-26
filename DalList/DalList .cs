@@ -15,8 +15,8 @@ namespace Dal
         public IDependency Dependency => new DependencyImplementation();
 
         //return & update the project dates
-        public DateTime? beginDate { get; set; }
-        public DateTime? finishDate { get; set; }
+        public DateTime? BeginDate { get; set; }
+        public DateTime? FinishDate { get; set; }
 
 
         //clear all data

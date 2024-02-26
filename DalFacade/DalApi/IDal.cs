@@ -13,8 +13,9 @@ namespace DalApi
         IDependency Dependency { get; }
 
         //begin & finish project dates
-        DateTime? beginDate { get; set; }
-        DateTime? finishDate { get; set; }
+        DateTime? BeginDate { get; set; }
+        DateTime? FinishDate { get; set; }
+        //public void SetBeginDate(DateTime? d) { }
         public void Reset();
     }
 }

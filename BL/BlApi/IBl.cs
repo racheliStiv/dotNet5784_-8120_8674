@@ -8,7 +8,7 @@ public interface IBl
     public IEngineerInTask EngineerIntask { get; }
     public ITaskInEngineer TaskInEngineer { get; }
     public ITaskInList TaskInList { get; }
-    public static DateTime StartDate { get; set; }
+    public static DateTime? StartDate { get; set; }
     public  void CreateSchedule(); 
-    public static BO.ProjectStatus Status { get; }
+    public static ProjectStatus Status { get; }
 }

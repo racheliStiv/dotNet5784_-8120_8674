@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dal
 {
@@ -19,8 +20,19 @@ namespace Dal
         public IDependency Dependency => new DependencyImplementation();
 
         //return & update the project dates
-        public DateTime? beginDate { get; set; }
-        public DateTime? finishDate { get; set; }
+        public DateTime? BeginDate
+        {
+            get {
+                XElement root = XMLTools.LoadListFromXMLElement("data-config");
+                return root.ToDateTimeNullable("startDate");
+            }
+            set {
+                XElement root = XMLTools.LoadListFromXMLElement("data-config");
+                root.Element("startDate")?.SetValue(value!.Value.ToString("dd-mm-yy"));
+                XMLTools.SaveListToXMLElement(root, "data-config");
+            }
+        }
+        public DateTime? FinishDate { get; set; }
 
 
         //clear all data

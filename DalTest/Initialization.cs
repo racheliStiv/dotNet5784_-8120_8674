@@ -27,7 +27,7 @@ public static class Initialization
             //Email initialization
             string email = name.Substring(0, name.IndexOf(' ')) + s_rand.Next(111, 999) + "@gmail.com";
             //Level initialization
-            DO.EngineerExperience ex = (EngineerExperience)i++;
+            EngineerExperience ex = (EngineerExperience)i++;
             //Cost initialization
             double cost = 50 + (int)ex * 80;
             Engineer newEng = new(id, name, email, ex, cost);
@@ -38,11 +38,6 @@ public static class Initialization
     //An operation that creates 20 tasks and initializes data in them using a random method
     private static void CreateTasks()
     {
-        Engineer? en;
-        List<Engineer?> allEngineers;
-        //In case there isn't engineers, impossible create task
-        if (s_dal!.Engineer == null)
-            throw new DalCanNotBeNullException("There isn't any engineer in your data");
         //Loop that initialize the task's detail
         for (int i = 1; i <= 20; i++)
         {
@@ -50,29 +45,18 @@ public static class Initialization
             alias = "T" + i;
             description += (char)s_rand.Next(97, 122) + (char)s_rand.Next(97, 122) + (char)s_rand.Next(97, 122) + (char)s_rand.Next(97, 122);
             //Length of time to perform a task
-            TimeSpan requiredEffortTime =new TimeSpan(s_rand.Next(364), s_rand.Next(23), s_rand.Next(59), s_rand.Next(59));
+            TimeSpan duration =new TimeSpan(s_rand.Next(364), s_rand.Next(23), s_rand.Next(59), s_rand.Next(59));
             //What level of engineer is required
-            DO.EngineerExperience complexity = (EngineerExperience)s_rand.Next(3);
-            //Planned date for the start of work
-            DateTime scheduleDate = DateTime.Now.AddDays(s_rand.Next(30));
-            //When should it be finished?
-            DateTime deadLine = (scheduleDate + requiredEffortTime).AddDays(i);
-            //Final end date
-            DateTime? completedDate = (i % 2 == 0) ? null : deadLine;
+            EngineerExperience complexity = (EngineerExperience)s_rand.Next(3);
             string product = description + description;
             string remark = description.Substring(1, 2);
-            allEngineers = s_dal!.Engineer.ReadAll().ToList();
-            //Choosing an engineer to handle the task
-            do
-            {
-                en = allEngineers[s_rand.Next(allEngineers.Count)];
-            } while (en!.Level < complexity);
             //Creating a task and adding it to the task collection
-            Task newTask = new(0, alias, description, DateTime.Now, scheduleDate, scheduleDate, requiredEffortTime, deadLine,  completedDate, product,  remark,  en.Id, complexity );
+            Task newTask = new(0, alias, description, DateTime.Now, null, null, duration, null,  null, product,  remark,  null, complexity );
             s_dal!.Task?.Create(newTask);
         }
 
     }
+ 
     //An operation that creates 40 dependencies and initializes data in them using a random method
     private static void CreateDependencies()
     {
@@ -86,7 +70,7 @@ public static class Initialization
             {
                 s_dal!.Dependency?.Create(new(0, s_dal!.Task!.Read(s_dal!.Task.ReadAll().ToList().Count - i)!.Id, s_dal!.Task!.ReadAll().ToList()[j]!.Id));
 
-              //  s_dal!.Dependency?.Create(new(0, s_dal!.Task!.Read(s_dal!.Task.ReadAll().ToList().Count - i)!.Id, s_dal!.Task!.ReadAll().ToList()[j]!.Id));
+                //  s_dal!.Dependency?.Create(new(0, s_dal!.Task!.Read(s_dal!.Task.ReadAll().ToList().Count - i)!.Id, s_dal!.Task!.ReadAll().ToList()[j]!.Id));
             }
         }
         //4 last dependencies not created in the previous loop
@@ -94,7 +78,6 @@ public static class Initialization
         {
             s_dal!.Dependency?.Create(new(0, s_dal!.Task!.Read(s_dal!.Task.ReadAll().ToList().Count - 2)!.Id, s_dal!.Task!.ReadAll().ToList()[i]!.Id));
         }
-
     }
     //A function that triggers all creation and initialization of the entities
     public static void DO()
