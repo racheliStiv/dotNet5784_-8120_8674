@@ -2,6 +2,7 @@
 using DO;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -28,7 +29,7 @@ namespace Dal
             }
             set {
                 XElement root = XMLTools.LoadListFromXMLElement("data-config");
-                root.Element("startDate")?.SetValue(value!.Value.ToString("dd-mm-yy"));
+                root.Element("startDate")?.SetValue(value!.Value.ToString("dd/MM/yy"));
                 XMLTools.SaveListToXMLElement(root, "data-config");
             }
         }
@@ -41,6 +42,17 @@ namespace Dal
             Dependency.Reset();
             Task.Reset();
             Engineer.Reset();
+
+            //reset the start date of the project
+            string filePath = $"{@"..\xml\" + "data-config"}.xml";
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(filePath);
+            XmlNode? startDate = xmlDoc.SelectSingleNode("/config/startDate");
+            if (startDate != null)
+            {
+                startDate.InnerText = "";
+            }
+            xmlDoc.Save(filePath);
         }
     }
 }

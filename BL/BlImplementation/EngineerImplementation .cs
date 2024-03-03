@@ -5,20 +5,19 @@ namespace BlImplementation;
 
 internal class EngineerImplementation : IEngineer
 {
-    private DalApi.IDal _dal = Factory.Get;
+    TaskImplementation task_imp =new TaskImplementation();
 
     //get BO engineer and create new DO engineer
     public int Create(Engineer? boEngineer)
     {
         try
         {
-            return _dal.Engineer.Create(BO_to_DO(boEngineer));
+            return Bl._dal.Engineer.Create(BO_to_DO(boEngineer));
         }
         catch (DO.DalAlreadyExistsException ex)
         {
             throw new BO.BOAlreadyExistsException(ex.Message);
         }
-        //לברר האם צריך להוסיף עוד קטצ
     }
 
     //get engineer id & delete its from DO lay
@@ -26,9 +25,9 @@ internal class EngineerImplementation : IEngineer
     {
         try
         {
-            if ((_dal.Task.Read(t => t.EngineerId == id && t.CompleteDate != null)) != null)
+            if ((Bl._dal.Task.Read(t => t.EngineerId == id && t.CompleteDate != null)) != null)
                 throw new BODeletionImpossibleException("delete is immpossible");
-            _dal.Engineer.Delete(id);
+            Bl._dal.Engineer.Delete(id);
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -44,7 +43,7 @@ internal class EngineerImplementation : IEngineer
     public IEnumerable<Engineer?> GetAllEngineers(Func<Engineer, bool>? filter)
     {
         //get all Engineers from DO
-        IEnumerable<DO.Engineer?> do_engineer = _dal.Engineer.ReadAll();
+        IEnumerable<DO.Engineer?> do_engineer = Bl._dal.Engineer.ReadAll();
 
         //change each Engineer to BO
         IEnumerable<Engineer?> bo_engineers = do_engineer.Where(e => e != null).Select(e => DO_to_BO(e!));
@@ -62,7 +61,7 @@ internal class EngineerImplementation : IEngineer
     {
         try
         {
-            return DO_to_BO(_dal.Engineer.Read(id)) ?? throw new BO.BODoesNotExistException($"engineer with id = {id} is not exsist");
+            return DO_to_BO(Bl._dal.Engineer.Read(id)) ?? throw new BO.BODoesNotExistException($"engineer with id = {id} is not exsist");
         }
         catch (Exception ex)
         {
@@ -77,27 +76,32 @@ internal class EngineerImplementation : IEngineer
         {
             if (bo_engineer == null)
                 throw new BONullObj("didn't get an engineer to update");
-            DO.Engineer origin_en = _dal.Engineer.Read(bo_engineer.Id) ?? throw new BODoesNotExistException("Engineer undefined in dal");
+            DO.Engineer origin_en = Bl._dal.Engineer.Read(bo_engineer.Id) ?? throw new BODoesNotExistException("Engineer undefined in dal");
             if ((DO.EngineerExperience)bo_engineer.Level! < origin_en.Level)
                 throw new BOInvalidUpdateException("can't update level of engineer to lower");
             if (bo_engineer.Task != null)
-            {
-                if (bo_engineer.Task.Id != GetTaskOfEng(origin_en.Id) && _dal.Task.Read(bo_engineer.Task.Id) == null)
+            {               
+                if (Bl.Status != ProjectStatus.AFTER)
+                    throw new BOInvalidUpdateException("can't update. before AFTER create luz");
+                if (bo_engineer.Task.Id != GetTaskOfEng(origin_en.Id) && Bl._dal.Task.Read(bo_engineer.Task.Id) == null)
                     throw new BOInvalidUpdateException("this task is not exist");
-                if ((_dal.Task.Read(bo_engineer.Task.Id)!.CompleteDate != null))
+                if ((Bl._dal.Task.Read(bo_engineer.Task.Id)!.CompleteDate != null))
                     throw new BOTaskIsDone("this task is done");
-                if (IBl.Status != ProjectStatus.AFTER)
-                    throw new BOInvalidUpdateException("can't update before AFTER create luz");
                 if (GetEngOfTask(bo_engineer.Task!.Id) != 0)
                     throw new BOTaskAlreadyOccupied("this task already caught");
-                IEnumerable<DO.Dependency> dependencies = _dal!.Dependency.ReadAll(t => t!.DependentTask == bo_engineer.Task.Id)!;
-                if (!IsDepDone(dependencies) || (EngineerExperience)_dal.Task.Read(bo_engineer.Task.Id)!.Complexity! <= bo_engineer.Level)
+                IEnumerable<DO.Dependency> dependencies = Bl._dal!.Dependency.ReadAll(t => t!.DependentTask == bo_engineer.Task.Id)!;
+                if (!IsDepDone(dependencies) || (EngineerExperience)Bl._dal.Task.Read(bo_engineer.Task.Id)!.Complexity! > bo_engineer.Level)
                     throw new BOTaskAlreadyOccupied("unable to update task in engineer");
                 if (GetTaskOfEng(bo_engineer.Id) != 0)
                     throw new BOInvalidUpdateException("unable to update, in middle other task");
-
-            }
-            _dal.Engineer.Update(BO_to_DO(bo_engineer!));
+               
+                Task t =task_imp.GetTaskDetails(bo_engineer.Task.Id);
+                EngineerInTask eng_of_task = new EngineerInTask(){ Id = bo_engineer.Id, Name = bo_engineer.Name};
+                t.Engineer = eng_of_task;
+                task_imp.Update(t);
+                    }
+            Bl._dal.Engineer.Update(BO_to_DO(bo_engineer!));
+            
         }
         catch (BODoesNotExistException ex)
         {
@@ -114,7 +118,7 @@ internal class EngineerImplementation : IEngineer
     {
         try
         {
-            return allD.All(t => _dal.Task.Read(t.DependensOnTask!.Value)!.CompleteDate != null);
+            return allD.All(t => Bl._dal.Task.Read(t.DependensOnTask!.Value)!.CompleteDate != null);
         }
         catch (BOCanNotBeNullException ex)
         {
@@ -125,13 +129,13 @@ internal class EngineerImplementation : IEngineer
     //function that return engineer in task
     private int GetEngOfTask(int task_id)
     {
-        return _dal.Task.Read(task_id)?.EngineerId ?? 0;
+        return Bl._dal.Task.Read(task_id)?.EngineerId ?? 0;
     }
 
     //function that return task in engineer
     private int GetTaskOfEng(int eng_id)
     {
-        return _dal.Task.Read(t => t.EngineerId == eng_id && t.CompleteDate != null)?.Id ?? 0;
+        return Bl._dal.Task.Read(t => t.EngineerId == eng_id && t.CompleteDate != null)?.Id ?? 0;
     }
 
     //change from BO engineer to DO engineer
@@ -154,7 +158,7 @@ internal class EngineerImplementation : IEngineer
     {
         if (doEngineer == null) return null;
         TaskInEngineer? task;
-        DO.Task? t = _dal.Task.Read(e => doEngineer.Id == e.Id);
+        DO.Task? t = Bl._dal.Task.Read(e => doEngineer.Id == e.Id);
         if (t != null)
             task = new TaskInEngineer() { Id = t!.Id, Alias = t?.Alias };
         else

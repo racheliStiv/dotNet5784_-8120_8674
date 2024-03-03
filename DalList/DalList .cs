@@ -1,6 +1,5 @@
 ﻿using DalApi;
 
-
 namespace Dal
 {
     sealed internal class DalList : IDal
@@ -25,6 +24,7 @@ namespace Dal
             DataSource.Dependencies.Clear();
             DataSource.Tasks.Clear();
             DataSource.Engineers.Clear();
+            BeginDate = null;
         }
     }
 }
