@@ -6,6 +6,8 @@ namespace BlImplementation
 {
     internal class Bl : IBl
     {
+        public static readonly DalApi.IDal _dal = Factory.Get;
+
         public ITask Task => new TaskImplementation();
 
         public IEngineer Engineer => new EngineerImplementation();
@@ -16,19 +18,17 @@ namespace BlImplementation
 
         public ITaskInList TaskInList => new TaskInListImplementation();
 
-        public ProjectStatus Status = ProjectStatus.BEFORE;
+        private static ProjectStatus status = _dal.Task.ReadAll().Count()>0 && _dal.Task.ReadAll().Where(t => t != null).All(t => t!.ScheduledDate != null) ? ProjectStatus.AFTER : (Factory.Get.BeginDate.HasValue ? ProjectStatus.IN : ProjectStatus.BEFORE);
 
-        private DateTime startDate;
-
+        public static ProjectStatus Status
+        {
+            get { return status; }
+            set { status = value; }
+        }
         public DateTime? StartDate
         {
             get { return Factory.Get.BeginDate; }
-            set { Factory.Get.BeginDate = startDate; Status = ProjectStatus.IN; }
-        }
-
-        public void CreateSchedule()
-        {
-            Status = ProjectStatus.AFTER;
+            set { Factory.Get.BeginDate = value; status = ProjectStatus.IN; }
         }
     }
 }
