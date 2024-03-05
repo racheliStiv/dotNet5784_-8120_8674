@@ -265,6 +265,7 @@ namespace DalTest
             Sub_menu(entity);
         }
 
+
         //main
         public static void Main()
         {
@@ -281,7 +282,7 @@ namespace DalTest
                     choose = Char.TryParse(Console.ReadLine(), out ch);
                     if (ch == 'y')
                     {
-                        s_dal.Reset();
+                        Initialization.Reset();
                         Initialization.DO(); //stage 3
                     }
                 }

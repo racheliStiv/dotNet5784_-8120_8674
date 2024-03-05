@@ -1,10 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ArrayOfEngineer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Engineer>
-    <Id>326548120</Id>
-    <Name>ot</Name>
-    <Email>o@gmail.com</Email>
-    <Level>EXPERT</Level>
-    <Cost>150</Cost>
-  </Engineer>
-</ArrayOfEngineer>
+<ArrayOfEngineer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />

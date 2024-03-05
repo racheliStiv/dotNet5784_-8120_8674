@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 public static class Initialization
 {
-    private static IDal? s_dal;
+    private static IDal? s_dal = Factory.Get;
     private static readonly Random s_rand = new();
 
     //An operation that creates 5 engineers and initializes data in them using a random method
@@ -82,11 +82,16 @@ public static class Initialization
     //A function that triggers all creation and initialization of the entities
     public static void DO()
     {
-        s_dal = Factory.Get; //stage 4
+        
 
         //call to initialization methods
         CreateEngineers();
         CreateTasks();
         CreateDependencies();
+    }
+
+    public static void Reset()
+    {
+        s_dal!.Reset();
     }
 }

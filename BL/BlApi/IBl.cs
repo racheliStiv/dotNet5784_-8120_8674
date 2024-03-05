@@ -1,5 +1,5 @@
-﻿using BO;
-namespace BlApi;
+﻿namespace BlApi;
+
 
 public interface IBl
 {
@@ -9,4 +9,6 @@ public interface IBl
     public ITaskInEngineer TaskInEngineer { get; }
     public ITaskInList TaskInList { get; }
     public DateTime? StartDate { get; set; }
+    public void InitializeDB() => DalTest.Initialization.DO();
+    public void ResetDB() => DalTest.Initialization.Reset();
 }
