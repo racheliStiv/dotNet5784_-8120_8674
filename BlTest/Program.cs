@@ -1,14 +1,13 @@
 ﻿using BlApi;
 using BO;
 using DalApi;
+using System.Linq.Expressions;
 
 namespace BlTest
 {
     internal class Program
     {
-        
         static readonly IBl s_bl = BlApi.Factory.Get();
-        //static readonly IBl _dal = DalApi.Factory.Get;
         static bool IsDate(string date)
         {
             // בדיקה אם המחרוזת מכילה שני סלשים ותוכן של מספרים
@@ -37,71 +36,96 @@ namespace BlTest
         }
         public static void Main_menu()
         {
-            //main menu input
-            Console.WriteLine("choose an entity u wana check \n 1 to Task\n 2 to Engineer \n 3 to update start date of groject \n 0 to exit \n");
+            try
+            {
+                //main menu input
+                Console.WriteLine("choose an entity u wana check \n 1 to Task\n 2 to Engineer \n 3 to start date of groject \n 0 to exit \n");
+                bool flag = true;
+
+                while (flag)
+                {
+                    flag = false;
+                    int choose = int.Parse(Console.ReadLine() ?? "");
+                    Console.WriteLine();
+                    switch (choose)
+                    {
+                        case 0:
+                            return;
+                        case 1:
+                            Sub_menu("task");
+                            break;
+                        case 2:
+                            Sub_menu("engineer");
+                            break;
+                        case 3:
+                            if (s_bl.StartDate != null)
+                                Console.WriteLine($"There is already a start date for the project: {s_bl.StartDate.Value.ToString("dd/MM/yy")}");
+                            else
+                            {
+                                try
+                                {
+                                    Console.WriteLine("insert start date of project");
+                                    string? startDate = Console.ReadLine();
+                                    if (startDate != null && startDate != "")
+                                    {
+                                        if (!IsDate(startDate)) throw new Exception("invalid date");
+                                        s_bl.StartDate = DateTime.ParseExact(startDate!, "dd/MM/yy", null).Date;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Exception(ex.Message);
+                                }
+                            }
+                            Main_menu();
+                            break;
+                        default:
+                            Console.WriteLine("wrong input");
+                            flag = true;
+                            break;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Main_menu();
+            }
+        }
+        public static void Sub_menu(string entity)
+        {
+            Console.WriteLine($"choose an act for {entity}, \n 0 to main menu \n 1 to Create\n 2 to Read\n 3 to Read All \n 4  to Update\n 5 to Delete \n");
             bool flag = true;
-            
             while (flag)
             {
                 flag = false;
                 int choose = int.Parse(Console.ReadLine() ?? "");
-                string format = "dd/hh/mm";
                 switch (choose)
                 {
                     case 0:
-                        return;
+                        Main_menu();
+                        break;
                     case 1:
-                        Sub_menu("task");
+                        Create(entity);
                         break;
                     case 2:
-                        Sub_menu("engineer");
+                        Read(entity);
                         break;
                     case 3:
-                        if (IBl.StartDate != null)
-                            Console.WriteLine("There is already a start date for the project");
-                        else
-                        {
-                            Console.WriteLine("insert start date of project");
-                            string? startDate = Console.ReadLine();
-                            DateTime? readyStartDate;
-                            if (startDate != null && IsDate(startDate))
-                            {
-                                readyStartDate = DateTime.ParseExact(startDate!, format, null);
-                                IBl.StartDate = readyStartDate;
-                            }
-                        }
+                        ReadAll(entity);
+                        break;
+                    case 4:
+                        Update(entity);
+                        break;
+                    case 5:
+                        Delete(entity);
                         break;
                     default:
                         Console.WriteLine("wrong input");
                         flag = true;
                         break;
                 }
-            }
-        }
-        public static void Sub_menu(string entity)
-        {
-            Console.WriteLine($"choose an act for {entity}, \n 0 to main menu \n 1 to Create\n 2 to Read\n 3 to Get All Tasks \n 4  to Update\n 5 to Delete \n");
-            int choose = int.Parse(Console.ReadLine() ?? "");
-            switch (choose)
-            {
-                case 0:
-                    Main_menu();
-                    break;
-                case 1:
-                    Create(entity);
-                    break;
-                case 2:
-                    Read(entity);
-                    break;
-                case 3:
-                    ReadAll(entity);
-                    break;
-                case 4:
-                    Update(entity);
-                    break;
-                case 5:
-                    Delete(entity);
-                    break;
             }
         }
         public static void Create(string entity)
@@ -112,8 +136,8 @@ namespace BlTest
                 case "task":
                     try
                     {
-                        string format = "dd/hh/mm";
-                        Console.WriteLine($"insert:\n alias \n description \n  duration \n  product \n remarks \n complexity(0-4)  \n\n in a date data insert the date by the format:{format}");
+                        string format = "hh:mm:ss";
+                        Console.WriteLine($"insert:\n alias \n description \n  duration \n  product \n remarks \n complexity(0-4)  \n\n in a date data insert the date by the format: dd/mm/yy \n in duration data by the foramt: {format}");
                         string? alias = Console.ReadLine();
                         string? description = Console.ReadLine();
                         string? duration = Console.ReadLine();
@@ -147,9 +171,12 @@ namespace BlTest
                         }
                         catch (BOCannotAddNewOne ex)
                         {
-
                             throw new BOCannotAddNewOne(ex.Message);
                         }
+                    }
+                    catch (BOCannotAddNewOne ex)
+                    {
+                        throw new BOCannotAddNewOne(ex.Message);
                     }
                     catch (Exception)
                     {
@@ -249,7 +276,7 @@ namespace BlTest
                 Console.WriteLine("must receive ID");
                 id = int.TryParse(Console.ReadLine(), out int Id2) ? Id2 : null;
             }
-            string format = "dd/hh/mm";
+            string format = "dd/MM/yy";
             switch (entity)
             {
                 case "task":
@@ -258,7 +285,7 @@ namespace BlTest
                         {
 
                             Task original_t = s_bl.Task.GetTaskDetails(id.Value)!;
-                            Console.WriteLine($"insert (in a date data insert the date by the format:{format}):\n alias");
+                            Console.WriteLine($"in a date data insert the date by the format: {format} \n in duration data by the foramt: hh:mm:ss \n insert: \n alias");
                             string? alias = Console.ReadLine();
                             Console.WriteLine("description");
                             string? description = Console.ReadLine();
@@ -280,7 +307,15 @@ namespace BlTest
                             int? eng_id = int.TryParse(Console.ReadLine(), out int Id2) ? Id2 : null;
                             Console.WriteLine("tasks I'm depenedes on them (ex: n1, n2, n3...)");
                             string? input = Console.ReadLine();
-                            int[]? dep_id = input != null ? input.Split(',').Select(str => int.TryParse(str.Trim(), out int num) ? num : 0).Where(num => true).ToArray() : null;
+                            int[]? dep_id = !string.IsNullOrEmpty(input)
+                              ? input.Split(',')
+                              .Select(str => int.TryParse(str.Trim(), out int num) ? num : (int?)null)
+                              .Where(num => num.HasValue)
+                              .Select(num => num!.Value)
+                              .ToArray()
+                              : null;
+
+
                             string[] d_h_m;
                             TimeSpan? newTS = null;
                             if (duration != "")
@@ -431,7 +466,7 @@ namespace BlTest
                     try
                     {
                         foreach (var item in s_bl!.Task!.GetAllTasks())
-                            Console.WriteLine(item);
+                            Console.WriteLine(item + "\n");
                     }
                     catch (BODoesNotExistException ex)
                     {
@@ -443,7 +478,7 @@ namespace BlTest
                     try
                     {
                         foreach (var item in s_bl!.Engineer!.GetAllEngineers())
-                            Console.WriteLine(item);
+                            Console.WriteLine(item + "\n");
                     }
                     catch (BODoesNotExistException ex)
                     {
@@ -459,21 +494,38 @@ namespace BlTest
 
             try
             {
-                Console.Write("Would you like to create Initial data? (Y/N)");
-                string? ans = Console.ReadLine();
-                if (ans == "Y" || ans == "y")
-                    DalTest.Initialization.DO();
+                //Reset question
                 Console.Write("Would you like to reset your data? (Y/N)");
-                string? a = Console.ReadLine();
-                if (a == "Y" || a == "y")
+                string? ans1 = Console.ReadLine();
+                while (ans1 != "y" && ans1 != "Y" && ans1 != "n" && ans1 != "N")
+                {
+                    Console.WriteLine("press y/n");
+                    ans1 = Console.ReadLine();
+                }
+
+                if (ans1 == "Y" || ans1 == "y")
                     Factory.Get.Reset();
-                Main_menu();
+
+
+                //Initial question
+                Console.Write("Would you like to create Initial data? (Y/N)");
+                string? ans2 = Console.ReadLine();
+                while (ans2 != "y" && ans2 != "Y" && ans2 != "n" && ans2 != "N")
+                {
+                    Console.WriteLine("press y/n");
+                    ans2 = Console.ReadLine();
+                }
+
+                if (ans2 == "Y" || ans2 == "y")
+                    DalTest.Initialization.DO();
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                Main_menu();
+                Main();
             }
+            Main_menu();
         }
     }
 }

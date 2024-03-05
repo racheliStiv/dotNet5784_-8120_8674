@@ -19,7 +19,7 @@ internal static class DataSource
         internal static int NextDependencyId { get => nextDependencyId++; }
 
         //initialize the dates of begin & finish to be null
-        internal static DateTime? BeginDate = null;
+        internal static DateTime? BeginDate= null;
         internal static DateTime? FinishDate = null;
 
     }
