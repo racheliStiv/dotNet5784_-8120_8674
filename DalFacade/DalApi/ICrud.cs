@@ -24,6 +24,5 @@ namespace DalApi
 
         //reset for each entity collection
         void Reset();
-
     }
 }
