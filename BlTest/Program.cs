@@ -148,7 +148,7 @@ namespace BlTest
                         d_h_m = duration!.Split(':');
                         TimeSpan newTS = new TimeSpan(int.Parse(d_h_m[0]), int.Parse(d_h_m[1]), int.Parse(d_h_m[2], 0));
 
-                        Task t = new()
+                        BO.Task t = new()
                         {
                             Id = 0,
                             Description = description,
@@ -284,7 +284,7 @@ namespace BlTest
                         try
                         {
 
-                            Task original_t = s_bl.Task.GetTaskDetails(id.Value)!;
+                            BO.Task original_t = s_bl.Task.GetTaskDetails(id.Value)!;
                             Console.WriteLine($"in a date data insert the date by the format: {format} \n in duration data by the foramt: hh:mm:ss \n insert: \n alias");
                             string? alias = Console.ReadLine();
                             Console.WriteLine("description");
@@ -358,7 +358,7 @@ namespace BlTest
                                 readyCompletedDate = DateTime.ParseExact(completedDate!, format, null);
                             }
 
-                            Task t = new()
+                            BO.Task t = new()
                             {
                                 Id = id.Value,
                                 Description = (description == "") ? original_t.Description : description,

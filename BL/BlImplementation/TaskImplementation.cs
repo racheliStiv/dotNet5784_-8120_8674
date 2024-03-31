@@ -1,13 +1,12 @@
 ﻿using BlApi;
 using BO;
-//using BL;
 
 namespace BlImplementation;
 internal class TaskImplementation : ITask
 {
 
     //get BO task and create new DO task
-    public int Create(Task boTask)
+    public int Create(BO.Task boTask)
     {
         try
         {
@@ -49,12 +48,12 @@ internal class TaskImplementation : ITask
     }
 
     //get all tasks from DO lay
-    public IEnumerable<Task?> GetAllTasks(Func<Task, bool>? filter)
+    public IEnumerable<BO.Task?> GetAllTasks(Func<BO.Task, bool>? filter)
     {
         //get all Tasks from DO
         IEnumerable<DO.Task?> do_tasks = Bl._dal.Task.ReadAll();
         //change each Task to BO
-        IEnumerable<Task?> bo_tasks = do_tasks.Where(t => t != null).Select(t => DO_to_BO(t!));
+        IEnumerable<BO.Task?> bo_tasks = do_tasks.Where(t => t != null).Select(t => DO_to_BO(t!));
         //checks which tasks meet the filter
         if (filter != null)
         {
@@ -62,7 +61,7 @@ internal class TaskImplementation : ITask
         }
         return bo_tasks;
     }
-    public Task GetTaskDetails(int id)
+    public BO.Task GetTaskDetails(int id)
     {
         try
         {
@@ -74,7 +73,7 @@ internal class TaskImplementation : ITask
         }
     }
     //get BO task and update the DO task
-    public void Update(Task boTask)
+    public void Update(BO.Task boTask)
     {
         try
         {
@@ -143,7 +142,7 @@ internal class TaskImplementation : ITask
     }
 
     //change from BO task to DO task
-    private DO.Task BO_to_DO(Task boTask)
+    private DO.Task BO_to_DO(BO.Task boTask)
     {
         try
         {
@@ -182,7 +181,7 @@ internal class TaskImplementation : ITask
     }
 
     //change from DO task to BO task
-    private Task? DO_to_BO(DO.Task? doTask)
+    private BO.Task? DO_to_BO(DO.Task? doTask)
     {
         if (doTask == null) return null;
         IEnumerable<DO.Dependency> dependencies = Bl._dal!.Dependency.ReadAll(t => t!.DependentTask == doTask.Id)!;
@@ -205,13 +204,13 @@ internal class TaskImplementation : ITask
             eit.Id = doTask.EngineerId.Value;
             eit.Name = Bl._dal.Engineer.Read(doTask.EngineerId.Value)!.Name;
         }
-        Task boTask = new() { Id = doTask.Id, Description = doTask.Description, Alias = doTask.Alias, Status = CalcStatus(doTask.Id), CreatedAtDate = doTask.CreatedAtDate, AllDependencies = allDependencies, PlannedStartDate = doTask.ScheduledDate, StartDate = doTask.StartDate, PlannedFinishDate = doTask.DeadlineDate, CompletedDate = doTask.CompleteDate, Product = doTask.Product, Duration = doTask.Duration, Remarks = doTask.Remarks, Engineer = eit, ComplexityLevel = (EngineerExperience?)doTask.Complexity };
+        BO.Task boTask = new() { Id = doTask.Id, Description = doTask.Description, Alias = doTask.Alias, Status = CalcStatus(doTask.Id), CreatedAtDate = doTask.CreatedAtDate, AllDependencies = allDependencies, PlannedStartDate = doTask.ScheduledDate, StartDate = doTask.StartDate, PlannedFinishDate = doTask.DeadlineDate, CompletedDate = doTask.CompleteDate, Product = doTask.Product, Duration = doTask.Duration, Remarks = doTask.Remarks, Engineer = eit, ComplexityLevel = (EngineerExperience?)doTask.Complexity };
 
         return boTask;
     }
 
     //function to check engineer validation
-    private void Valid(Task? t)
+    private void Valid(BO.Task? t)
     {
         if (t == null)
             throw new BOCanNotBeNullException("missing task");

@@ -95,7 +95,7 @@ internal class EngineerImplementation : IEngineer
                 if (GetTaskOfEng(bo_engineer.Id) != 0)
                     throw new BOInvalidUpdateException("unable to update, in middle other task");
                
-                Task t =task_imp.GetTaskDetails(bo_engineer.Task.Id);
+                BO.Task t =task_imp.GetTaskDetails(bo_engineer.Task.Id);
                 EngineerInTask eng_of_task = new EngineerInTask(){ Id = bo_engineer.Id, Name = bo_engineer.Name};
                 t.Engineer = eng_of_task;
                 task_imp.Update(t);

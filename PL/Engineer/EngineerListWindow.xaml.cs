@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using BO;
 
 namespace PL.Engineer
 {
@@ -24,15 +25,24 @@ namespace PL.Engineer
         public EngineerListWindow()
         {
             InitializeComponent();
-            
+            EngineerList = s_bl?.Engineer.GetAllEngineers()!;
         }
-        public IEnumerable<BO.Engineer> EngineerList
+        public IEnumerable<BO.Engineer?> EngineerList
         {
-            get { return (IEnumerable<BO.Engineer>)GetValue(CourseListProperty); }
-            set { SetValue(CourseListProperty, value); }
+            get { return (IEnumerable<BO.Engineer>)GetValue(EngineerListProperty); }
+            set { SetValue(EngineerListProperty, value); }
+        }
+        public EngineerExperience Experience { get; set; } = EngineerExperience.NONE;
+
+        public static readonly DependencyProperty EngineerListProperty =
+            DependencyProperty.Register("EngineerList", typeof(IEnumerable<BO.Engineer>), typeof(EngineerListWindow), new PropertyMetadata(null));
+
+        private void CbExperienceSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            EngineerList = (Experience == EngineerExperience.NONE) ?
+                s_bl?.Engineer.GetAllEngineers()! : s_bl?.Engineer.GetAllEngineers(item => item.Level == Experience)!;
         }
 
-        public static readonly DependencyProperty CourseListProperty =
-            DependencyProperty.Register("CourseList", typeof(IEnumerable<BO.E>), typeof(CourseListWindow), new PropertyMetadata(null));
+
     }
 }
