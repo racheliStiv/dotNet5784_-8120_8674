@@ -43,6 +43,15 @@ namespace PL.Engineer
                 s_bl?.Engineer.GetAllEngineers()! : s_bl?.Engineer.GetAllEngineers(item => item.Level == Experience)!;
         }
 
+        private void new_eng(object sender, RoutedEventArgs e)
+        {
+             new EngineerWindow().ShowDialog();      
+        }
 
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            BO.Engineer? eng = (sender as ListView)?.SelectedItem as BO.Engineer;
+            new EngineerWindow(eng.Id).ShowDialog();
+        }
     }
 }
