@@ -26,6 +26,7 @@ namespace PL.Engineer
         {
             InitializeComponent();
             EngineerList = s_bl?.Engineer.GetAllEngineers()!;
+            
         }
         public IEnumerable<BO.Engineer?> EngineerList
         {
