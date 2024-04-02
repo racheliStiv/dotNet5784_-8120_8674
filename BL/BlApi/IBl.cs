@@ -1,6 +1,7 @@
-﻿namespace BlApi;
+﻿using DO;
+using System.Xml.Serialization;
 
-
+namespace BlApi;
 public interface IBl
 {
     public ITask Task { get; }
@@ -11,4 +12,12 @@ public interface IBl
     public DateTime? StartDate { get; set; }
     public void InitializeDB() => DalTest.Initialization.DO();
     public void ResetDB() => DalTest.Initialization.Reset();
+
+
+    #region clock
+    public DateTime Clock { get; }
+    public void AdvanceTimeByHour();
+    public void AdvanceTimeByDay();
+    public void InitializeTime();
+    #endregion
 }

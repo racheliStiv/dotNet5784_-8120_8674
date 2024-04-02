@@ -158,7 +158,7 @@ internal class EngineerImplementation : IEngineer
     {
         if (doEngineer == null) return null;
         TaskInEngineer? task;
-        DO.Task? t = Bl._dal.Task.Read(e => doEngineer.Id == e.Id);
+        DO.Task? t = Bl._dal.Task.Read(e => doEngineer.Id == e.EngineerId && e.CompleteDate == null);
         if (t != null)
             task = new TaskInEngineer() { Id = t!.Id, Alias = t?.Alias };
         else

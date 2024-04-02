@@ -6,7 +6,5 @@ namespace BlImplementation;
 
 internal class TaskInEngineerImplementation : ITaskInEngineer
 {
-    private DalApi.IDal _dal = Factory.Get;
-
-    
+    private DalApi.IDal _dal = Factory.Get;  
 }
