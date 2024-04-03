@@ -33,10 +33,12 @@ namespace PL.Engineer
             get { return (IEnumerable<BO.Engineer>)GetValue(EngineerListProperty); }
             set { SetValue(EngineerListProperty, value); }
         }
-        public EngineerExperience Experience { get; set; } = EngineerExperience.NONE;
 
         public static readonly DependencyProperty EngineerListProperty =
             DependencyProperty.Register("EngineerList", typeof(IEnumerable<BO.Engineer>), typeof(EngineerListWindow), new PropertyMetadata(null));
+
+        public EngineerExperience Experience { get; set; } = EngineerExperience.NONE;
+
 
         private void CbExperienceSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

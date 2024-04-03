@@ -1,5 +1,6 @@
 ﻿using BlApi;
 using DO;
+using PL.Director;
 using PL.Engineer;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace PL
         public MainWindow()
         {
             InitializeComponent();
+            CurrentTime = s_bl.Clock;
             
         }
 
@@ -65,9 +67,9 @@ namespace PL
             s_bl.InitializeDB();
         }
 
-        private void Show_All_Click(object sender, RoutedEventArgs e)
+        private void ShowDirectorPage(object sender, RoutedEventArgs e)
         {
-            new EngineerListWindow().Show();
+            new AllTaskInListWindow().Show();
         }
 
         private void ShowIdBox_click(object sender, RoutedEventArgs e)
@@ -85,6 +87,28 @@ namespace PL
             {
                 MessageBox.Show("enter again");
             }
+        }
+
+
+        public static readonly DependencyProperty CurrentTimeProperty =
+       DependencyProperty.Register("CurrentTime", typeof(DateTime), typeof(MainWindow), new PropertyMetadata(DateTime.Now));
+
+        public DateTime CurrentTime
+        {
+            get { return (DateTime)GetValue(CurrentTimeProperty); }
+            set { SetValue(CurrentTimeProperty, value); }
+        }
+
+        private void Add_one_day(object sender, RoutedEventArgs e)
+        {
+            s_bl.AdvanceTimeByDay();
+            CurrentTime = CurrentTime.AddDays(1);
+        }
+
+        private void Add_one_hour(object sender, RoutedEventArgs e)
+        {
+            s_bl.AdvanceTimeByHour();
+            CurrentTime = CurrentTime.AddHours(1);
         }
     }
 
