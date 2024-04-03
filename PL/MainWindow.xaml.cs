@@ -31,6 +31,7 @@ namespace PL
         public MainWindow()
         {
             InitializeComponent();
+            CurrentTime = s_bl.Clock;
             
         }
 
@@ -66,7 +67,7 @@ namespace PL
             s_bl.InitializeDB();
         }
 
-        private void Show_All_Click(object sender, RoutedEventArgs e)
+        private void ShowDirectorPage(object sender, RoutedEventArgs e)
         {
             new DirectorWindow().Show();
         }
@@ -91,7 +92,6 @@ namespace PL
             {
                 MessageBox.Show("An error occurred: " + ex.Message);
             }
-
         }
     }
 }

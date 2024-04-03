@@ -25,4 +25,3 @@
         <Frame Grid.Row="1" Grid.ColumnSpan="3" Content="{Binding Choose}" />
     </Grid>
 </Window>
-

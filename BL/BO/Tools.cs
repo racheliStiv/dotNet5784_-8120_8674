@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using BlImplementation;
+using System.Reflection;
 
 namespace BO;
 internal static class Tools
@@ -33,6 +34,6 @@ internal static class Tools
             }
         }
         return string.Join(", ", propertyValues);
-
     }
+  
 }

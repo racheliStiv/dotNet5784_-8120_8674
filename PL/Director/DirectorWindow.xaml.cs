@@ -24,7 +24,7 @@ namespace PL.Director
         public DirectorWindow()
         {
             InitializeComponent();
-            Choose= new Frame();
+            Choose = new Frame();
         }
 
 
