@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PL.Engineer;
+using PL.Task;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +24,40 @@ namespace PL.Director
         public DirectorWindow()
         {
             InitializeComponent();
+            Choose= new Frame();
         }
+
+
+
+        public Frame Choose
+        {
+            get { return (Frame)GetValue(ChooseProperty); }
+            set { SetValue(ChooseProperty, value); }
+        }
+
+        public static readonly DependencyProperty ChooseProperty =
+            DependencyProperty.Register("Choose", typeof(Frame), typeof(DirectorWindow), new PropertyMetadata(null));
+
+
+
+        private void Choose_frame(object sender, RoutedEventArgs e)
+        {
+
+            switch ((sender as Button).Content.ToString())
+            {
+                case "מהנדסים":
+                    Choose.Content = new EngineerListWindow();
+                    break;
+                case "משימות":
+                    Choose.Content = new EngineerWindow();
+                    break;
+                case "תרשים גאנט":
+                    Choose.Content = new MainWindow();
+                    break;
+                default:
+                    break;
+            }
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BlApi;
 using DO;
+using PL.Director;
 using PL.Engineer;
 using System;
 using System.Collections.Generic;
@@ -67,7 +68,7 @@ namespace PL
 
         private void Show_All_Click(object sender, RoutedEventArgs e)
         {
-            new EngineerListWindow().Show();
+            new DirectorWindow().Show();
         }
 
         private void ShowIdBox_click(object sender, RoutedEventArgs e)
@@ -77,15 +78,20 @@ namespace PL
 
         private void ShowEngineerPage_click(object sender, RoutedEventArgs e)
         {
-            if (int.TryParse(EngId, out int id))
+            try
             {
+                int id = int.Parse(EngId);
                 new EngineerWindow(id).Show();
             }
-            else
+            catch (FormatException)
             {
-                MessageBox.Show("enter again");
+                MessageBox.Show("Please enter a valid integer ID.");
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message);
+            }
+
         }
     }
-
 }
