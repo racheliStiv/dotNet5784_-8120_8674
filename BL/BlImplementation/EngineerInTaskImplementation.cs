@@ -19,8 +19,8 @@ internal class EngineerInTaskImplementation : IEngineerInTask
     {
         try
         {
-            DO.Engineer? eng= (Bl._dal.Engineer.Read(id)) ?? throw new BO.BODoesNotExistException($"engineer with id = {id} is not exsist");
-            return new EngineerInTask(){Id=eng.Id,Name= eng.Name};
+            DO.Engineer? eng = (Bl._dal.Engineer.Read(id)) ?? throw new BO.BODoesNotExistException($"engineer with id = {id} is not exsist");
+            return new EngineerInTask() { Id = eng.Id, Name = eng.Name };
         }
         catch (Exception ex)
         {

@@ -7,6 +7,7 @@
         <local:EngineerExperienceCollection x:Key="EngineerExperienceCollectionKey"/>
         <local:ConvertIdToContent x:Key="ConvertIdToContentKey"/>
         <local:IsEnableConverter x:Key="IsEnableConverterKey"/>
+        <local:IsVisibleConverter x:Key="IsVisibleConverterKey"/>
         <local:TaskStatusCollection x:Key="TaskStatusCollectionKey"/>
         <local:IsCurrentTask x:Key="IsCurrentTaskKey"/>
         <local:ConvertStatusToColor x:Key="ConvertStatusToColorKey"/>

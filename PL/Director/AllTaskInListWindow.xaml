@@ -18,7 +18,23 @@
             <ColumnDefinition Width="6*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <ListView Grid.ColumnSpan="4" Grid.Row="1" ItemsSource="{Binding TaskList}" MouseDoubleClick="ListView_MouseDoubleClick" >
+        <TextBlock Text="selector" Grid.ColumnSpan="2" TextAlignment="Right" Margin="10" VerticalAlignment="Center"></TextBlock>
+
+        <ComboBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2">
+            <StackPanel Orientation="Horizontal">
+                <ComboBoxItem>סינון לפי רמה</ComboBoxItem>
+                <ComboBox ItemsSource="{Binding Source={StaticResource EngineerExperienceCollectionKey}}" Width="100" SelectionChanged="levelTask_SelectionChanged"
+                          SelectedValue="{Binding Experience, Mode=TwoWay}">
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <ComboBoxItem>סינון לפי מהנדס</ComboBoxItem>
+                <ComboBox SelectedValue="{Binding CurrentName, Mode=TwoWay}" SelectionChanged="engineerCB_SelectionChanged" Width="100"  ItemsSource="{Binding EngineerNames}"/>
+
+            </StackPanel>
+        </ComboBox>
+
+        <ListView Grid.ColumnSpan="4" Grid.Row="1" ItemsSource="{Binding TaskList}"  MouseDoubleClick="ListView_MouseDoubleClick" >
             <ListView.View >
                 <GridView>
                     <GridViewColumn/>

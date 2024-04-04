@@ -14,7 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+using BO;
 namespace PL.Director
 {
     /// <summary>
@@ -28,9 +28,27 @@ namespace PL.Director
         {
             InitializeComponent();
             TaskList = s_bl?.TaskInList.GetAllTasksInList()!;
+            EngineerNames = s_bl!.Engineer.GetAllEngineers()
+                .Where(engineer => !string.IsNullOrEmpty(engineer!.Name))
+                .Select(engineer => engineer!.Name)
+                .ToList()!;
+
+
         }
 
-        public IEnumerable<BO.TaskInList> TaskList
+
+        public IEnumerable<string> EngineerNames
+        {
+            get { return (IEnumerable<string>)GetValue(MyPropertyProperty); }
+            set { SetValue(MyPropertyProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MyPropertyProperty =
+            DependencyProperty.Register("EngineerNames", typeof(IEnumerable<string>), typeof(AllTaskInListWindow), new PropertyMetadata(null));
+
+
+        public IEnumerable<TaskInList?> TaskList
         {
             get { return (IEnumerable<BO.TaskInList>)GetValue(taskListProperty); }
             set { SetValue(taskListProperty, value); }
@@ -45,10 +63,32 @@ namespace PL.Director
             BO.TaskInList? t = (sender as ListView)?.SelectedItem as BO.TaskInList;
             new TaskWindow(t!.Id).ShowDialog();
         }
-
         private void new_task(object sender, RoutedEventArgs e)
         {
             new TaskWindow().ShowDialog();
+        }
+        public string CurrentName { get; set; } = "";
+
+        private void engineerCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //TaskList = (CurrentName == "") ?
+            //    s_bl.TaskInList.GetAllTasksInList() :
+            //    s_bl.TaskInList.GetAllTasksInList(item =>
+            //    {
+            //        var taskDetails = s_bl.Task.GetTaskDetails(item.Id);
+            //        string? name = taskDetails!.Engineer?.Name;
+            //        if (name != null)
+            //            return taskDetails != null && taskDetails!.Engineer != null && name == CurrentName;
+            //        return false;
+            //    });
+        }
+
+        public EngineerExperience Experience { get; set; } = EngineerExperience.NONE;
+
+        private void levelTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TaskList = (Experience == EngineerExperience.NONE) ?
+              s_bl?.TaskInList.GetAllTasksInList()! : s_bl?.TaskInList.GetAllTasksInList(item => item.ComplexityLevel! == Experience)!;
         }
     }
 }

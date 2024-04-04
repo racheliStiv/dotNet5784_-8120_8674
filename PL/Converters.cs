@@ -1,8 +1,6 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 using System;
-using System.Diagnostics;
-using System.Windows.Media;
 
 namespace PL;
 
@@ -33,6 +31,27 @@ internal class IsEnableConverter : IValueConverter
             return true;
         }
     }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+internal class IsVisibleConverter : IValueConverter
+{
+    //convert from source property type to target property type
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value.GetType() != typeof(TaskInList))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
