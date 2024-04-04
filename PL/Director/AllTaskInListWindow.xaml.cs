@@ -45,5 +45,10 @@ namespace PL.Director
             BO.TaskInList? t = (sender as ListView)?.SelectedItem as BO.TaskInList;
             new TaskWindow(t!.Id).ShowDialog();
         }
+
+        private void new_task(object sender, RoutedEventArgs e)
+        {
+            new TaskWindow().ShowDialog();
+        }
     }
 }

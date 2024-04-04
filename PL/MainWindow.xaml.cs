@@ -32,7 +32,7 @@ namespace PL
         {
             InitializeComponent();
             CurrentTime = s_bl.Clock;
-            
+
         }
 
         private string engId = "Enter ID";
@@ -42,10 +42,10 @@ namespace PL
             set
             {
                 engId = value;
-                OnPropertyChanged(nameof(EngId)); 
+                OnPropertyChanged(nameof(EngId));
             }
         }
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)
@@ -79,19 +79,37 @@ namespace PL
 
         private void ShowEngineerPage_click(object sender, RoutedEventArgs e)
         {
-            try
+            if (int.TryParse(EngId, out int id))
             {
-                int id = int.Parse(EngId);
-                new EngineerWindow(id).Show();
+                new ConnectEngineer(id).Show();
             }
-            catch (FormatException)
+            else
             {
-                MessageBox.Show("Please enter a valid integer ID.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred: " + ex.Message);
+                MessageBox.Show("enter again");
             }
         }
+
+
+        public static readonly DependencyProperty CurrentTimeProperty =
+       DependencyProperty.Register("CurrentTime", typeof(DateTime), typeof(MainWindow), new PropertyMetadata(DateTime.Now));
+
+        public DateTime CurrentTime
+        {
+            get { return (DateTime)GetValue(CurrentTimeProperty); }
+            set { SetValue(CurrentTimeProperty, value); }
+        }
+
+        private void Add_one_day(object sender, RoutedEventArgs e)
+        {
+            s_bl.AdvanceTimeByDay();
+            CurrentTime = CurrentTime.AddDays(1);
+        }
+
+        private void Add_one_hour(object sender, RoutedEventArgs e)
+        {
+            s_bl.AdvanceTimeByHour();
+            CurrentTime = CurrentTime.AddHours(1);
+        }
     }
+
 }

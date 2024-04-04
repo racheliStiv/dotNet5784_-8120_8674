@@ -43,16 +43,19 @@ namespace PL.Director
         private void Choose_frame(object sender, RoutedEventArgs e)
         {
 
-            switch ((sender as Button).Content.ToString())
+            switch (((Button)sender).Content.ToString())
             {
-                case "מהנדסים":
-                    Choose.Content = new EngineerListWindow();
+                case "Engineers":
+                    new EngineerListWindow().ShowDialog();
                     break;
-                case "משימות":
-                    Choose.Content = new EngineerWindow();
+                case "Tasks":
+                    new AllTaskInListWindow().ShowDialog();
                     break;
-                case "תרשים גאנט":
-                    Choose.Content = new MainWindow();
+                case "Gantt":
+                    new Gantt.Gantt().ShowDialog();
+                    break;
+                case "Status":
+                    new Status().ShowDialog();
                     break;
                 default:
                     break;

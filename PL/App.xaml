@@ -8,6 +8,9 @@
         <local:ConvertIdToContent x:Key="ConvertIdToContentKey"/>
         <local:IsEnableConverter x:Key="IsEnableConverterKey"/>
         <local:TaskStatusCollection x:Key="TaskStatusCollectionKey"/>
+        <local:IsCurrentTask x:Key="IsCurrentTaskKey"/>
+        <local:ConvertStatusToColor x:Key="ConvertStatusToColorKey"/>
+        <local:ConvertStatusToForground x:Key="ConvertStatusToForgroundKey"/>
     </Application.Resources>
 </Application>
 

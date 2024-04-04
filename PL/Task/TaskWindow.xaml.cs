@@ -1,4 +1,5 @@
 ﻿using BlApi;
+using PL.Director;
 using PL.Engineer;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace PL.Task
        
         private void AddOrUpdate(object sender, RoutedEventArgs e)
         {
-            Button button = sender as Button;
+            Button? button = sender as Button;
             if (button != null)
             {
                 string buttonText = button.Content.ToString();
@@ -65,8 +66,8 @@ namespace PL.Task
                     throw ex;
                 }
             }
-            //לא אמור להיות ככה אבל זה בינתיים לראות שזה התעדכן
-            new EngineerListWindow().ShowDialog();
+
+            new AllTaskInListWindow().ShowDialog();
         }
     }
 }

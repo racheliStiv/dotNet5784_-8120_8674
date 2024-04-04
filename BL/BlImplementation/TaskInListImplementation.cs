@@ -6,12 +6,10 @@ namespace BlImplementation;
 
 internal class TaskInListImplementation : ITaskInList
 {
-
     public IEnumerable<TaskInList?> GetAllTasksInList(Func<BO.Task, bool>? filter)
     {
         IEnumerable<DO.Task?> do_tasks = Bl._dal.Task.ReadAll();
         IEnumerable<TaskInList?> bo_tasks = do_tasks
-            //.Where(do_task => filter == null || filter(do_task!)) // סינון על פי הפילטר
             .Select(do_task => new TaskInList
             {
                 Id = do_task!.Id,

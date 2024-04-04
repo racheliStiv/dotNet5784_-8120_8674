@@ -67,8 +67,8 @@
 
             </StackPanel>
         </Grid>
-        <Button HorizontalAlignment="Left" Margin="117,217,0,0" VerticalAlignment="Top" Width="78" Height="50"               
-                          Padding="5" Click="AddOrUpdate"/>
+        <Button HorizontalAlignment="Center" Margin="0,26,0,0" Grid.Row="1" VerticalAlignment="Top" Width="78" Height="50"               
+               Content= "{Binding Id, Mode=OneTime, Converter={StaticResource ConvertIdToContentKey}}"
+            Padding="5" Click="AddOrUpdate"/>
     </Grid>
 </Window>
-<!--Content= "{Binding Id, Mode=OneTime, Converter={StaticResource ConvertIdToContentKey}}"-->

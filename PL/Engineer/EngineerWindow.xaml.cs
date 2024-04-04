@@ -49,22 +49,16 @@ namespace PL.Engineer
 
         private void AddOrUpdate(object sender, RoutedEventArgs e)
         {
-            Button button = sender as Button;
+            Button button = (Button)sender;
             if (button != null)
             {
-                string buttonText = button.Content.ToString();
                 try
                 {
+                    string buttonText = button.Content.ToString()!;
                     if (buttonText == "Update")
-                    {
                         s_bl.Engineer.Update(CurrentEngineer);
-
-                    }
                     else if (buttonText == "Add")
-                    {
                         s_bl.Engineer.Create(CurrentEngineer);
-
-                    }
                 }
                 catch (Exception ex)
                 {
@@ -72,7 +66,7 @@ namespace PL.Engineer
                 }
             }
             //לא אמור להיות ככה אבל זה בינתיים לראות שזה התעדכן
-            new EngineerListWindow().ShowDialog(); 
+            new EngineerListWindow().ShowDialog();
         }
     }
 }
