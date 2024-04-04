@@ -6,7 +6,7 @@ public enum EngineerExperience
 
 public enum TaskStatus
 {
-    UNSCHEDULED, SCHEDULED, STARTED, DONE
+    UNSCHEDULED, SCHEDULED, STARTED, DONE, NONE
 }
 
 public enum ProjectStatus

@@ -32,8 +32,6 @@ namespace PL.Director
                 .Where(engineer => !string.IsNullOrEmpty(engineer!.Name))
                 .Select(engineer => engineer!.Name)
                 .ToList()!;
-
-
         }
 
 
@@ -71,19 +69,20 @@ namespace PL.Director
 
         private void engineerCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //TaskList = (CurrentName == "") ?
-            //    s_bl.TaskInList.GetAllTasksInList() :
-            //    s_bl.TaskInList.GetAllTasksInList(item =>
-            //    {
-            //        var taskDetails = s_bl.Task.GetTaskDetails(item.Id);
-            //        string? name = taskDetails!.Engineer?.Name;
-            //        if (name != null)
-            //            return taskDetails != null && taskDetails!.Engineer != null && name == CurrentName;
-            //        return false;
-            //    });
+            TaskList = (CurrentName == "") ?
+                s_bl.TaskInList.GetAllTasksInList() :
+                s_bl.TaskInList.GetAllTasksInList(item =>
+                {
+                    var taskDetails = s_bl.Task.GetTaskDetails(item.Id);
+                    string? name = taskDetails!.Engineer?.Name;
+                    if (name != null)
+                        return taskDetails != null && taskDetails!.Engineer != null && name == CurrentName;
+                    return false;
+                });
         }
 
         public EngineerExperience Experience { get; set; } = EngineerExperience.NONE;
+        public BO.TaskStatus Status { get; set; } = BO.TaskStatus.NONE;
 
         private void levelTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
