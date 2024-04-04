@@ -1,4 +1,6 @@
 ﻿using BlApi;
+using BO;
+using PL.Director;
 using PL.Engineer;
 using System;
 using System.Collections.Generic;
@@ -26,13 +28,45 @@ namespace PL.Task
         {
             InitializeComponent();
             if (id != 0)
-                try { CurrentTask = s_bl.Task.GetTaskDetails(id); }
+                try
+                {
+                    IsShow = Visibility.Collapsed;
+                    CurrentTask = s_bl.Task.GetTaskDetails(id);
+                    OptionalDeps = s_bl.Task.GetAllTasks(t => t.Id != CurrentTask.Id).Select(task => new TaskInList(task!));
+                    //t => t.StartDate == null || t.CompletedDate < CurrentTask.StartDate && !t.AllDependencies!.Contains(CurrentDep) && t.Id != CurrentTask.Id)
+
+                }
                 catch (Exception ex)
                 { MessageBox.Show(ex.Message); }
-
             else
                 CurrentTask = new BO.Task();
         }
+
+
+
+        public IEnumerable<TaskInList> OptionalDeps
+        {
+            get { return (IEnumerable<TaskInList>)GetValue(OptionalDepsProperty); }
+            set { SetValue(OptionalDepsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for OptionalDeps.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty OptionalDepsProperty =
+            DependencyProperty.Register("OptionalDeps", typeof(IEnumerable<TaskInList>), typeof(TaskWindow), new PropertyMetadata(null));
+
+
+
+        public TaskInList CurrentDep
+        {
+            get { return (TaskInList)GetValue(CurrentDepProperty); }
+            set { SetValue(CurrentDepProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CurrentDep.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CurrentDepProperty =
+            DependencyProperty.Register("CurrentDep", typeof(TaskInList), typeof(TaskWindow), new PropertyMetadata(null));
+
+
         public BO.Task CurrentTask
         {
             get { return (BO.Task)GetValue(CurrentTaskProperty); }
@@ -40,33 +74,75 @@ namespace PL.Task
         }
         public static readonly DependencyProperty CurrentTaskProperty =
             DependencyProperty.Register("CurrentTask", typeof(BO.Task), typeof(TaskWindow), new PropertyMetadata(null));
-       
+
         private void AddOrUpdate(object sender, RoutedEventArgs e)
         {
-            Button button = sender as Button;
+            Button? button = sender as Button;
             if (button != null)
             {
-                string buttonText = button.Content.ToString();
-                try
+                if (button.Content is string buttonText && !string.IsNullOrEmpty(buttonText))
                 {
-                    if (buttonText == "Update")
+                    try
                     {
-                        s_bl.Task.Update(CurrentTask);
-
+                        if (buttonText == "Update")
+                        {
+                            s_bl.Task.Update(CurrentTask);
+                        }
+                        else if (buttonText == "Add")
+                        {
+                            s_bl.Task.Create(CurrentTask);
+                        }
                     }
-                    else if (buttonText == "Add")
+                    catch (Exception ex)
                     {
-                        s_bl.Task.Create(CurrentTask);
-
+                        throw ex;
                     }
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
                 }
             }
-            //לא אמור להיות ככה אבל זה בינתיים לראות שזה התעדכן
-            new EngineerListWindow().ShowDialog();
+            new AllTaskInListWindow().ShowDialog();
         }
+
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ComboBox comboBox && comboBox.SelectedItem != null)
+            {
+                CurrentDep = (TaskInList)comboBox.SelectedItem;
+            }
+        }
+
+        private void addDep(object sender, RoutedEventArgs e)
+        {
+            IsShow = Visibility.Visible;
+        }
+
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            CurrentTask.AllDependencies!.Add(CurrentDep);
+            try
+            {
+                s_bl.Task.Update(CurrentTask);
+                MessageBox.Show("התלות נוספה בהצלחה");
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+            new AllTaskInListWindow().ShowDialog();
+        }
+
+
+        public Visibility IsShow
+        {
+            get { return (Visibility)GetValue(IsShowProperty); }
+            set { SetValue(IsShowProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsShow.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsShowProperty =
+     DependencyProperty.Register("IsShow", typeof(Visibility), typeof(TaskWindow), new PropertyMetadata(Visibility.Collapsed));
+
+
     }
 }

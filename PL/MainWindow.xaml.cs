@@ -69,7 +69,7 @@ namespace PL
 
         private void ShowDirectorPage(object sender, RoutedEventArgs e)
         {
-            new AllTaskInListWindow().Show();
+            new DirectorWindow().Show();
         }
 
         private void ShowIdBox_click(object sender, RoutedEventArgs e)
