@@ -26,7 +26,7 @@ namespace PL.Engineer
         {
             InitializeComponent();
             EngineerList = s_bl?.Engineer.GetAllEngineers()!;
-            
+
         }
         public IEnumerable<BO.Engineer?> EngineerList
         {
@@ -48,13 +48,27 @@ namespace PL.Engineer
 
         private void new_eng(object sender, RoutedEventArgs e)
         {
-             new EngineerWindow().ShowDialog();      
+            new EngineerWindow().ShowDialog();
         }
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             BO.Engineer? eng = (sender as ListView)?.SelectedItem as BO.Engineer;
-            new EngineerWindow(eng.Id).ShowDialog();
+            if (eng != null)
+                new EngineerWindow(eng.Id).ShowDialog();
         }
+
+        public void DeleteEngineerCommand(object parameter)
+        {
+            // המרת הפרמטר לאובייקט מהנדס
+            var engineer = parameter as BO.Engineer;
+
+            // בדיקה אם קיים אובייקט מהנדס
+            if (engineer != null)
+            {
+                s_bl.Engineer.Delete(engineer.Id);
+            }
+        }
+
     }
 }

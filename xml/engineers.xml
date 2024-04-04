@@ -22,13 +22,6 @@
     <Cost>210</Cost>
   </Engineer>
   <Engineer>
-    <Id>320863721</Id>
-    <Name>Orit Vladi</Name>
-    <Email>Orit566@gmail.com</Email>
-    <Level>ADVANCED</Level>
-    <Cost>290</Cost>
-  </Engineer>
-  <Engineer>
     <Id>231285546</Id>
     <Name>Racheli stav</Name>
     <Email>Racheli210@gmail.com</Email>
@@ -41,5 +34,26 @@
     <Email>racel@gmail.com</Email>
     <Level>BEGGINER</Level>
     <Cost>100</Cost>
+  </Engineer>
+  <Engineer>
+    <Id>326548120</Id>
+    <Name>or</Name>
+    <Email>or@gmail.com</Email>
+    <Level>INTERMEDIATE</Level>
+    <Cost>130</Cost>
+  </Engineer>
+  <Engineer>
+    <Id>292629201</Id>
+    <Name>ya</Name>
+    <Email>y@gmail.com</Email>
+    <Level>INTERMEDIATE</Level>
+    <Cost>150</Cost>
+  </Engineer>
+  <Engineer>
+    <Id>320863721</Id>
+    <Name>Oria Vladi</Name>
+    <Email>Orit566@gmail.com</Email>
+    <Level>ADVANCED</Level>
+    <Cost>290</Cost>
   </Engineer>
 </ArrayOfEngineer>

@@ -23,25 +23,16 @@ internal class TaskInListImplementation : ITaskInList
     //}
     private IEnumerable<BO.Task> ToBoTasks(IEnumerable<DO.Task?> do_tasks)
     {
-        return do_tasks.Select(do_task => new BO.Task
-        {
-            Id = do_task!.Id,
-            Description = do_task!.Description,
-            Alias = do_task!.Alias,
-        });
-    }
-
-    public IEnumerable<TaskInList?> GetAllTasksInList(Func<BO.Task, bool>? filter)
-    {
         IEnumerable<DO.Task?> do_tasks = Bl._dal.Task.ReadAll();
-
-        // Map DO tasks to BO tasks using extension method
-        IEnumerable<BO.Task> bo_tasks = ToBoTasks(do_tasks);
-
-        // Apply filtering using the provided function
-        IEnumerable<BO.Task> filteredTasks = filter == null
-            ? bo_tasks
-            : bo_tasks.Where(filter);
+        IEnumerable<TaskInList?> bo_tasks = do_tasks
+            //.Where(do_task => filter == null || filter(do_task!)) // סינון על פי הפילטר
+            .Select(do_task => new TaskInList
+            {
+                Id = do_task!.Id,
+                Description = do_task!.Description,
+                Alias = do_task!.Alias,
+                Status = CalcStatus(do_task.Id),
+            });
 
         return filteredTasks.Select(bo_task => new TaskInList
         {

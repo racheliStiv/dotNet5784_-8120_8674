@@ -32,7 +32,7 @@ namespace PL
         {
             InitializeComponent();
             CurrentTime = s_bl.Clock;
-            
+
         }
 
         private string engId = "Enter ID";
@@ -42,10 +42,10 @@ namespace PL
             set
             {
                 engId = value;
-                OnPropertyChanged(nameof(EngId)); 
+                OnPropertyChanged(nameof(EngId));
             }
         }
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)
@@ -81,7 +81,7 @@ namespace PL
         {
             if (int.TryParse(EngId, out int id))
             {
-                new EngineerWindow(id).Show();
+                new ConnectEngineer(id).Show();
             }
             else
             {

@@ -7,9 +7,8 @@
         mc:Ignorable="d"
         Title="DirectorWindow" Height="450" Width="800"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
-
+    
     <Grid>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="6*"/>
@@ -18,10 +17,14 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+
         </Grid.ColumnDefinitions>
-        <Button  Content="מהנדסים" Grid.Row="0" Grid.Column="0" FontSize="20"  Click="Choose_frame"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-        <Button  Content="משימות" Grid.Row="0" Grid.Column="1" FontSize="20"  Click="Choose_frame" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-        <Button  Content="תרשים גאנט" Grid.Row="0" Grid.Column="2" FontSize="20"  Click="Choose_frame" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-        <Frame Grid.Row="1" Grid.ColumnSpan="3" Content="{Binding Choose}" />
+        <Button  Content="Engineers" Grid.Row="0" Grid.Column="0" FontSize="20"  Click="Choose_frame"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <Button  Content="Tasks" Grid.Row="0" Grid.Column="1" FontSize="20"  Click="Choose_frame" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <Button  Content="Gantt" Grid.Row="0" Grid.Column="2" FontSize="20"  Click="Choose_frame" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Button  Content="Status" Grid.Row="0" Grid.Column="3" FontSize="20"  Click="Choose_frame" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+        <Frame Grid.Row="1" Background="LightCoral" Grid.ColumnSpan="4" Content="{Binding Choose}" />
     </Grid>
 </Window>

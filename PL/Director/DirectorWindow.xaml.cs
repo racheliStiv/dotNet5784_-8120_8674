@@ -45,14 +45,17 @@ namespace PL.Director
 
             switch (((Button)sender).Content.ToString())
             {
-                case "מהנדסים":
+                case "Engineers":
                     new EngineerListWindow().ShowDialog();
                     break;
-                case "משימות":
+                case "Tasks":
                     new AllTaskInListWindow().ShowDialog();
                     break;
-                case "תרשים גאנט":
-                    Choose.Content = new MainWindow();
+                case "Gantt":
+                    new Gantt.Gantt().ShowDialog();
+                    break;
+                case "Status":
+                    new Status().ShowDialog();
                     break;
                 default:
                     break;
