@@ -43,7 +43,7 @@ namespace PL.Engineer
                     MessageBox.Show("No task assigned to this engineer.");
                     IsShow = Visibility.Visible;
                 }
-                if (CurrentEngineer.Task != null)
+                else if (CurrentEngineer.Task != null)
                     CurrentTask = s_bl.Task.GetTaskDetails(CurrentEngineer.Task.Id);
             }
             catch (Exception ex)
@@ -71,8 +71,6 @@ namespace PL.Engineer
         // Using a DependencyProperty as the backing store for CurrentEngineer.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CurrentEngineerProperty =
             DependencyProperty.Register("CurrentEngineer", typeof(BO.Engineer), typeof(ConnectEngineer), new PropertyMetadata(null));
-
-
 
         public IEnumerable<TaskInList>? OptionalTasks
         {
@@ -111,7 +109,6 @@ namespace PL.Engineer
             }
         }
 
-
         public TaskInList SelectedTask
         {
             get { return (TaskInList)GetValue(SelectedTaskProperty); }
@@ -121,8 +118,6 @@ namespace PL.Engineer
         // Using a DependencyProperty as the backing store for SelectedTask.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedTaskProperty =
             DependencyProperty.Register("SelectedTask", typeof(TaskInList), typeof(ConnectEngineer), new PropertyMetadata(null));
-
-
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {

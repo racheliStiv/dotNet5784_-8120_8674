@@ -19,10 +19,20 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Label Grid.Column="0" Grid.Row="1" Content="my current task:"/>
 
         <!--optional-->
-        <Grid Grid.Row="2" Visibility="{Binding CurrentTask, Converter= {StaticResource IsCurrentTaskKey}}"  >
+        <Label Grid.Column="0" Grid.Row="1" Content="my current task:"/>
+        <Grid Grid.Column="0" Grid.Row="2">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsShow}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <StackPanel >
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="ID: " />
@@ -61,8 +71,12 @@
                     <TextBlock Text="{Binding CurrentTask.Remarks}" />
                 </StackPanel>
             </StackPanel>
+            <Button Grid.Column="0" Grid.Row="3" Width="70" Content="Done" Click="complete_task" Height="30" VerticalAlignment="Bottom" />
         </Grid>
-        <Button Grid.Column="0"  Width="70" Content="Done" Click="complete_task" Height="30" VerticalAlignment="Bottom" />
+
+
+
+
 
         <Grid  Visibility="{Binding IsShow}" Grid.Column="1" Grid.Row="2">
             <TextBlock Text="בחר משימה לביצוע"></TextBlock>
@@ -74,6 +88,7 @@
                 </ListView.View>
             </ListView>
         </Grid>
-        <TextBlock Visibility="{Binding CurrentTask, Converter={StaticResource IsCurrentTaskKey}}" Grid.Row="1" Text="-take task from right-" Height="310" Margin="0,31,0,0" Grid.RowSpan="2" VerticalAlignment="Top" />
+        
+        <!--<TextBlock Visibility="{Binding CurrentTask, Converter={StaticResource IsCurrentTaskKey}}" Grid.Row="1" Text="-take task from right-" Height="310" Margin="0,31,0,0" Grid.RowSpan="2" VerticalAlignment="Top" />-->
     </Grid>
 </Window>

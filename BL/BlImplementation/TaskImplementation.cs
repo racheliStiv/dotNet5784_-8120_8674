@@ -87,7 +87,7 @@ internal class TaskImplementation : ITask
                   ((origin_task.StartDate != null) && (origin_task.StartDate != boTask.StartDate))
                  || ((origin_task.CompleteDate != null) && (origin_task.CompleteDate != boTask.CompletedDate))
                  || (origin_task.StartDate == null && boTask.CompletedDate != null)
-                 || (boTask.StartDate != null && boTask.CompletedDate != null && boTask.CompletedDate <= origin_task.StartDate)
+                 || (boTask.StartDate != null && boTask.CompletedDate != null && boTask.CompletedDate < origin_task.StartDate)
                  || boTask.Duration != origin_task.Duration)
                     throw new BOInvalidUpdateException("can't update. on AFTER create luz");               
                 if (boTask.Engineer != null && (Bl._dal.Engineer.Read(boTask.Engineer!.Id)!.Level) < (DO.EngineerExperience)boTask.ComplexityLevel!) throw new BOInvalidUpdateException("complexity in not enough");
