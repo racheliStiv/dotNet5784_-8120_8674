@@ -24,6 +24,21 @@ namespace PL.Task
     public partial class TaskWindow : Window
     {
         static readonly IBl s_bl = BlApi.Factory.Get();
+      //  int currentId = 0;
+
+
+
+        public int currentId
+        {
+            get { return (int)GetValue(currentIdProperty); }
+            set { SetValue(currentIdProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for currentId.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty currentIdProperty =
+            DependencyProperty.Register("currentId", typeof(int), typeof(TaskWindow), new PropertyMetadata(0));
+
+
         public TaskWindow(int id = 0)
         {
             InitializeComponent();
@@ -39,6 +54,7 @@ namespace PL.Task
                 CurrentTask = new BO.Task();
             IsShow = Visibility.Collapsed;
             OptionalDeps = s_bl.Task.GetAllTasks(t => CurrentTask == null || t.Id != CurrentTask.Id).Select(task => new TaskInList(task!));
+             currentId = CurrentTask.Id;
         }
 
 

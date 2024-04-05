@@ -64,8 +64,8 @@
         </Grid>
         <Button Grid.Column="0"  Width="70" Content="Done" Click="complete_task" Height="30" VerticalAlignment="Bottom" />
 
-        <Grid Grid.Column="1" Grid.Row="2">
-            <TextBlock  Text="בחר משימה לביצוע"></TextBlock>
+        <Grid  Visibility="{Binding IsShow}" Grid.Column="1" Grid.Row="2">
+            <TextBlock Text="בחר משימה לביצוע"></TextBlock>
             <ListView SelectedValue="{Binding SelectedTask}" MouseDoubleClick="ListView_MouseDoubleClick" ItemsSource="{Binding OptionalTasks}"  >
                 <ListView.View >
                     <GridView>

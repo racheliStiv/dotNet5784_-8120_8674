@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlApi;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,8 @@ namespace PL.Director
     /// </summary>
     public partial class Status : Window
     {
+        static readonly IBl s_bl = BlApi.Factory.Get();
+
         public Status()
         {
             InitializeComponent();
@@ -35,5 +38,21 @@ namespace PL.Director
         // Using a DependencyProperty as the backing store for SelectedDate.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedDateProperty =
             DependencyProperty.Register("SelectedDate", typeof(int), typeof(Status), new PropertyMetadata(null));
+
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("האם אתה בטוח?", "אישור", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                s_bl.ResetDB();
+            }
+        }
+
+        private void Initialize_Click(object sender, RoutedEventArgs e)
+        {
+            s_bl.InitializeDB();
+        }
     }
 }

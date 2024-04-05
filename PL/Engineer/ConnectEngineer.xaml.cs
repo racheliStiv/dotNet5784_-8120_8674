@@ -1,5 +1,6 @@
 ﻿using BlApi;
 using BO;
+using PL.Task;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace PL.Engineer
         public ConnectEngineer(int id)
         {
             InitializeComponent();
+            IsShow = Visibility.Collapsed;
 
             try
             {
@@ -39,10 +41,10 @@ namespace PL.Engineer
                 if (CurrentEngineer == null || CurrentEngineer.Task == null)
                 {
                     MessageBox.Show("No task assigned to this engineer.");
-                    return; // Exit the function if no task assigned
+                    IsShow = Visibility.Visible;
                 }
-
-                CurrentTask = s_bl.Task.GetTaskDetails(CurrentEngineer.Task.Id);
+                if (CurrentEngineer.Task != null)
+                    CurrentTask = s_bl.Task.GetTaskDetails(CurrentEngineer.Task.Id);
             }
             catch (Exception ex)
             {
@@ -82,10 +84,19 @@ namespace PL.Engineer
         public static readonly DependencyProperty OptionalTasksProperty =
             DependencyProperty.Register("OptionalTasks", typeof(IEnumerable<TaskInList>), typeof(ConnectEngineer), new PropertyMetadata(null));
 
+        public Visibility IsShow
+        {
+            get { return (Visibility)GetValue(IsShowProperty); }
+            set { SetValue(IsShowProperty, value); }
+        }
 
+        // Using a DependencyProperty as the backing store for IsShow.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsShowProperty =
+     DependencyProperty.Register("IsShow", typeof(Visibility), typeof(ConnectEngineer), new PropertyMetadata(Visibility.Collapsed));
         private void complete_task(object sender, RoutedEventArgs e)
         {
-            try {
+            try
+            {
                 BO.Task doneTask = CurrentTask;
                 doneTask.CompletedDate = s_bl.Clock;
                 s_bl.Task.Update(doneTask);
@@ -93,7 +104,8 @@ namespace PL.Engineer
                 CurrentTask = null;
             }
 
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 MessageBox.Show(ex.Message);
 
             }
@@ -121,7 +133,7 @@ namespace PL.Engineer
                 {
                     BO.Task origin_t = s_bl.Task.GetTaskDetails(SelectedTask.Id);
                     origin_t.Engineer = new BO.EngineerInTask() { Id = CurrentEngineer.Id, Name = CurrentEngineer.Name };
-                    origin_t.StartDate = origin_t.PlannedStartDate >=  s_bl.Clock ?  s_bl.Clock : origin_t.PlannedStartDate;
+                    origin_t.StartDate = origin_t.PlannedStartDate >= s_bl.Clock ? s_bl.Clock : origin_t.PlannedStartDate;
                     s_bl.Task.Update(origin_t);
                     CurrentTask = s_bl.Task.GetTaskDetails(SelectedTask.Id);
                     OptionalTasks.ToList().Remove(SelectedTask);
