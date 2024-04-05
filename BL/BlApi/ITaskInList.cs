@@ -4,5 +4,5 @@ namespace BlApi;
 
 public interface ITaskInList
 {
-    public IEnumerable<TaskInList?> GetAllTasksInList(Func<BO.Task, bool>? filter = null);
+    public IEnumerable<TaskInList> GetAllTasksInList(IEnumerable<BO.Task>? tasks);
 }

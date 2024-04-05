@@ -27,19 +27,18 @@ namespace PL.Task
         public TaskWindow(int id = 0)
         {
             InitializeComponent();
+
             if (id != 0)
                 try
                 {
-                    IsShow = Visibility.Collapsed;
                     CurrentTask = s_bl.Task.GetTaskDetails(id);
-                    OptionalDeps = s_bl.Task.GetAllTasks(t => t.Id != CurrentTask.Id).Select(task => new TaskInList(task!));
-                    //t => t.StartDate == null || t.CompletedDate < CurrentTask.StartDate && !t.AllDependencies!.Contains(CurrentDep) && t.Id != CurrentTask.Id)
-
                 }
                 catch (Exception ex)
                 { MessageBox.Show(ex.Message); }
             else
                 CurrentTask = new BO.Task();
+            IsShow = Visibility.Collapsed;
+            OptionalDeps = s_bl.Task.GetAllTasks(t => CurrentTask == null || t.Id != CurrentTask.Id).Select(task => new TaskInList(task!));
         }
 
 

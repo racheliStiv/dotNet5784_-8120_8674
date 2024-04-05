@@ -97,7 +97,7 @@
 
         </Grid>
         <Button HorizontalAlignment="Center" Margin="0,26,0,0" Grid.Row="1" VerticalAlignment="Top" Width="78" Height="50"               
-               Content= "{Binding CurrentTask.Id, Mode=OneTime, Converter={StaticResource ConvertIdToContentKey}}"
-            Padding="5" Click="AddOrUpdate"/>
+                Content= "{Binding CurrentTask.Id, Mode=OneTime,NotifyOnValidationError=true,  ValidatesOnExceptions=true, Converter ={StaticResource ConvertIdToContentKey}}"
+                Padding="5" Click="AddOrUpdate"/>
     </Grid>
 </Window>

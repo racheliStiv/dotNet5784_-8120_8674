@@ -5,27 +5,10 @@ using System.Linq;
 namespace BlImplementation;
 
 internal class TaskInListImplementation : ITaskInList
-{
-
-    //public IEnumerable<TaskInList?> GetAllTasksInList(Func<BO.Task, bool>? filter)
-    //{
-    //    IEnumerable<DO.Task?> do_tasks = Bl._dal.Task.ReadAll();
-    //    IEnumerable<TaskInList?> bo_tasks = do_tasks
-    //        .Select(do_task => new TaskInList
-    //        {
-    //            Id = do_task!.Id,
-    //            Description = do_task!.Description,
-    //            Alias = do_task!.Alias,
-    //            Status = CalcStatus(do_task.Id),
-    //        });
-
-    //    return bo_tasks;
-    //}
-    private IEnumerable<BO.Task> ToBoTasks(IEnumerable<DO.Task?> do_tasks)
+{ 
+    public IEnumerable<TaskInList>? GetAllTasksInList(IEnumerable<BO.Task> tasks)
     {
-        IEnumerable<DO.Task?> do_tasks = Bl._dal.Task.ReadAll();
-        IEnumerable<TaskInList?> bo_tasks = do_tasks
-            //.Where(do_task => filter == null || filter(do_task!)) // סינון על פי הפילטר
+        IEnumerable<TaskInList>? readyTasks = tasks.Where(task => task != null)
             .Select(do_task => new TaskInList
             {
                 Id = do_task!.Id,
@@ -33,15 +16,9 @@ internal class TaskInListImplementation : ITaskInList
                 Alias = do_task!.Alias,
                 Status = CalcStatus(do_task.Id),
             });
-
-        return filteredTasks.Select(bo_task => new TaskInList
-        {
-            Id = bo_task.Id,
-            Description = bo_task.Description,
-            Alias = bo_task.Alias,
-            Status = CalcStatus(bo_task.Id),
-        });
+        return readyTasks;
     }
+
 
     private BO.TaskStatus CalcStatus(int id)
     {

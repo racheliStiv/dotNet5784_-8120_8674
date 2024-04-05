@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PL.Engineer"
         mc:Ignorable="d"
         Title="ConnectEngineer" Height="450" Width="800"
-        DataContext="{Binding CurrentTask, RelativeSource={RelativeSource Mode=Self}}">
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -20,48 +20,60 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Column="0" Grid.Row="1" Content="my current task:"/>
+
         <!--optional-->
-        <Grid Visibility="{Binding CurrentTask, Converter= {StaticResource IsCurrentTaskKey}}">
-            <StackPanel Grid.Row="2" >
+        <Grid Grid.Row="2" Visibility="{Binding CurrentTask, Converter= {StaticResource IsCurrentTaskKey}}"  >
+            <StackPanel >
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="ID: " />
-                    <TextBlock Text="{Binding Id}" />
+                    <TextBlock Text="{Binding CurrentTask.Id}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="ALIAS: " />
-                    <TextBlock Text="{Binding Alias}" />
+                    <TextBlock Text="{Binding CurrentTask.Alias}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="DESCRIPTION: " />
-                    <TextBlock Text="{Binding Description}" />
+                    <TextBlock Text="{Binding CurrentTask.Description}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="STATUS: " />
-                    <TextBlock Text="{Binding Status}" />
+                    <TextBlock Text="{Binding CurrentTask.Status}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="PLANNED START: " />
-                    <TextBlock Text="{Binding PlannedStartDate}" />
+                    <TextBlock Text="{Binding CurrentTask.PlannedStartDate}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="START: " />
-                    <TextBlock Text="{Binding StartDate}" />
+                    <TextBlock Text="{Binding CurrentTask.StartDate}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="PRODUCT: " />
-                    <TextBlock Text="{Binding Product}" />
+                    <TextBlock Text="{Binding CurrentTask.Product}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="DURATION: " />
-                    <TextBlock Text="{Binding Duration}" />
+                    <TextBlock Text="{Binding CurrentTask.Duration}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="REMARKS: " />
-                    <TextBlock Text="{Binding Remarks}" />
+                    <TextBlock Text="{Binding CurrentTask.Remarks}" />
                 </StackPanel>
             </StackPanel>
-            <Button Grid.Column="0" Grid.Row="3" Width="70" Content="Done" Click="complete_task" />
         </Grid>
-        <TextBlock Visibility="{Binding CurrentTask, Converter={StaticResource IsCurrentTaskKey}}" Grid.Row="2" Text="-take task from right-" />
+        <Button Grid.Column="0"  Width="70" Content="Done" Click="complete_task" Height="30" VerticalAlignment="Bottom" />
+
+        <Grid Grid.Column="1" Grid.Row="2">
+            <TextBlock  Text="בחר משימה לביצוע"></TextBlock>
+            <ListView SelectedValue="{Binding SelectedTask}" MouseDoubleClick="ListView_MouseDoubleClick" ItemsSource="{Binding OptionalTasks}"  >
+                <ListView.View >
+                    <GridView>
+                        <GridViewColumn/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+        <TextBlock Visibility="{Binding CurrentTask, Converter={StaticResource IsCurrentTaskKey}}" Grid.Row="1" Text="-take task from right-" Height="310" Margin="0,31,0,0" Grid.RowSpan="2" VerticalAlignment="Top" />
     </Grid>
 </Window>

@@ -27,7 +27,7 @@ namespace PL.Director
         public AllTaskInListWindow()
         {
             InitializeComponent();
-            TaskList = s_bl?.TaskInList.GetAllTasksInList()!;
+            TaskList = s_bl?.TaskInList.GetAllTasksInList(s_bl.Task.GetAllTasks())!;
             EngineerNames = s_bl!.Engineer.GetAllEngineers()
                 .Where(engineer => !string.IsNullOrEmpty(engineer!.Name))
                 .Select(engineer => engineer!.Name)
@@ -70,15 +70,9 @@ namespace PL.Director
         private void engineerCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             TaskList = (CurrentName == "") ?
-                s_bl.TaskInList.GetAllTasksInList() :
-                s_bl.TaskInList.GetAllTasksInList(item =>
-                {
-                    var taskDetails = s_bl.Task.GetTaskDetails(item.Id);
-                    string? name = taskDetails!.Engineer?.Name;
-                    if (name != null)
-                        return taskDetails != null && taskDetails!.Engineer != null && name == CurrentName;
-                    return false;
-                });
+
+               s_bl.TaskInList.GetAllTasksInList(s_bl.Task.GetAllTasks()!) :
+                s_bl.TaskInList.GetAllTasksInList(s_bl.Task.GetAllTasks(t => t != null && t.Engineer != null && t.Engineer.Name == CurrentName));
         }
 
         public EngineerExperience Experience { get; set; } = EngineerExperience.NONE;
@@ -87,7 +81,7 @@ namespace PL.Director
         private void levelTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             TaskList = (Experience == EngineerExperience.NONE) ?
-              s_bl?.TaskInList.GetAllTasksInList()! : s_bl?.TaskInList.GetAllTasksInList(item => item.ComplexityLevel! == Experience)!;
+              s_bl?.TaskInList.GetAllTasksInList(s_bl.Task.GetAllTasks())! : s_bl?.TaskInList.GetAllTasksInList(s_bl.Task.GetAllTasks(t => t != null && t.ComplexityLevel == Experience))!;
         }
     }
 }
