@@ -52,7 +52,7 @@ namespace PL.Director
                     new AllTaskInListWindow().ShowDialog();
                     break;
                 case "Gantt":
-                    new Gantt.Gantt().ShowDialog();
+                    try { new Gantt.Gantt().ShowDialog();} catch (Exception) {}                   
                     break;
                 case "Status":
                     new Status().ShowDialog();

@@ -41,12 +41,22 @@ namespace PL.Gantt
 
         public Gantt()
         {
-            //Make the showen list
-            ganttTasksList = (s_bl.Task.GetAllTasks(t=>t.Engineer!=null && t.StartDate!=null).Where(t=> t!=null).Select(task => new TaskInGantt(task!)).ToList());
-            StartInDeed = ganttTasksList.Min(t => t.StartDate);
-            FinishInDeed = ganttTasksList.Max(t=> t.EndDate);
-            buildTable();
-            InitializeComponent();
+            try
+            {
+                //Make the showen list
+                ganttTasksList = (s_bl.Task.GetAllTasks(t => t.Engineer != null && t.StartDate != null).Where(t => t != null).Select(task => new TaskInGantt(task!)).ToList());
+                StartInDeed = ganttTasksList.Min(t => t.StartDate);
+                FinishInDeed = ganttTasksList.Max(t => t.EndDate);
+                buildTable();
+                InitializeComponent();
+            } 
+            catch (Exception ex)
+            {
+                MessageBox.Show("Your project isn't ready for GANTT");
+                this.Close();
+            }
+                
+                                
         }
         private void buildTable()
         {

@@ -83,5 +83,34 @@ namespace PL.Director
             TaskList = (Experience == EngineerExperience.NONE) ?
               s_bl?.TaskInList.GetAllTasksInList(s_bl.Task.GetAllTasks())! : s_bl?.TaskInList.GetAllTasksInList(s_bl.Task.GetAllTasks(t => t != null && t.ComplexityLevel == Experience))!;
         }
+
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null)
+            {
+                var task = button.Tag as BO.TaskInList;
+                if (task != null)
+                {
+                    string alias = task.Alias;
+                    MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete task {task.Alias}?", "SURE", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        try
+                        {
+                            s_bl.Task.Delete(task.Id);
+                            TaskList = s_bl?.TaskInList.GetAllTasksInList(s_bl.Task.GetAllTasks())!;
+                            EngineerNames = s_bl!.Engineer.GetAllEngineers()
+                                .Where(engineer => !string.IsNullOrEmpty(engineer!.Name))
+                                .Select(engineer => engineer!.Name)
+                                .ToList()!;
+                            MessageBox.Show($"task {alias} deleted succesfuly");
+                        }
+                        catch (Exception ex) { MessageBox.Show(ex.Message); }
+                    }
+                }
+            }
+        }
     }
 }

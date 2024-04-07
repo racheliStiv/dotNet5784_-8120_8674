@@ -21,19 +21,9 @@
         </Grid.ColumnDefinitions>
 
         <!--optional-->
-        <Label Grid.Column="0" Grid.Row="1" Content="my current task:"/>
-        <Grid Grid.Column="0" Grid.Row="2">
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Visible" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsShow}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-            <StackPanel >
+        <Label Grid.Column="0" Grid.Row="1" FontSize="15" FontFamily="Papyrus"  Content="my current task:"/>
+        <Label Grid.Column="0" Grid.Row="2" Visibility="{Binding IsShow}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Papyrus" FontSize="25" Content="choose new task from right!"/>
+        <StackPanel Visibility="{Binding ShowTask}" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="ID: " />
                     <TextBlock Text="{Binding CurrentTask.Id}" />
@@ -71,16 +61,10 @@
                     <TextBlock Text="{Binding CurrentTask.Remarks}" />
                 </StackPanel>
             </StackPanel>
-            <Button Grid.Column="0" Grid.Row="3" Width="70" Content="Done" Click="complete_task" Height="30" VerticalAlignment="Bottom" />
-        </Grid>
+        <Button  Visibility="{Binding ShowTask}" Grid.Column="0" Grid.Row="3" Width="70" Content="Done" Click="complete_task" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Center" />
 
-
-
-
-
-        <Grid  Visibility="{Binding IsShow}" Grid.Column="1" Grid.Row="2">
-            <TextBlock Text="בחר משימה לביצוע"></TextBlock>
-            <ListView SelectedValue="{Binding SelectedTask}" MouseDoubleClick="ListView_MouseDoubleClick" ItemsSource="{Binding OptionalTasks}"  >
+        <Grid Visibility="{Binding IsShow}" Grid.Column="1" Grid.Row="2">
+            <ListView SelectedValue="{Binding SelectedTask}" Height="400" Width="400" MouseDoubleClick="ListView_MouseDoubleClick" ItemsSource="{Binding OptionalTasks}"  >
                 <ListView.View >
                     <GridView>
                         <GridViewColumn/>
@@ -88,7 +72,5 @@
                 </ListView.View>
             </ListView>
         </Grid>
-        
-        <!--<TextBlock Visibility="{Binding CurrentTask, Converter={StaticResource IsCurrentTaskKey}}" Grid.Row="1" Text="-take task from right-" Height="310" Margin="0,31,0,0" Grid.RowSpan="2" VerticalAlignment="Top" />-->
     </Grid>
 </Window>

@@ -127,3 +127,36 @@ internal class ConvertStatusToForground : IValueConverter
         throw new NotImplementedException();
     }
 }
+internal class IsIn : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return ((ProjectStatus)value == ProjectStatus.IN);            
+    }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+internal class IsBefore : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return ((ProjectStatus)value == ProjectStatus.BEFORE);
+    }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+internal class IsAfter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return ((ProjectStatus)value == ProjectStatus.AFTER);
+    }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}

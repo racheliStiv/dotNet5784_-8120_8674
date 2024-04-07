@@ -25,8 +25,6 @@ namespace PL.Director
         public Status()
         {
             InitializeComponent();
-
-
         }
         public DateTime SelectedDate
         {

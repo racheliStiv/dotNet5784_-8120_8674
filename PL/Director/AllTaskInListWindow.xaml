@@ -22,25 +22,39 @@
 
         <ComboBox Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal">
-                <ComboBoxItem>סינון לפי רמה</ComboBoxItem>
+                <ComboBoxItem>by level</ComboBoxItem>
                 <ComboBox ItemsSource="{Binding Source={StaticResource EngineerExperienceCollectionKey}}" Width="100" SelectionChanged="levelTask_SelectionChanged"
                           SelectedValue="{Binding Experience, Mode=TwoWay}">
                 </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <ComboBoxItem>סינון לפי מהנדס</ComboBoxItem>
+                <ComboBoxItem>by engineer</ComboBoxItem>
                 <ComboBox SelectedValue="{Binding CurrentName, Mode=TwoWay}" SelectionChanged="engineerCB_SelectionChanged" Width="100"  ItemsSource="{Binding EngineerNames}"/>
 
             </StackPanel>
         </ComboBox>
 
-        <ListView Grid.ColumnSpan="4" Grid.Row="1" ItemsSource="{Binding TaskList}"  MouseDoubleClick="ListView_MouseDoubleClick" >
-            <ListView.View >
-                <GridView>
-                    <GridViewColumn/>
+        <ListView Grid.Row="1" Grid.Column="1" Width="450" ItemsSource="{Binding TaskList}" MouseDoubleClick="ListView_MouseDoubleClick">
+            <ListView.View>
+                <GridView>                    
+                    <GridViewColumn Header="Delete">                        
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Width="15" Height="15" Click="DeleteButton_Click" Tag="{Binding}" HorizontalAlignment="Left" VerticalAlignment="Center" BorderThickness="0" Background="Red" BorderBrush="Transparent" Content="X" Foreground="White" FontSize="7" FontWeight="Bold" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Task ID" DisplayMemberBinding="{Binding Id}" />
+                    <GridViewColumn Header="Alias" DisplayMemberBinding="{Binding Alias}" />
+                    <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Description}" />
+
+
                 </GridView>
             </ListView.View>
         </ListView>
+
+
+
         <Button Content="Add" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Height="50" Width="100" Click="new_task"/>
 
     </Grid>

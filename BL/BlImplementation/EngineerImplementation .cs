@@ -87,12 +87,12 @@ internal class EngineerImplementation : IEngineer
                     throw new BOInvalidUpdateException("this task is not exist");
                 if ((Bl._dal.Task.Read(bo_engineer.Task.Id)!.CompleteDate != null))
                     throw new BOTaskIsDone("this task is done");
-                if (GetEngOfTask(bo_engineer.Task!.Id) != 0)
+                if  (GetEngOfTask(bo_engineer.Task!.Id) != bo_engineer.Id)
                     throw new BOTaskAlreadyOccupied("this task already caught");
                 IEnumerable<DO.Dependency> dependencies = Bl._dal!.Dependency.ReadAll(t => t!.DependentTask == bo_engineer.Task.Id)!;
                 if (!IsDepDone(dependencies) || (EngineerExperience)Bl._dal.Task.Read(bo_engineer.Task.Id)!.Complexity! > bo_engineer.Level)
                     throw new BOTaskAlreadyOccupied("unable to update task in engineer");
-                if (GetTaskOfEng(bo_engineer.Id) != 0)
+                if (GetTaskOfEng(bo_engineer.Id) != bo_engineer.Task.Id)
                     throw new BOInvalidUpdateException("unable to update, in middle other task");
                
                 BO.Task t =task_imp.GetTaskDetails(bo_engineer.Task.Id);

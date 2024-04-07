@@ -29,7 +29,7 @@ namespace PL.Engineer
         {
             InitializeComponent();
             IsShow = Visibility.Collapsed;
-
+            ShowTask = Visibility.Visible;
             try
             {
                 CurrentEngineer = s_bl.Engineer.GetEngineerDetails(id);
@@ -40,12 +40,16 @@ namespace PL.Engineer
 
                 if (CurrentEngineer == null || CurrentEngineer.Task == null)
                 {
-                    MessageBox.Show("No task assigned to this engineer.");
                     IsShow = Visibility.Visible;
+                    ShowTask = Visibility.Collapsed;
                 }
                 else if (CurrentEngineer.Task != null)
+                {
                     CurrentTask = s_bl.Task.GetTaskDetails(CurrentEngineer.Task.Id);
-            }
+                    IsShow = Visibility.Collapsed;
+                    ShowTask = Visibility.Visible;
+                }
+                }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -108,6 +112,20 @@ namespace PL.Engineer
 
             }
         }
+
+
+
+        public Visibility ShowTask
+        {
+            get { return (Visibility)GetValue(ShowTaskProperty); }
+            set { SetValue(ShowTaskProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ShowTask.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShowTaskProperty =
+            DependencyProperty.Register("ShowTask", typeof(Visibility), typeof(ConnectEngineer), new PropertyMetadata(Visibility.Collapsed));
+
+
 
         public TaskInList SelectedTask
         {

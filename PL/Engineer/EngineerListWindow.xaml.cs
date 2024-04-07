@@ -70,5 +70,28 @@ namespace PL.Engineer
             }
         }
 
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null)
+            {
+                var engineer = button.Tag as BO.Engineer;
+                if (engineer != null)
+                {
+                    MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {engineer.Name}?", "SURE", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        try
+                        {
+                            s_bl.Engineer.Delete(engineer.Id);
+                            EngineerList = s_bl?.Engineer.GetAllEngineers()!;
+                        }
+                        catch (Exception ex) { MessageBox.Show(ex.Message); }
+                    }
+                }
+            }
+        }
+
+
     }
 }
