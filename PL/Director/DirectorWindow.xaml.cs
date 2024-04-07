@@ -24,21 +24,7 @@ namespace PL.Director
         public DirectorWindow()
         {
             InitializeComponent();
-            Choose = new Frame();
         }
-
-
-
-        public Frame Choose
-        {
-            get { return (Frame)GetValue(ChooseProperty); }
-            set { SetValue(ChooseProperty, value); }
-        }
-
-        public static readonly DependencyProperty ChooseProperty =
-            DependencyProperty.Register("Choose", typeof(Frame), typeof(DirectorWindow), new PropertyMetadata(null));
-
-
 
         private void Choose_frame(object sender, RoutedEventArgs e)
         {
@@ -52,7 +38,7 @@ namespace PL.Director
                     new AllTaskInListWindow().ShowDialog();
                     break;
                 case "Gantt":
-                    new Gantt.Gantt().ShowDialog();
+                    try { new Gantt.Gantt().ShowDialog(); } catch (Exception) { MessageBox.Show("Your project isn't ready for GANTT"); }
                     break;
                 case "Status":
                     new Status().ShowDialog();

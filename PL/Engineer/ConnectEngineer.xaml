@@ -21,66 +21,50 @@
         </Grid.ColumnDefinitions>
 
         <!--optional-->
-        <Label Grid.Column="0" Grid.Row="1" Content="my current task:"/>
-        <Grid Grid.Column="0" Grid.Row="2">
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Visible" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsShow}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-            <StackPanel >
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="ID: " />
-                    <TextBlock Text="{Binding CurrentTask.Id}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="ALIAS: " />
-                    <TextBlock Text="{Binding CurrentTask.Alias}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="DESCRIPTION: " />
-                    <TextBlock Text="{Binding CurrentTask.Description}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="STATUS: " />
-                    <TextBlock Text="{Binding CurrentTask.Status}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="PLANNED START: " />
-                    <TextBlock Text="{Binding CurrentTask.PlannedStartDate}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="START: " />
-                    <TextBlock Text="{Binding CurrentTask.StartDate}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="PRODUCT: " />
-                    <TextBlock Text="{Binding CurrentTask.Product}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="DURATION: " />
-                    <TextBlock Text="{Binding CurrentTask.Duration}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="REMARKS: " />
-                    <TextBlock Text="{Binding CurrentTask.Remarks}" />
-                </StackPanel>
+        <Label Grid.Column="0" Grid.Row="1" Margin="15,0,0,0" FontSize="15" FontFamily="Perpetua"  Content="{Binding Path=CurrentEngineer.Name}"/>
+        <Label Grid.Column="0" Grid.Row="2" Visibility="{Binding IsShow}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Perpetua" FontSize="25" Content="choose new task from right!"/>
+        <StackPanel Visibility="{Binding ShowTask}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="ID: " />
+                <TextBlock Text="{Binding CurrentTask.Id}" />
             </StackPanel>
-            <Button Grid.Column="0" Grid.Row="3" Width="70" Content="Done" Click="complete_task" Height="30" VerticalAlignment="Bottom" />
-        </Grid>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="ALIAS: " />
+                <TextBlock Text="{Binding CurrentTask.Alias}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="DESCRIPTION: " />
+                <TextBlock Text="{Binding CurrentTask.Description}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="STATUS: " />
+                <TextBlock Text="{Binding CurrentTask.Status}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="PLANNED START: " />
+                <TextBlock Text="{Binding CurrentTask.PlannedStartDate}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="START: " />
+                <TextBlock Text="{Binding CurrentTask.StartDate}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="PRODUCT: " />
+                <TextBlock Text="{Binding CurrentTask.Product}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="DURATION: " />
+                <TextBlock Text="{Binding CurrentTask.Duration}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="REMARKS: " />
+                <TextBlock Text="{Binding CurrentTask.Remarks}" />
+            </StackPanel>
+        </StackPanel>
+        <Button  Visibility="{Binding ShowTask}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Width="70" Content="Done" Click="complete_task" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Center" />
 
-
-
-
-
-        <Grid  Visibility="{Binding IsShow}" Grid.Column="1" Grid.Row="2">
-            <TextBlock Text="בחר משימה לביצוע"></TextBlock>
-            <ListView SelectedValue="{Binding SelectedTask}" MouseDoubleClick="ListView_MouseDoubleClick" ItemsSource="{Binding OptionalTasks}"  >
+        <Grid Visibility="{Binding IsShow}" Grid.Column="1" Grid.Row="2">
+            <ListView SelectedValue="{Binding SelectedTask}" Height="400" Width="400" MouseDoubleClick="ListView_MouseDoubleClick" ItemsSource="{Binding OptionalTasks}"  >
                 <ListView.View >
                     <GridView>
                         <GridViewColumn/>
@@ -88,7 +72,5 @@
                 </ListView.View>
             </ListView>
         </Grid>
-        
-        <!--<TextBlock Visibility="{Binding CurrentTask, Converter={StaticResource IsCurrentTaskKey}}" Grid.Row="1" Text="-take task from right-" Height="310" Margin="0,31,0,0" Grid.RowSpan="2" VerticalAlignment="Top" />-->
     </Grid>
 </Window>

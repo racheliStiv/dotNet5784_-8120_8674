@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PL.Engineer"
         mc:Ignorable="d"
         Title="Engineer" Height="450" Width="800"
-        DataContext="{Binding CurrentEngineer, RelativeSource={RelativeSource Self}, Mode=TwoWay}">
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="4*"/>
@@ -22,20 +22,20 @@
                 <RowDefinition Height="5*"/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Column="0" Grid.Row="1" >
-                <TextBox Text="{Binding Id, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-                         IsEnabled = "{Binding  Path=Id, Mode=OneTime, Converter={StaticResource IsEnableConverterKey}}"
+                <TextBox Text="{Binding CurrentEngineer.Id, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
+                         IsEnabled = "{Binding  Path=CurrentEngineer.Id, Mode=OneTime, Converter={StaticResource IsEnableConverterKey}}"
                 HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <TextBox Text="{Binding Name, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
+                <TextBox Text="{Binding CurrentEngineer.Name, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
                     HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <TextBox Text="{Binding Email, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
+                <TextBox Text="{Binding CurrentEngineer.Email, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
                     HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <ComboBox ItemsSource="{Binding Source={StaticResource EngineerExperienceCollectionKey}}" 
-                         SelectedValue="{Binding Level, Mode=TwoWay, NotifyOnValidationError=true, 
+                <ComboBox SelectionChanged="ComboBox_SelectionChanged_1" ItemsSource="{Binding Source={StaticResource EngineerExperienceCollectionKey}}" 
+                         SelectedValue="{Binding CurrentEngineer.Level, Mode=TwoWay, NotifyOnValidationError=true, 
                     ValidatesOnExceptions=true}"
                     HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <TextBox Text="{Binding Cost, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
+                <TextBox Text="{Binding CurrentEngineer.Cost, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
                     HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <TextBox Text="{Binding Task.Id, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
+                <ComboBox DisplayMemberPath="Alias" SelectionChanged="ComboBox_SelectionChanged" SelectedValue="{Binding SelectedTask}"  ItemsSource="{Binding OptionalTasks, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
                     HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
             </StackPanel>
             <StackPanel Grid.Column="1" Grid.Row="1" Margin="34,1,-34,-1">
@@ -48,7 +48,7 @@
             </StackPanel>
         </Grid>
         <Button HorizontalAlignment="Center" Margin="0,26,0,0" Grid.Row="1" VerticalAlignment="Top" Width="78" Height="50"               
-               Content= "{Binding Id, Mode=OneTime, Converter={StaticResource ConvertIdToContentKey}}"
+               Content= "{Binding currentId, Mode=OneTime, Converter={StaticResource ConvertIdToContentKey}}"
             Padding="5" Click="AddOrUpdate"/> 
             
     </Grid>

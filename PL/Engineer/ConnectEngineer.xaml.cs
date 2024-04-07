@@ -24,27 +24,39 @@ namespace PL.Engineer
     public partial class ConnectEngineer : Window
     {
         readonly IBl s_bl = BlApi.Factory.Get();
+        //private MediaPlayer media1, media2;
+
+
 
         public ConnectEngineer(int id)
         {
             InitializeComponent();
             IsShow = Visibility.Collapsed;
+            ShowTask = Visibility.Visible;
 
             try
             {
+                //הצלחנו להשמיע מנגינה רק מניתוב קבוע
+
+                //media1 = new MediaPlayer();
+                //media2 = new MediaPlayer();
+                //media2.Open(new Uri("C:\\Users\\elchanan\\source\\repos\\dotNet5784_-8120_8674\\PL\\Tunes\\good.wmv", UriKind.RelativeOrAbsolute));
+                //media1.Open(new Uri("C:\\Users\\elchanan\\source\\repos\\dotNet5784_-8120_8674\\PL\\Tunes\\champion.wmv", UriKind.RelativeOrAbsolute));
+
                 CurrentEngineer = s_bl.Engineer.GetEngineerDetails(id);
-                IEnumerable<BO.Task> tempTask = s_bl.Task.GetAllTasks(item => item != null && item.Engineer == null &&
-                item.ComplexityLevel <= CurrentEngineer.Level && item.StartDate == null)!;
-                if (tempTask != null)
-                    OptionalTasks = s_bl.TaskInList.GetAllTasksInList(tempTask);
+                BringTasks();
 
                 if (CurrentEngineer == null || CurrentEngineer.Task == null)
                 {
-                    MessageBox.Show("No task assigned to this engineer.");
                     IsShow = Visibility.Visible;
+                    ShowTask = Visibility.Collapsed;
                 }
                 else if (CurrentEngineer.Task != null)
+                {
                     CurrentTask = s_bl.Task.GetTaskDetails(CurrentEngineer.Task.Id);
+                    IsShow = Visibility.Collapsed;
+                    ShowTask = Visibility.Visible;
+                }
             }
             catch (Exception ex)
             {
@@ -90,7 +102,7 @@ namespace PL.Engineer
 
         // Using a DependencyProperty as the backing store for IsShow.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsShowProperty =
-     DependencyProperty.Register("IsShow", typeof(Visibility), typeof(ConnectEngineer), new PropertyMetadata(Visibility.Collapsed));
+            DependencyProperty.Register("IsShow", typeof(Visibility), typeof(ConnectEngineer), new PropertyMetadata(Visibility.Collapsed));
         private void complete_task(object sender, RoutedEventArgs e)
         {
             try
@@ -98,16 +110,30 @@ namespace PL.Engineer
                 BO.Task doneTask = CurrentTask;
                 doneTask.CompletedDate = s_bl.Clock;
                 s_bl.Task.Update(doneTask);
-                MessageBox.Show("אלוףףףףף");
+                //media1.Play();
+                MessageBox.Show("CHAMPION!");
                 CurrentTask = null;
+                IsShow = Visibility.Visible;
+                ShowTask = Visibility.Collapsed;
+
             }
 
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-
             }
         }
+
+
+        public Visibility ShowTask
+        {
+            get { return (Visibility)GetValue(ShowTaskProperty); }
+            set { SetValue(ShowTaskProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ShowTask.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShowTaskProperty =
+            DependencyProperty.Register("ShowTask", typeof(Visibility), typeof(ConnectEngineer), new PropertyMetadata(Visibility.Collapsed));
 
         public TaskInList SelectedTask
         {
@@ -119,9 +145,17 @@ namespace PL.Engineer
         public static readonly DependencyProperty SelectedTaskProperty =
             DependencyProperty.Register("SelectedTask", typeof(TaskInList), typeof(ConnectEngineer), new PropertyMetadata(null));
 
+        private void BringTasks()
+        {
+            IEnumerable<BO.Task> tempTask = s_bl.Task.GetAllTasks(item => item != null && item.Engineer == null &&
+            item.ComplexityLevel <= CurrentEngineer.Level && item.StartDate == null)!;
+            if (tempTask != null)
+                OptionalTasks = s_bl.TaskInList.GetAllTasksInList(tempTask);
+        }
+
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("האם אתה בטוח לגבי המשימה הזו?", "אישור", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult result = MessageBox.Show("Are u sure about this task?", "", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
                 try
@@ -130,8 +164,12 @@ namespace PL.Engineer
                     origin_t.Engineer = new BO.EngineerInTask() { Id = CurrentEngineer.Id, Name = CurrentEngineer.Name };
                     origin_t.StartDate = origin_t.PlannedStartDate >= s_bl.Clock ? s_bl.Clock : origin_t.PlannedStartDate;
                     s_bl.Task.Update(origin_t);
+                    //media2.Play();
+                    IsShow = Visibility.Collapsed;
+                    ShowTask = Visibility.Visible;
                     CurrentTask = s_bl.Task.GetTaskDetails(SelectedTask.Id);
-                    OptionalTasks.ToList().Remove(SelectedTask);
+                    BringTasks();
+
                 }
                 catch (Exception ex)
                 {

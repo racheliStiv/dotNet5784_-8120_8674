@@ -1,20 +1,12 @@
 ﻿using BlApi;
 using BO;
 using PL.Director;
-using PL.Engineer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PL.Task
 {
@@ -24,37 +16,52 @@ namespace PL.Task
     public partial class TaskWindow : Window
     {
         static readonly IBl s_bl = BlApi.Factory.Get();
-      //  int currentId = 0;
+        //  int curentId = 0;
 
-
-
-        public int currentId
+        public int curentId
         {
-            get { return (int)GetValue(currentIdProperty); }
-            set { SetValue(currentIdProperty, value); }
+            get { return (int)GetValue(curentIdProperty); }
+            set { SetValue(curentIdProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for currentId.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty currentIdProperty =
-            DependencyProperty.Register("currentId", typeof(int), typeof(TaskWindow), new PropertyMetadata(0));
+        // Using a DependencyProperty as the backing store for curentId.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty curentIdProperty =
+            DependencyProperty.Register("curentId", typeof(int), typeof(TaskWindow), new PropertyMetadata(0));
+
+
+
+        public Visibility IsAdd
+        {
+            get { return (Visibility)GetValue(IsAddProperty); }
+            set { SetValue(IsAddProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsAdd.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsAddProperty =
+            DependencyProperty.Register("IsAdd", typeof(Visibility), typeof(TaskWindow), new PropertyMetadata(null));
 
 
         public TaskWindow(int id = 0)
         {
-            InitializeComponent();
 
             if (id != 0)
                 try
                 {
+                    IsAdd = Visibility.Visible;
                     CurrentTask = s_bl.Task.GetTaskDetails(id);
+                    OptionalEngs = s_bl.Engineer.GetAllEngineers(item => item.Level >= CurrentTask.ComplexityLevel && (item.Task == null));
                 }
                 catch (Exception ex)
                 { MessageBox.Show(ex.Message); }
             else
+            {
                 CurrentTask = new BO.Task();
+                IsAdd = Visibility.Collapsed;
+            }
             IsShow = Visibility.Collapsed;
             OptionalDeps = s_bl.Task.GetAllTasks(t => CurrentTask == null || t.Id != CurrentTask.Id).Select(task => new TaskInList(task!));
-             currentId = CurrentTask.Id;
+            curentId = CurrentTask.Id;
+            InitializeComponent();
         }
 
 
@@ -101,16 +108,26 @@ namespace PL.Task
                     {
                         if (buttonText == "Update")
                         {
+                            if (SelectedEngineer != 0)
+                            {
+                                BO.Engineer myEng = s_bl.Engineer.GetEngineerDetails(SelectedEngineer);
+                                CurrentTask.Engineer = new EngineerInTask() { Id = myEng.Id, Name = myEng.Name };
+                                CurrentTask.StartDate = CurrentTask.PlannedStartDate >= s_bl.Clock ? CurrentTask.PlannedStartDate : s_bl.Clock;
+                            }
                             s_bl.Task.Update(CurrentTask);
+                            MessageBox.Show("Updated task succesfuly");
+                            this.Close();
                         }
                         else if (buttonText == "Add")
                         {
                             s_bl.Task.Create(CurrentTask);
+                            MessageBox.Show("Added task succesfuly");
+                            this.Close();
                         }
                     }
                     catch (Exception ex)
                     {
-                        throw ex;
+                        MessageBox.Show(ex.Message);
                     }
                 }
             }
@@ -159,5 +176,37 @@ namespace PL.Task
      DependencyProperty.Register("IsShow", typeof(Visibility), typeof(TaskWindow), new PropertyMetadata(Visibility.Collapsed));
 
 
+
+        public IEnumerable<BO.Engineer> OptionalEngs
+        {
+            get { return (IEnumerable<BO.Engineer>)GetValue(OptionalEngsProperty); }
+            set { SetValue(OptionalEngsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for OptionalEngs.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty OptionalEngsProperty =
+            DependencyProperty.Register("OptionalEngs", typeof(IEnumerable<BO.Engineer>), typeof(TaskWindow), new PropertyMetadata(null));
+
+
+
+        public int SelectedEngineer
+        {
+            get { return (int)GetValue(SelectedEngineerProperty); }
+            set { SetValue(SelectedEngineerProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedEngineer.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedEngineerProperty =
+            DependencyProperty.Register("SelectedEngineer", typeof(int), typeof(TaskWindow), new PropertyMetadata(0));
+
+        private void ComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox? comboBox = sender as ComboBox;
+            if (comboBox.SelectedValue != null)
+            {
+                BO.Engineer selectedeng = (BO.Engineer)comboBox.SelectedItem;
+                SelectedEngineer = selectedeng.Id;
+            }
+        }
     }
 }

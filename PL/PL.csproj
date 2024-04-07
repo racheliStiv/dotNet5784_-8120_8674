@@ -24,8 +24,4 @@
     <ProjectReference Include="..\BL\BL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Tunes\" />
-  </ItemGroup>
-
 </Project>

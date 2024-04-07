@@ -1,6 +1,8 @@
 ﻿namespace Dal;
 
 using DO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -104,6 +106,56 @@ static class XMLTools
             throw new DalXMLFileLoadCreateException($"fail to load xml file: {filePath}, {ex.Message}");
         }
     }
-    
+
     #endregion
+
+    public class XmlEncryption
+    {
+        // תפקיד: להצפין מידע טקסטואלי ולשמור אותו בקובץ XML
+        public static void EncryptAndSaveToXml(string plainText, string fileName, string key)
+        {
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = new byte[16]; // במקרה זה, נשתמש ב־IV קבוע לצורך הדוגמה, אך כדאי להשתמש ב IV אקראי כדי לשפר את ביטחון המידע
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (FileStream fsEncrypt = new FileStream(fileName, FileMode.Create))
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(fsEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            swEncrypt.Write(plainText);
+                        }
+                    }
+                }
+            }
+        }
+
+        // תפקיד: לקרוא קובץ XML ולפענח אותו
+        public static string DecryptXml(string fileName, string key)
+        {
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = new byte[16]; // כמו קודם, במקרה זה אנו משתמשים ב־IV קבוע לצורך הדוגמה
+
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                using (FileStream fsDecrypt = new FileStream(fileName, FileMode.Open))
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(fsDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            return srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

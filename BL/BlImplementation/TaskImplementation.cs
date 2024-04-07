@@ -34,7 +34,6 @@ internal class TaskImplementation : ITask
     {
         try
         {
-
             Bl._dal.Task.Delete(id);
         }
         catch (DO.DalDoesNotExistException ex)
@@ -94,7 +93,7 @@ internal class TaskImplementation : ITask
                 if (boTask.Engineer != null && ((DO.EngineerExperience)boTask.ComplexityLevel! != origin_task.Complexity || Bl._dal.Engineer.Read(boTask.Engineer.Id) == null)) throw new BOInvalidUpdateException("can't update comlexity after engineer init");
                 if (boTask.Engineer == null && boTask.StartDate != null) throw new BOInvalidUpdateException($"can't start task before init engineer");
                 if (boTask.StartDate < Factory.Get.BeginDate) throw new BOInvalidUpdateException("start date of task can't be before project begining");
-                if (boTask.StartDate != null && boTask.Engineer != null && (origin_task.EngineerId != null && boTask.Engineer.Id != origin_task.EngineerId)) throw new BOInvalidUpdateException("can't change angineer after begining");
+                if (origin_task.StartDate != null && boTask.Engineer != null && ( boTask.Engineer.Id != origin_task.EngineerId)) throw new BOInvalidUpdateException("can't change angineer after beginning");
             }
             if (Bl.Status == ProjectStatus.BEFORE)
             {

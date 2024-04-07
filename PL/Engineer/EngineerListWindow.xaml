@@ -24,25 +24,32 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="1" >
-            <Label Content="selector" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <ComboBox SelectionChanged="CbExperienceSelector_SelectionChanged" ItemsSource="{Binding Source={StaticResource EngineerExperienceCollectionKey}}"
+                <Label Content="selector" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <ComboBox SelectionChanged="CbExperienceSelector_SelectionChanged" ItemsSource="{Binding Source={StaticResource EngineerExperienceCollectionKey}}"
                 Grid.Column="2"  Height="50" Width="100"
                 SelectedValue="{Binding Experience, Mode=TwoWay}"/>
-       </Grid> </Grid>
-        <ListView Grid.Row="1" Grid.Column="1" ItemsSource="{Binding EngineerList}" MouseDoubleClick="ListView_MouseDoubleClick">
+            </Grid>
+        </Grid>
+        <ListView Grid.Row="1" Grid.Column="1" Width="350" ItemsSource="{Binding EngineerList}" MouseDoubleClick="ListView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn/>
-                    <GridViewColumn >
+
+                    <GridViewColumn Header="Delete">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="️" Command="{Binding DeleteEngineerCommand}" CommandParameter="{Binding}" />
+                                <Button Width="15" Height="15" Click="DeleteButton_Click" Tag="{Binding}" HorizontalAlignment="Left" VerticalAlignment="Center" BorderThickness="0" Background="Red" BorderBrush="Transparent" Content="X" Foreground="White" FontSize="7" FontWeight="Bold" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+                    <GridViewColumn Header="Engineer ID" DisplayMemberBinding="{Binding Id}" />
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
                 </GridView>
             </ListView.View>
         </ListView>
+
+
+
+
         <Button Content="Add" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Height="50" Width="100" Click="new_eng"/>
     </Grid>
 </Window>

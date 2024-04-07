@@ -5,7 +5,7 @@ namespace BlImplementation;
 
 internal class EngineerImplementation : IEngineer
 {
-    TaskImplementation task_imp =new TaskImplementation();
+    TaskImplementation task_imp = new TaskImplementation();
 
     //get BO engineer and create new DO engineer
     public int Create(Engineer? boEngineer)
@@ -80,28 +80,28 @@ internal class EngineerImplementation : IEngineer
             if ((DO.EngineerExperience)bo_engineer.Level! < origin_en.Level)
                 throw new BOInvalidUpdateException("can't update level of engineer to lower");
             if (bo_engineer.Task != null)
-            {               
+            {
                 if (Bl.Status != ProjectStatus.AFTER)
                     throw new BOInvalidUpdateException("can't update. before AFTER create luz");
                 if (bo_engineer.Task.Id != GetTaskOfEng(origin_en.Id) && Bl._dal.Task.Read(bo_engineer.Task.Id) == null)
                     throw new BOInvalidUpdateException("this task is not exist");
                 if ((Bl._dal.Task.Read(bo_engineer.Task.Id)!.CompleteDate != null))
                     throw new BOTaskIsDone("this task is done");
-                if (GetEngOfTask(bo_engineer.Task!.Id) != 0)
+                if (GetEngOfTask(bo_engineer.Task!.Id) != 0 && GetEngOfTask(bo_engineer.Task!.Id) != bo_engineer.Id)
                     throw new BOTaskAlreadyOccupied("this task already caught");
                 IEnumerable<DO.Dependency> dependencies = Bl._dal!.Dependency.ReadAll(t => t!.DependentTask == bo_engineer.Task.Id)!;
                 if (!IsDepDone(dependencies) || (EngineerExperience)Bl._dal.Task.Read(bo_engineer.Task.Id)!.Complexity! > bo_engineer.Level)
                     throw new BOTaskAlreadyOccupied("unable to update task in engineer");
-                if (GetTaskOfEng(bo_engineer.Id) != 0)
+                if (GetTaskOfEng(bo_engineer.Id) != 0 && GetTaskOfEng(bo_engineer.Id) != bo_engineer.Task.Id)
                     throw new BOInvalidUpdateException("unable to update, in middle other task");
-               
-                BO.Task t =task_imp.GetTaskDetails(bo_engineer.Task.Id);
-                EngineerInTask eng_of_task = new EngineerInTask(){ Id = bo_engineer.Id, Name = bo_engineer.Name};
+
+                BO.Task t = task_imp.GetTaskDetails(bo_engineer.Task.Id);
+                EngineerInTask eng_of_task = new EngineerInTask() { Id = bo_engineer.Id, Name = bo_engineer.Name };
                 t.Engineer = eng_of_task;
                 task_imp.Update(t);
-                    }
+            }
             Bl._dal.Engineer.Update(BO_to_DO(bo_engineer!));
-            
+
         }
         catch (BODoesNotExistException ex)
         {
@@ -125,7 +125,7 @@ internal class EngineerImplementation : IEngineer
             throw new BOCanNotBeNullException(ex.Message + "not found task of dependency");
         }
     }
-   
+
     //function that return engineer in task
     private int GetEngOfTask(int task_id)
     {
@@ -135,7 +135,7 @@ internal class EngineerImplementation : IEngineer
     //function that return task in engineer
     private int GetTaskOfEng(int eng_id)
     {
-        return Bl._dal.Task.Read(t => t.EngineerId == eng_id && t.CompleteDate != null)?.Id ?? 0;
+        return Bl._dal.Task.Read(t => t.EngineerId == eng_id && t.CompleteDate == null)?.Id ?? 0;
     }
 
     //change from BO engineer to DO engineer
@@ -222,7 +222,7 @@ internal class EngineerImplementation : IEngineer
         !ValidId(e.Id) ||
         !ValidEmail(e.Email) ||
         e.Name == "" ||
-        e.Cost < 0|| 
+        e.Cost < 0 ||
         (int)e.Level > 4 ||
         e.Level < 0)
             throw new BOInvalidDetailsException("invalid details for engineer");

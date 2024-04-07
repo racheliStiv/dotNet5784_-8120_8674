@@ -20,55 +20,49 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-           <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" >
-                <TextBox Text="{Binding CurrentTask.Id, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-                HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
+            <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" >
+                <TextBox Visibility="{Binding IsAdd}" IsEnabled="False" Text="{Binding CurrentTask.Id, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
+                HorizontalAlignment="Right" VerticalAlignment="Top" Height="30" Width="150"/>
                 <TextBox Text="{Binding CurrentTask.Description, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-                    HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
+                    HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="150"/>
                 <TextBox Text="{Binding CurrentTask.Alias, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-                    HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <ComboBox ItemsSource="{Binding Source={StaticResource TaskStatusCollectionKey}}" 
-         SelectedValue="{Binding CurrentTask.Status, Mode=TwoWay, NotifyOnValidationError=true, 
-    ValidatesOnExceptions=true}"
-    HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <TextBox Text="{Binding CurrentTask.PlannedStartDate, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-                    HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <TextBox Text="{Binding CurrentTask.StartDate, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-                    HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <TextBox Text="{Binding CurrentTask.PlannedFinishDate, Mode=OneWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-              HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <TextBox Text="{Binding CurrentTask.CompletedDate, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-              HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
+                    HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="150"/>
                 <TextBox Text="{Binding CurrentTask.Product, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-              HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
+                          HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="150"/>
                 <TextBox Text="{Binding CurrentTask.Duration, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-        HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
+                           HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="150"/>
                 <TextBox Text="{Binding CurrentTask.Remarks, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-        HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <TextBox Text="{Binding CurrentTask.ComplexityLevel, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-        HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <TextBox Text="{Binding CurrentTask.Engineer, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
-  HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <ComboBox ItemsSource="{Binding CurrentTask.AllDependencies}" SelectionChanged="ComboBox_SelectionChanged"
-          HorizontalAlignment="Right" VerticalAlignment="Top" Height="30" Width="72" SelectedValue="{Binding CurrentDep}">
+                         HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <ComboBox SelectedValue="{Binding CurrentTask.ComplexityLevel}" ItemsSource="{Binding Source={StaticResource EngineerExperienceCollectionKey}}"   
+                         HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <TextBox Visibility="{Binding IsAdd}" Text="{Binding CurrentTask.Status}"  HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <DatePicker SelectedDate="{Binding CurrentTask.PlannedStartDate}" Visibility="{Binding IsAdd}" 
+                         HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <DatePicker SelectedDate="{Binding CurrentTask.StartDate, Mode=TwoWay}" Visibility="{Binding IsAdd}" 
+                         HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <DatePicker  SelectedDate="{Binding CurrentTask.CompletedDate, Mode=TwoWay}" Visibility="{Binding IsAdd}" 
+                        HorizontalAlignment="Right"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <ComboBox Visibility="{Binding IsAdd}" ItemsSource="{Binding OptionalEngs, Mode=TwoWay, NotifyOnValidationError=true,  ValidatesOnExceptions=true}"
+  HorizontalAlignment="Right" DisplayMemberPath="Name" SelectionChanged="ComboBox_SelectionChanged_1" SelectedValue="SelectedEngineer"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <ComboBox Visibility="{Binding IsAdd}" ItemsSource="{Binding CurrentTask.AllDependencies}" SelectionChanged="ComboBox_SelectionChanged"
+          HorizontalAlignment="Right" VerticalAlignment="Top" Height="30" Width="150" SelectedValue="{Binding CurrentDep}">
                 </ComboBox>
 
             </StackPanel>
             <StackPanel VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Margin="34,1,-34,-1">
-                <Label Content="Id" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="72"/>
-                <Label Content="Description" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <Label Content="Alias" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="72"/>
-                <Label Content="Status" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <Label Content="Planned Start Date" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <Label Content="StartDate" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <Label Content="Planned Finish Date" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <Label Content="Completed Date" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <Label Content="Product" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <Label Content="Duration" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <Label Content="Remarks" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <Label Content="Complexity Level" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <Label Content="Engineer" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="72"/>
-                <Grid HorizontalAlignment="Left">
+                <Label Visibility="{Binding IsAdd}" Content="Id" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="150"/>
+                <Label Content="Description" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <Label Content="Alias" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="150"/>
+                <Label Content="Product" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <Label Content="Duration" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <Label Content="Remarks" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <Label Content="Complexity Level" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <Label Content="Status" Visibility="{Binding IsAdd}" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <Label Content="Planned Start Date" Visibility="{Binding IsAdd}" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <Label Content="StartDate" Visibility="{Binding IsAdd}" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <Label Content="Completed Date" Visibility="{Binding IsAdd}" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <Label Content="Engineer" Visibility="{Binding IsAdd}" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="30" Width="150"/>
+                <Grid Visibility="{Binding IsAdd}" HorizontalAlignment="Left">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -76,7 +70,7 @@
                     <Label Content="All Dependencies" HorizontalAlignment="Left" Grid.Column="0" Height="30" Width="105"/>
                     <Button  Height="30" Width="30" Click="addDep" Grid.Column="1" Content="+" FontSize="20" Margin="23,0,47,0"></Button>
                 </Grid>
-                
+
             </StackPanel>
 
 
@@ -96,9 +90,9 @@
             </Grid>
 
             <Button HorizontalAlignment="Center" Margin="0,26,0,0" Grid.Row="1" VerticalAlignment="Top" Width="78" Height="50"               
-         Content= "{Binding currentId, Mode=OneTime,NotifyOnValidationError=true,  ValidatesOnExceptions=true, Converter={StaticResource ConvertIdToContentKey}}"
+         Content= "{Binding curentId, Mode=OneTime,NotifyOnValidationError=true,  ValidatesOnExceptions=true, Converter={StaticResource ConvertIdToContentKey}}"
          Padding="5" Click="AddOrUpdate"/>
         </Grid>
-       
+
     </Grid>
 </Window>

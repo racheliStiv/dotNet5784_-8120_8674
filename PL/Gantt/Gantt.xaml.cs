@@ -41,12 +41,22 @@ namespace PL.Gantt
 
         public Gantt()
         {
-            //Make the showen list
-            ganttTasksList = (s_bl.Task.GetAllTasks(t=>t.Engineer!=null && t.StartDate!=null).Where(t=> t!=null).Select(task => new TaskInGantt(task!)).ToList());
-            StartInDeed = ganttTasksList.Min(t => t.StartDate);
-            FinishInDeed = ganttTasksList.Max(t=> t.EndDate);
-            buildTable();
-            InitializeComponent();
+            try
+            {
+                //Make the showen list
+                ganttTasksList = (s_bl.Task.GetAllTasks(t => t.Engineer != null && t.StartDate != null).Where(t => t != null).Select(task => new TaskInGantt(task!)).ToList());
+                StartInDeed = ganttTasksList.Min(t => t.StartDate);
+                FinishInDeed = ganttTasksList.Max(t => t.EndDate);
+                buildTable();
+                InitializeComponent();
+            }
+            catch (Exception ex)
+            {
+                this.Close();
+                throw ex;
+            }
+
+
         }
         private void buildTable()
         {
@@ -56,7 +66,7 @@ namespace PL.Gantt
             table.Columns.Add("Engineer Id", typeof(int));
             table.Columns.Add("Engineer Name", typeof(string));
             int col = 4;
-            for(DateTime d = StartInDeed; d<=FinishInDeed; d= d.AddDays(1))
+            for (DateTime d = StartInDeed; d <= FinishInDeed; d = d.AddDays(1))
             {
                 string s_date = $"{d.Day}-{d.Month}-{d.Year}";
                 table.Columns.Add(s_date, typeof(string));
@@ -64,7 +74,7 @@ namespace PL.Gantt
             }
 
             IEnumerable<TaskInGantt> orderedTaskList = ganttTasksList.OrderBy(t => t.StartDate);
-            foreach(TaskInGantt task in orderedTaskList)
+            foreach (TaskInGantt task in orderedTaskList)
             {
                 DataRow row = table.NewRow();
                 row[0] = task.TaskId;
@@ -72,7 +82,7 @@ namespace PL.Gantt
                 row[2] = task.EngineerId;
                 row[3] = task.EngineerName;
 
-                for(DateTime d = StartInDeed; d<=FinishInDeed; d = d.AddDays(1))
+                for (DateTime d = StartInDeed; d <= FinishInDeed; d = d.AddDays(1))
                 {
                     string s_date = $"{d.Day}-{d.Month}-{d.Year}";
                     if (d < task.StartDate || d > task.EndDate)
