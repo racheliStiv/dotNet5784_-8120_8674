@@ -12,6 +12,9 @@
         <local:IsCurrentTask x:Key="IsCurrentTaskKey"/>
         <local:ConvertStatusToColor x:Key="ConvertStatusToColorKey"/>
         <local:ConvertStatusToForground x:Key="ConvertStatusToForgroundKey"/>
+        <local:ConvertStatusToForground x:Key="IsBeforeKey"/>
+        <local:ConvertStatusToForground x:Key="IsInKey"/>
+        <local:ConvertStatusToForground x:Key="IsAfterKey"/>
     </Application.Resources>
 </Application>
 

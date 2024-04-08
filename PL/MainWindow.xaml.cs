@@ -42,6 +42,20 @@ namespace PL
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("האם אתה בטוח?", "אישור", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                s_bl.ResetDB();
+            }
+        }
+
+        private void Initialize_Click(object sender, RoutedEventArgs e)
+        {
+            s_bl.InitializeDB();
+        }
 
         private void ShowDirectorPage(object sender, RoutedEventArgs e)
         {
@@ -52,20 +66,15 @@ namespace PL
         {
             string inputValue = Interaction.InputBox("Insert ID:", "wellcome engineer", "");
 
-            if (!string.IsNullOrEmpty(inputValue))
+        private void ShowEngineerPage_click(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(EngId, out int id))
             {
-                if (int.TryParse(inputValue, out int id))
-                    try
-                    {
-                        s_bl.Engineer.GetEngineerDetails(id);
-                        new ConnectEngineer(id).Show();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Sorry, " + ex.Message);
-                    }
-                else
-                    MessageBox.Show("invalid ID. try again");
+                new ConnectEngineer(id).Show();
+            }
+            else
+            {
+                MessageBox.Show("enter again");
             }
         }
 
