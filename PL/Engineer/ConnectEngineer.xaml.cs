@@ -24,7 +24,7 @@ namespace PL.Engineer
     public partial class ConnectEngineer : Window
     {
         readonly IBl s_bl = BlApi.Factory.Get();
-        //private MediaPlayer media1, media2;
+        private MediaPlayer media1, media2;
 
 
 
@@ -36,12 +36,11 @@ namespace PL.Engineer
 
             try
             {
-                //הצלחנו להשמיע מנגינה רק מניתוב קבוע
 
-                //media1 = new MediaPlayer();
-                //media2 = new MediaPlayer();
-                //media2.Open(new Uri("C:\\Users\\elchanan\\source\\repos\\dotNet5784_-8120_8674\\PL\\Tunes\\good.wmv", UriKind.RelativeOrAbsolute));
-                //media1.Open(new Uri("C:\\Users\\elchanan\\source\\repos\\dotNet5784_-8120_8674\\PL\\Tunes\\champion.wmv", UriKind.RelativeOrAbsolute));
+                media1 = new MediaPlayer();
+                media2 = new MediaPlayer();
+                media2.Open(new Uri("C:\\Users\\elchanan\\source\\repos\\dotNet5784_-8120_8674\\PL\\Tunes\\good.wmv", UriKind.RelativeOrAbsolute));
+                media1.Open(new Uri("C:\\Users\\elchanan\\source\\repos\\dotNet5784_-8120_8674\\PL\\Tunes\\champion.wmv", UriKind.RelativeOrAbsolute));
 
                 CurrentEngineer = s_bl.Engineer.GetEngineerDetails(id);
                 BringTasks();
@@ -110,7 +109,7 @@ namespace PL.Engineer
                 BO.Task doneTask = CurrentTask;
                 doneTask.CompletedDate = s_bl.Clock;
                 s_bl.Task.Update(doneTask);
-                //media1.Play();
+                media1.Play();
                 MessageBox.Show("CHAMPION!");
                 CurrentTask = null;
                 IsShow = Visibility.Visible;
@@ -164,7 +163,7 @@ namespace PL.Engineer
                     origin_t.Engineer = new BO.EngineerInTask() { Id = CurrentEngineer.Id, Name = CurrentEngineer.Name };
                     origin_t.StartDate = origin_t.PlannedStartDate >= s_bl.Clock ? s_bl.Clock : origin_t.PlannedStartDate;
                     s_bl.Task.Update(origin_t);
-                    //media2.Play();
+                    media2.Play();
                     IsShow = Visibility.Collapsed;
                     ShowTask = Visibility.Visible;
                     CurrentTask = s_bl.Task.GetTaskDetails(SelectedTask.Id);

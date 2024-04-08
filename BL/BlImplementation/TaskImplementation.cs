@@ -223,7 +223,7 @@ internal class TaskImplementation : ITask
             {
                 if (!t.AllDependencies.All(dep => Bl._dal.Task.Read(dep.Id)!.StartDate != null))
                     throw new BOInvalidUpdateException("your dependencies didn't done yet");
-                if (t.AllDependencies.All(dep => Bl._dal.Task.Read(dep.Id)!.StartDate!.Value.Add(Bl._dal.Task.Read(dep.Id)!.Duration ?? TimeSpan.Zero) > t.StartDate))
+                if (t.AllDependencies.All(dep => Bl._dal.Task.Read(dep.Id)!.CompleteDate > t.StartDate))
                     throw new BOInvalidUpdateException("start date is impossible");
             }
         }

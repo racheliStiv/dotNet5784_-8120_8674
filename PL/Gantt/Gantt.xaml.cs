@@ -44,9 +44,9 @@ namespace PL.Gantt
             try
             {
                 //Make the showen list
-                ganttTasksList = (s_bl.Task.GetAllTasks(t => t.Engineer != null && t.StartDate != null).Where(t => t != null).Select(task => new TaskInGantt(task!)).ToList());
-                StartInDeed = ganttTasksList.Min(t => t.StartDate);
-                FinishInDeed = ganttTasksList.Max(t => t.EndDate);
+                ganttTasksList = (s_bl.Task.GetAllTasks().Select(task => new TaskInGantt(task!)).ToList());
+                StartInDeed = ganttTasksList.Where(t=>t.StartDate!=null).Min(t => t.StartDate.Value);
+                FinishInDeed = ganttTasksList.Where(t => t.EndDate != null).Max(t => t.EndDate.Value);
                 buildTable();
                 InitializeComponent();
             }

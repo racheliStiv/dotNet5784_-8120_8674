@@ -8,6 +8,7 @@
         Title="Gantt" Height="450" Width="800"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
     <Grid>
+        
         <Grid.Resources>
             <Style TargetType="DataGridCell">
                 <Setter Property="Background" Value="{Binding Path= Content.Text , RelativeSource={RelativeSource self},Converter= {StaticResource ConvertStatusToColorKey}}" />
