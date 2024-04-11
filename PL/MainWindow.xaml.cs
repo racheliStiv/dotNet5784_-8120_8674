@@ -65,7 +65,7 @@ namespace PL
         private void ShowIdBox_click(object sender, RoutedEventArgs e)
         {
             string inputValue = Interaction.InputBox("Insert ID:", "wellcome engineer", "");
-
+        
         private void ShowEngineerPage_click(object sender, RoutedEventArgs e)
         {
             if (int.TryParse(EngId, out int id))
