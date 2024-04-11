@@ -51,7 +51,8 @@ public static class Initialization
             string product = description + description;
             string remark = description.Substring(1, 2);
             //Creating a task and adding it to the task collection
-            Task newTask = new(0, alias, description, DateTime.Now, null, null, duration, null,  null, product,  remark,  null, complexity );
+            DateTime dateTime = DateTime.Now;
+            Task newTask = new(0, alias, description, dateTime, null, dateTime, duration, null,  null, product,  remark,  null, complexity );
             s_dal!.Task?.Create(newTask);
         }
 
