@@ -25,7 +25,7 @@ public class TaskInGantt
         EngineerId = task.Engineer!=null? task.Engineer.Id:0;
         EngineerName = task.Engineer!= null? task.Engineer.Name: "";
         StartDate = task.StartDate==null ? null:task.StartDate.Value;
-        EndDate = task.PlannedFinishDate == null?null: task.PlannedFinishDate!.Value;
+        EndDate = task.CompletedDate == null?null: task.CompletedDate!.Value;
         Status = task.Status;
         DependentTasks = task.AllDependencies?.Select(dep => dep.Id).ToList();
     }

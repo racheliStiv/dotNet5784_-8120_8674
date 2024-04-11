@@ -1,4 +1,5 @@
-﻿using BlApi;
+﻿
+using BlApi;
 using DO;
 using Microsoft.VisualBasic;
 using PL.Director;
@@ -42,20 +43,6 @@ namespace PL
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        private void Reset_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBoxResult result = MessageBox.Show("האם אתה בטוח?", "אישור", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                s_bl.ResetDB();
-            }
-        }
-
-        private void Initialize_Click(object sender, RoutedEventArgs e)
-        {
-            s_bl.InitializeDB();
-        }
 
         private void ShowDirectorPage(object sender, RoutedEventArgs e)
         {
@@ -65,16 +52,21 @@ namespace PL
         private void ShowIdBox_click(object sender, RoutedEventArgs e)
         {
             string inputValue = Interaction.InputBox("Insert ID:", "wellcome engineer", "");
-        
-        private void ShowEngineerPage_click(object sender, RoutedEventArgs e)
-        {
-            if (int.TryParse(EngId, out int id))
+
+            if (!string.IsNullOrEmpty(inputValue))
             {
-                new ConnectEngineer(id).Show();
-            }
-            else
-            {
-                MessageBox.Show("enter again");
+                if (int.TryParse(inputValue, out int id))
+                    try
+                    {
+                        s_bl.Engineer.GetEngineerDetails(id);
+                        new ConnectEngineer(id).Show();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Sorry, " + ex.Message);
+                    }
+                else
+                    MessageBox.Show("invalid ID. try again");
             }
         }
 

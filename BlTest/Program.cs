@@ -471,7 +471,6 @@ namespace BlTest
                     }
                     catch (BODoesNotExistException ex)
                     {
-
                         throw new BODoesNotExistException(ex.Message);
                     }
                     break;

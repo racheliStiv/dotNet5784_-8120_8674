@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ArrayOfEngineer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Engineer>
+    <Id>325978674</Id>
+    <Name>racheli</Name>
+    <Email>r@gmail.com</Email>
+    <Level>EXPERT</Level>
+    <Cost>100</Cost>
+  </Engineer>
+  <Engineer>
     <Id>326548120</Id>
-    <Name>or</Name>
-    <Email>or@gmail.com</Email>
-    <Level>ADVANCED</Level>
-    <Cost>150</Cost>
+    <Name>orit</Name>
+    <Email>o@gmail.com</Email>
+    <Level>EXPERT</Level>
+    <Cost>300</Cost>
   </Engineer>
 </ArrayOfEngineer>
